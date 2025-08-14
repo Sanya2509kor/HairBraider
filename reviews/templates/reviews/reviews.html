@@ -1,0 +1,137 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+<title> {{ title }} </title>
+{% endblock title %}
+
+{% block content %}
+<section id="reviews" class="py-5">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="fw-bold">Отзывы наших клиентов</h2>
+            <p class="text-muted">Что говорят о нас довольные клиенты</p>
+            {% if user.is_authenticated %}
+                <a class="btn btn-primary ms-lg-3" href="{% url 'reviews:my_reviews' %}">Мои отзывы</a>
+                {% if not user_has_comment %}
+                    <button class="btn btn-primary ms-lg-3" 
+                            data-bs-toggle="modal" 
+                            data-bs-target="#alreadyReviewedModal">
+                        Оставить отзыв
+                    </button>
+                    
+                    <!-- Модальное окно с уведомлением -->
+                    <div class="modal fade" id="alreadyReviewedModal" tabindex="-1">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">Уведомление</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <p>Вы уже оставили отзыв. Спасибо за ваше мнение!</p>
+                                    <p>Вы можете просмотреть или изменить его в разделе "Мои отзывы".</p>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+                                    <a href="{% url 'reviews:my_reviews' %}" class="btn btn-primary">Мои отзывы</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% else %}
+                    <a class="btn btn-primary ms-lg-3" href="{% url 'reviews:add_review' %}">Оставить отзыв</a>
+                {% endif %}
+            {% else %}
+                <button class="btn btn-primary ms-lg-3" 
+                        data-bs-toggle="modal" 
+                        data-bs-target="#loginModal">
+                    Оставить отзыв
+                </button>
+                
+                <!-- Модальное окно входа -->
+                <div class="modal fade" id="loginModal" tabindex="-1">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Требуется вход</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
+                            <div class="modal-body">
+                                <p>Чтобы оставить отзыв, пожалуйста, войдите в систему.</p>
+                                <a href="{% url 'user:login' %}?next={{ request.path }}" class="btn btn-primary">Войти</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+        
+        <div class="row row-cols-1 row-cols-md-3 g-4 justify-content-center">
+            {% for review in reviews %}
+                <div class="col text-center">
+                    <div class="testimonial-card">
+                        <div class="d-flex align-items-center mb-3">
+                            {% if review.user.image %}
+                                <img src="{{ review.user.image.url }}" class="testimonial-img me-3" alt="Клиент">
+                            {% else %}
+                                <img src="{% static 'deps/images/bg-image.jpg' %}" class="testimonial-img me-3" alt="Клиент">
+                            {% endif %}
+                            <div>
+                                <h5 class="mb-0">{{ review.user.username }}</h5>
+                                <div class="text-warning">
+                                    <!-- Заполненные звёзды -->
+                                    {% for i in "12345"|make_list %}
+                                        {% if forloop.counter <= review.stars %}
+                                            <i class="fas fa-star"></i>
+                                        {% else %}
+                                            <i class="far fa-star"></i>
+                                        {% endif %}
+                                    {% endfor %}
+                        
+                                </div>
+                            </div>
+                        </div>
+                        {# Ограничение длины комментария #}
+                        {% if review.comment|length > 100 %}
+                            <p class="mb-0">{{ review.comment|truncatechars:100 }}</p>
+                            <a href="#" class="text-primary read-more" 
+                            data-bs-toggle="modal" 
+                            data-bs-target="#reviewModal{{ review.id }}">
+                                Читать полностью
+                            </a>
+                        {% else %}
+                            <p class="mb-0">{{ review.comment }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+                {# Модальное окно для полного текста #}
+                {% if review.comment|length > 100 %}
+                <div class="modal fade" id="reviewModal{{ review.id }}" tabindex="-1" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                {% if review.user.image %}
+                                    <img src="{{ review.user.image.url }}" class="testimonial-img me-3" alt="Клиент">
+                                {% else %}
+                                    <img src="{% static 'deps/images/bg-image.jpg' %}" class="testimonial-img me-3" alt="Клиент">
+                                {% endif %}
+                                <h5 class="modal-title">Отзыв от {{ review.user.username }}</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body text-center">
+                                {{ review.comment }}
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-primary ms-lg-3" data-bs-dismiss="modal">Закрыть</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+        {% include "pagination.html" %}
+    </div>
+</section>
+{% endblock content %}

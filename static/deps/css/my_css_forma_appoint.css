@@ -1,0 +1,44 @@
+.appointment-form {
+    background-color: #ec7732;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(226, 138, 138, 0.1);
+    padding: 30px;
+    margin-top: 30px;
+}
+.form-header {
+    text-align: center;
+    margin-bottom: 30px;
+    color: #ffffff;
+}
+.form-control:focus {
+    border-color: #6c757d;
+    box-shadow: 0 0 0 0.25rem rgba(108, 117, 125, 0.25);
+}
+.btn-submit {
+    background-color: #0be61d;
+    border-color: #007fee;
+    width: 100%;
+    padding: 10px;
+    font-weight: 500;
+}
+.btn-submit:hover {
+    background-color: #5a6268;
+    border-color: #545b62;
+}
+
+/* Стили для формы комментария */
+#id_comment {
+    width: 100%;
+    min-height: 120px;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ced4da;
+}
+
+
+/* Адаптация для мобильных */
+@media (max-width: 576px) {
+    .rating-stars {
+        font-size: 1.5rem;
+    }
+}

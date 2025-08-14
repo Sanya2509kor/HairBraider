@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+    <title> {{ title }} </title>
+{% endblock title %}
+
+{% block content %}
+    <link rel="stylesheet" href={% static "deps/css/portfolio.css" %}>
+
+<section id="services" class="py-5">
+
+    <div class="modal fade" id="imageModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-body text-center">
+                    <img src="" id="modalImage" class="img-fluid main-image" alt="Full size image">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="container">
+        <div class="text-center mb-5">
+            {% comment %} <h2 class="fw-bold"> {{ title_text }} </h2>
+            <p class="text-muted"> {{ text }} </p> {% endcomment %}
+        </div>
+        
+        <div class="row row-cols-1 row-cols-md-3 g-4 justify-content-center">
+            {% for object in objects %}
+                {% comment %} {% if object.image %} {% endcomment %}
+                        <div class="col">
+                            <div class="service-card">
+                                <div class="carousel">
+                                    <div class="images">
+                                        {% for image in object.images.all %}
+                                            <img src="{{ image.image.url }}" 
+                                            alt="{{ object.name }}"
+                                            class="clickable-image"
+                                            data-bs-toggle="modal" 
+                                            data-bs-target="#imageModal"
+                                            data-fullsize="{{ image.image.url }}">
+                                        {% endfor %}
+                                    </div>
+                                    <!-- Добавлен отдельный счетчик для мобильных -->
+                                    <div class="mobile-counter">1 / {{ object.images.count }}</div>
+                                    <div class="controls">
+                                        <button class="prev">⬅</button>
+                                        <span class="current-image">1 / {{ object.images.count }}</span>
+                                        <button class="next">➡</button>
+                                    </div>
+                                </div>
+                                <div class="card-body text-center">
+                                    <h5 class="card-title"> {{ object.name }} </h5>
+                                    <p class="card-text"> {{ object.description }} </p>
+                                </div>
+                            </div>
+                        </div>
+                {% comment %} {% endif %} {% endcomment %}
+            {% endfor %}
+        </div>
+    {% include "pagination.html" %}
+    </div>
+</section>
+{% endblock content %}

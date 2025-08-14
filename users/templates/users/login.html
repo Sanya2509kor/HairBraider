@@ -1,0 +1,159 @@
+{% extends "base.html" %}
+{% load static %}
+
+
+{% block title %}
+<title> {{ title }} </title>
+{% endblock title %}
+
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 registration-form p-4 mb-4 mx-3 rounded custom-shadow">
+            <h2 class="text-center mb-4">Авторизация</h2>
+            <form action="{% url 'user:login' %}" method="post" id="login_form">
+                {% csrf_token %}
+                
+                {% if request.GET and 'next' in request.GET %}
+                    <input type="hidden" name="next" value="{{ request.GET.next }}">
+                {% endif %}
+                
+                {# Общие ошибки формы #}
+                {% comment %} {% if form.non_field_errors %}
+                    <div class="alert alert-danger alert-dismissible fade show">
+                        {% for error in form.non_field_errors %}
+                            {{ error }}
+                        {% endfor %}
+                    </div>
+                {% endif %} {% endcomment %}
+                
+                {# Поле username (номер телефона) #}
+                <div class="mb-3">
+                    <label for="id_username" class="form-label">Номер телефона:</label>
+                    <input type="text" 
+                           class="form-control {% if form.username.errors %}is-invalid{% endif %}" 
+                           id="id_phone_number"
+                           value="{{ form.username.value|default_if_none:'+7' }}"  
+                           name="username"
+                           placeholder="+7(000)000-0000" 
+                           required
+                           maxlength="12">
+                    <div id="phone_number_error" class="alert alert-danger mt-2 d-none"></div>
+                    {% if form.username.errors %}
+                        <div class="invalid-feedback">
+                            {% for error in form.username.errors %}
+                                {{ error }}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+                
+                {# Поле password #}
+                <div class="mb-3">
+                    <label for="id_password" class="form-label">Пароль</label>
+                    <input type="password" 
+                           class="form-control {% if form.password.errors %}is-invalid{% endif %}" 
+                           name="password"  
+                           id="id_password" 
+                           placeholder="Введите ваш пароль" 
+                           required>
+                    {% if form.password.errors %}
+                        <div class="invalid-feedback">
+                            {% for error in form.password.errors %}
+                                {{ error }}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+                <div class="col-md-6 mb-3">
+                    <div 
+                    style="height: 50px"
+                    id="captcha-container"
+                    class="smart-captcha"
+                    data-sitekey="ysc1_jsQ0rk3kAUC3HVkh9j5PwHeHLiykKYa8pIi9EmIX448f6251"
+                    ></div>
+                </div>
+                
+                <button type="submit" class="btn btn-dark btn-block">Войти</button> 
+            </form>
+            
+            
+            <div class="mt-3">
+                <a href="#">Забыли пароль?</a> | <a href="{% url 'user:registration' %}">Создать аккаунт</a>
+            </div>
+            <div class="text-center">
+                <h4> или </h4>
+                <div>
+                {% autoescape off %}{{ telegram_redirect }}{% endautoescape %} 
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function() {
+    // Форматирование ввода номера телефона в реальном времени
+    $('#id_phone_number').on('input', function(e) {
+        // Удаляем все нецифровые символы, кроме возможного плюса в начале
+        var value = e.target.value.replace(/[^\d+]/g, '');
+        
+        // Если номер начинается не с +7 или 7 или 8, добавляем +7
+        if (!value.startsWith('+7') && !value.startsWith('7') && !value.startsWith('8')) {
+            value = '+7';
+        }
+        
+        // Форматируем номер: +7 999 198-72-64
+        var formatted = value
+            .replace(/^(\+?7|8)(\d{0,3})(\d{0,3})(\d{0,2})(\d{0,2})/, function(match, p1, p2, p3, p4, p5) {
+                let result = '+7';
+                if (p2) result += p2;
+                if (p3) result += p3;
+                if (p4) result += p4;
+                if (p5) result += p5;
+                return result;
+            });
+        
+        e.target.value = formatted;
+    });
+
+    // Валидация формы перед отправкой
+    $('#login_form').on('submit', function(event) {
+        // Проверка номера телефона
+        var phoneNumber = $('#id_phone_number').val();
+        
+        // Регулярное выражение для российского номера:
+        // +7 или 7 или 8, затем 10 цифр
+        var regex = /^(\+7|7|8)\d{10}$/;
+        
+        // Очищаем номер для проверки (удаляем все, кроме цифр и +)
+        var cleanedPhoneNumber = phoneNumber.replace(/[^\d+]/g, '');
+        
+        // Если номер начинается с 8, заменяем на +7
+        if (cleanedPhoneNumber.startsWith('8')) {
+            cleanedPhoneNumber = '+7' + cleanedPhoneNumber.substring(1);
+        }
+        // Если номер начинается с 7 (без +), добавляем +
+        else if (cleanedPhoneNumber.startsWith('7') && !cleanedPhoneNumber.startsWith('+7')) {
+            cleanedPhoneNumber = '+' + cleanedPhoneNumber;
+        }
+        
+        if (!regex.test(cleanedPhoneNumber)) {
+            $('#phone_number_error').text('Введите корректный номер телефона (например: +79991234567)').removeClass('d-none');   // Показываем ошибку
+            event.preventDefault();
+            return false;
+        } else {
+            $('#phone_number_error').hide();
+            
+            // Сохраняем очищенный номер в формате +79991234567
+            $('#id_phone_number').val(cleanedPhoneNumber);
+        }
+        
+        return true;
+    });
+});
+</script>
+{% endblock %}

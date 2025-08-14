@@ -1,0 +1,195 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+<title> {{ title }} </title>
+{% endblock title %}
+
+{% block content %}
+<link rel="stylesheet" href={% static "deps/css/my_css_forma_appoint.css" %}>
+
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="appointment-form">
+                <h2 class="form-header">Запишитесь на свободную дату</h2>
+                <form method="post" id="appointmentForm">
+                    {% csrf_token %}
+                    
+                    <!-- Поле для выбора даты -->
+                    <div class="mb-3">
+                        <label for="id_date" class="form-label">Дата</label>
+                        {{ form.date }}
+                        {% if form.date.errors %}
+                            <div class="invalid-feedback d-block">
+                                {{ form.date.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Поле для выбора времени -->
+                    <div class="mb-3">
+                        <label for="id_time" class="form-label">Время</label>
+                        {{ form.time }}
+                        {% if form.time.errors %}
+                            <div class="invalid-feedback d-block">
+                                {{ form.time.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Поле для имени -->
+                    <div class="mb-3">
+                        <label for="id_name" class="form-label">Ваше имя</label>
+                        {{ form.name }}
+                        {% if form.name.errors %}
+                            <div class="invalid-feedback d-block">
+                                {{ form.name.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Поле для телефона -->
+                    <div class="mb-3">
+                        <label for="id_phone" class="form-label">Телефон</label>
+                        {{ form.phone }}
+                        {% if form.phone.errors %}
+                            <div class="invalid-feedback d-block">
+                                {{ form.phone.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Поле для продукта -->
+                    <div class="mb-4">
+                        <label for="id_product" class="form-label">Услуга/Продукт</label>
+                        {{ form.product }}
+                        {% if form.product.errors %}
+                            <div class="invalid-feedback d-block">
+                                {{ form.product.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
+                    <!-- Поле для цвета -->
+                    <div class="mb-4">
+                        <label class="form-label">Цвет</label>
+                            <div class="color-options">
+                                {% for color in form.colors.field.queryset %}
+                                <label class="color-option">
+                                    <input type="checkbox" name="colors" value="{{ color.id }}" class="color-checkbox"{% if color.id in form.colors.value %}checked{% endif %}>
+                                    {% if color.image %}
+                                        <img src="{{ color.image.url }}" alt="{{ color.name }}" width="80" height="80" class="color-image">
+                                    {% else %}
+                                        <span class="color-name">{{ color.name }}</span>
+                                    {% endif %}
+                                </label>
+                                {% endfor %}
+                        </div>
+                        {% if form.colors.errors %}
+                            <div class="invalid-feedback d-block">
+                                {{ form.colors.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
+                    <!-- Поле комментария -->
+                    <div class="mb-4">
+                        <label for="id_comment" class="form-label">Комментарий</label>
+                        {{ form.comment }}
+                    </div>
+                    {% if make_appoint %}
+                        <button type="submit" class="btn btn-primary btn-submit">Записаться</button>
+                    {% else %}
+                        <button type="submit" class="btn btn-primary btn-submit" disabled>Записаться</button>
+                    {% endif %}
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+ <style>
+        /* Стили для выбора цветов */
+        .color-selector {
+            margin: 20px 0;
+            padding: 15px;
+            border-radius: 8px;
+        }
+        
+        .color-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 15px 0;
+        }
+        
+        .color-option {
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        
+        .color-checkbox {
+            display: none;
+        }
+        
+        .color-checkbox:checked + .color-image {
+            border: 10px solid #bd1818ff;
+            box-shadow: 0 0 8px rgba(0,0,0,0.3);
+        }
+        
+        .color-checkbox:checked + .color-name {
+            background: #000;
+            color: white;
+        }
+        
+        .color-image {
+            border-radius: 50%;
+            border: 1px solid #ddd;
+            transition: all 0.3s ease;
+        }
+        
+        .color-name {
+            display: inline-block;
+            padding: 5px 10px;
+            background: #f5f5f5;
+            border-radius: 15px;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-add-to-cart {
+            background: #000;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        .btn-add-to-cart:hover {
+            background: #333;
+        }
+</style>
+
+
+
+<script src={% static "deps/js/jquery/jquery-3.7.0.min.js" %}></script>
+<script>
+    // Добавьте отладку в JS (appointment.html):
+$("#id_date").change(function() {
+  console.log("Дата изменена, ID:", $(this).val()); // Проверьте, что событие срабатывает
+  $.ajax({
+    url: "{% url 'order:ajax_load_times' %}",
+    data: { 'date': $(this).val() },
+    success: function(data) {
+      console.log("Ответ сервера:", data); // Должны увидеть HTML
+      $("#id_time").html(data);
+    },
+    error: function(xhr) {
+      console.error("Ошибка AJAX:", xhr.responseText);
+    }
+  });
+});
+</script>
+{% endblock content %}

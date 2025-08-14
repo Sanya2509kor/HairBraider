@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% load static %}
+
+
+{% block title %}
+<title> {{ title }} </title>
+{% endblock title %}
+
+
+{% block content %}
+{% for review in my_reviews %}
+                <div class="col text-center">
+                    <div class="testimonial-card">
+                        <div class="d-flex align-items-center mb-3">
+                            {% if review.user.image %}
+                                <img src="{{ review.user.image.url }}" class="testimonial-img me-3" alt="Клиент">
+                            {% else %}
+                                <img src="{% static 'deps/images/bg-image.jpg' %}" class="testimonial-img me-3" alt="Клиент">
+                            {% endif %}
+                            <div>
+                                <h5 class="mb-0">{{ review.user.username }}</h5>
+                                <div class="text-warning">
+                                    <!-- Заполненные звёзды -->
+                                    {% for i in "12345"|make_list %}
+                                        {% if forloop.counter <= review.stars %}
+                                            <i class="fas fa-star"></i>
+                                        {% else %}
+                                            <i class="far fa-star"></i>
+                                        {% endif %}
+                                    {% endfor %}
+                        
+                                </div>
+                                
+                                {% if current_date < review.expiry_date  %}
+                                <a href="{% url 'reviews:edit_review' review.id %}" class="btn btn-primary">
+                                    Редактировать
+                                </a>
+                                {% endif %}
+                            </div>
+                        </div>
+                        {# Ограничение длины комментария #}
+                        {% if review.comment|length > 100 %}
+                            <p class="mb-0">{{ review.comment|truncatechars:100 }}</p>
+                            <a href="#" class="text-primary read-more" 
+                            data-bs-toggle="modal" 
+                            data-bs-target="#reviewModal{{ review.id }}">
+                                Читать полностью
+                            </a>
+                        {% else %}
+                            <p class="mb-0">{{ review.comment }}</p>
+                        {% endif %}
+                        <p class="mb-0">{{ review.created_at }}</p>
+                    </div>
+                </div>
+                {# Модальное окно для полного текста #}
+                {% if review.comment|length > 100 %}
+                <div class="modal fade" id="reviewModal{{ review.id }}" tabindex="-1" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                {% if review.user.image %}
+                                    <img src="{{ review.user.image.url }}" class="testimonial-img me-3" alt="Клиент">
+                                {% else %}
+                                    <img src="{% static 'deps/images/bg-image.jpg' %}" class="testimonial-img me-3" alt="Клиент">
+                                {% endif %}
+                                <h5 class="modal-title">Отзыв от {{ review.user.username }}</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body text-center">
+                                {{ review.comment }}
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-primary ms-lg-3" data-bs-dismiss="modal">Закрыть</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+            {% endfor %}
+{% endblock content %}

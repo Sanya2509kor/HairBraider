@@ -1,0 +1,93 @@
+
+.service-card {
+    border: none;
+    border-radius: 15px;
+    overflow: hidden;
+    transition: transform 0.3s;
+    margin-bottom: 20px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    background-color: #cce6cf;
+}
+
+.service-card .carousel {
+    position: relative;
+    overflow: hidden;
+    max-width: 100%;
+    height: 450px;
+    touch-action: pan-y;
+}
+
+.service-card .images {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    transition: transform 0.1s ease; /* Плавное перемещение */
+    will-change: transform; /* Оптимизация анимации */
+    
+}
+
+.service-card .images img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    flex-shrink: 0;
+}
+
+/* Стили для счетчика на мобильных */
+.service-card .mobile-counter {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: rgba(0, 0, 0, 0.5);
+    color: white;
+    padding: 3px 8px;
+    border-radius: 12px;
+    font-size: 14px;
+    z-index: 10;
+    display: none; /* По умолчанию скрыт */
+}
+
+.service-card .controls {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    display: flex;
+    gap: 10px;
+    z-index: 10;
+    background: rgba(255, 255, 255, 0.7);
+    padding: 5px 10px;
+    border-radius: 20px;
+}
+
+.service-card .controls button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 20px;
+    color: #333;
+}
+
+.service-card .current-image {
+    font-size: 14px;
+    color: #555;
+}
+
+
+
+/* Адаптивные стили */
+@media (max-width: 768px) {
+    .service-card .controls {
+        display: none; /* Скрываем кнопки на мобильных */
+    }
+    
+    .service-card .mobile-counter {
+        display: block; /* Показываем мобильный счетчик */
+    }
+    
+    .service-card .current-image {
+        display: none; /* Скрываем десктопный счетчик */
+    }
+}

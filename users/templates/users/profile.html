@@ -1,0 +1,246 @@
+{% extends "base.html" %}
+{% load static %}
+{% comment %} {% load carts_tags %} {% endcomment %}
+
+{% block title %}
+<title> {{ title }} </title>
+{% endblock title %}
+
+
+{% block content %}
+<link rel="stylesheet" href={% static "deps/css/profile_css.css" %}>
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-12 col-md-8 col-lg-6">
+            {% if current_app or future_app or past_app %}
+            <div class="profile-form">
+                {% if current_app %}
+                    <h3 class="text-center mb-4 form-header">Записи на сегодня</h3>
+                    {% for appointment in current_app %}
+                    <div class="col text-center">
+                        <div class="testimonial-card">
+                            <p class="mb-0">{{ appointment.date.date|date:"d E Y" }}</p>
+                            <p class="mb-0">{{ appointment.time.time|time:"H:i" }}</p>
+                            <p class="mb-0">{{ appointment.product }}</p>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% endif %}
+                {% if future_app %}
+                    <h3 class="text-center mb-4 form-header">Ближайшие записи</h3>
+                    {% for appointment in future_app %}
+                    <div class="col text-center">
+                        <div class="testimonial-card">
+                            <p class="mb-0">{{ appointment.date.date|date:"d E Y" }}</p>
+                            <p class="mb-0">{{ appointment.time.time|time:"H:i" }}</p>
+                            <p class="mb-0">{{ appointment.product }}</p>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% endif %}
+                {% if past_app %}
+                    <h3 class="text-center mb-4 form-header">Прошедшие записи</h3>
+                    {% for appointment in past_app %}
+                    <div class="col text-center">
+                        <div class="testimonial-card">
+                            <p class="mb-0">{{ appointment.date.date|date:"d E Y" }}</p>
+                            <p class="mb-0">{{ appointment.time.time|time:"H:i" }}</p>
+                            <p class="mb-0">{{ appointment.product }}</p>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% endif %}
+            </div>
+            {% else %}
+                <div class="profile-form">
+                <h3 class="text-center mb-4 form-header">Тут будут ваши записи!!!</h3>
+            {% endif %} 
+        </div>
+        
+        <div class="col-12 col-md-8 col-lg-6 mt-4 mt-md-5">
+            <div class="profile-form">
+                <h3 class="text-center mb-4 form-header">Профиль пользователя</h3>
+                <form action="{% url "users:profile" %}" method="post" enctype="multipart/form-data" id="profile_form">
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="col-md-12 mb-3 text-center">
+                            {% if user.image %}
+                                <img src="{{ user.image.url }}"
+                                    alt="Аватар пользователя" class="img-fluid rounded-circle"
+                                    style="max-width: 150px;">
+                            {% else %}
+                                <img src="{% static "deps/images/bg-image.jpg" %}"
+                                    alt="Аватар пользователя" class="img-fluid rounded-circle"
+                                    style="max-width: 150px;">
+                            {% endif %}
+                            <input type="file" class="form-control mt-3" id="id_image"
+                                name="image"
+                                accept="image/*">
+                                {% if form.image.errors %}
+                                    <div class="alert alert-danger alert-dismissible fade show">{{ form.image.errors }}</div>
+                                {% endif %}
+                        </div>
+                        <div class="col-md-12 mb-3">
+                            <label for="id_first_name" class="form-label">Имя*</label>
+                            <input type="text" class="form-control" id="id_first_name"
+                                name="first_name"
+                                placeholder="Введите ваше имя" 
+                                value="{{form.first_name.value}}"
+                                required
+                                {% if not user.edit_name %}
+                                    readonly
+                                    style="background-color: #f8f9fa; cursor: not-allowed;"
+                                {% endif %}
+                                >
+                                {% if not user.edit_name %}
+                                    <small class="form-text text-muted">
+                                        Имя нельзя изменить. Для изменения обратитесь в поддержку.
+                                    </small>
+                                {% endif %}
+                                {% if form.first_name.errors %}
+                                    <div class="alert alert-danger alert-dismissible fade show">{{ form.first_name.errors }}</div>
+                                {% endif %}
+                        </div>
+                        <div class="col-md-12 mb-3">
+                            <label for="id_username" class="form-label">Имя пользователя*</label>
+                            <input type="text" class="form-control" id="id_username"
+                                name="username"
+                                placeholder="Введите ваше имя пользователя" 
+                                value="{{form.username.value}}" 
+                                required
+                                {% if not user.edit_username %}
+                                    readonly
+                                    style="background-color: #f8f9fa; cursor: not-allowed;"
+                                {% endif %}
+                                >
+                                {% if not user.edit_username %}
+                                    <small class="form-text text-muted">
+                                        Имя пользователя нельзя изменить. Для изменения обратитесь в поддержку.
+                                    </small>
+                                {% endif %}
+                                {% if form.username.errors %}
+                                    <div class="alert alert-danger alert-dismissible fade show">{{ form.username.errors }}</div>
+                                {% endif %}
+                        </div>
+
+                        <div class="col-md-12 mb-3">
+                            <label for="id_username" class="form-label">Номер телефона*</label>
+                            <input type="text" class="form-control" id="id_phone_number"
+                                name="phone_number"
+                                maxlength="12"
+                                placeholder="+79123456789" 
+                                value="{{form.phone_number.value}}"
+                                readonly
+                                style="background-color: #f8f9fa; cursor: not-allowed;"       
+                            >
+                                {% if form.phone_number.value|slice:":3" == 'tg_' %}
+                                    <small class="form-text text-muted">
+                                        Нажмите на кнопку чтобы добавить номер телефона
+                                    </small>
+                                {% else %}
+                                    <small class="form-text text-muted">
+                                        Номер телефона нельзя изменить после регистрации. Для изменения обратитесь в поддержку.
+                                    </small>
+                                {% endif %}
+                                <div id="phone_number_error" class="alert alert-danger mt-2 d-none"></div>
+                                {% if form.phone_number.errors %}
+                                    <div class="alert alert-danger alert-dismissible fade show">{{ form.phone_number.errors }}</div>
+                                {% endif %}
+                        </div>
+
+                        <div class="col-md-12 mb-3">
+                            <label for="id_email" class="form-label">Email*</label>
+                            <input type="email" class="form-control" id="id_email"
+                                name="email"
+                                placeholder="Введите ваш email *youremail@example.com" 
+                                value="{{form.email.value}}"
+                                >
+                                <small class="form-text text-muted">
+                                    Для рассылки акций и предложений
+                                </small>
+                                {% if form.email.errors %}
+                                    <div class="alert alert-danger alert-dismissible fade show">{{ form.email.errors }}</div>
+                                {% endif %}
+                        </div>
+                        
+                        <button type="submit" class="btn btn-submit mt-5">Сохранить</button>
+                        {% if user.is_admin or user.is_staff %}
+                            <a class="btn btn-primary mt-5" href="{% url "admin:index" %}">Админ панель</a>
+                            <a class="btn btn-primary mt-5" href="{% url "order:list_orders_today" %}">Записи на сегодня</a>
+                            <a class="btn btn-primary mt-5" href="{% url "order:list_orders" %}">Ближайшие записи</a>
+                        {% endif %}
+                        <a href="{% url "user:logout" %}" class="btn btn-dark mt-5">Выход</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function() {
+    // Форматирование ввода номера телефона в реальном времени
+    $('#id_phone_number').on('input', function(e) {
+        // Удаляем все нецифровые символы, кроме возможного плюса в начале
+        var value = e.target.value.replace(/[^\d+]/g, '');
+        
+        // Если номер начинается не с +7 или 7 или 8, добавляем +7
+        if (!value.startsWith('+7') && !value.startsWith('7') && !value.startsWith('8')) {
+            value = '+7';
+        }
+        
+        // Форматируем номер: +7 999 198-72-64
+        var formatted = value
+            .replace(/^(\+?7|8)(\d{0,3})(\d{0,3})(\d{0,2})(\d{0,2})/, function(match, p1, p2, p3, p4, p5) {
+                let result = '+7';
+                if (p2) result += p2;
+                if (p3) result += p3;
+                if (p4) result += p4;
+                if (p5) result += p5;
+                return result;
+            });
+        
+        e.target.value = formatted;
+    });
+
+    // Валидация формы перед отправкой
+    $('#profile_form').on('submit', function(event) {
+        // Проверка номера телефона
+        var phoneNumber = $('#id_phone_number').val();
+        
+        // Регулярное выражение для российского номера:
+        // +7 или 7 или 8, затем 10 цифр
+        var regex = /^(\+7|7|8)\d{10}$/;
+        
+        // Очищаем номер для проверки (удаляем все, кроме цифр и +)
+        var cleanedPhoneNumber = phoneNumber.replace(/[^\d+]/g, '');
+        
+        // Если номер начинается с 8, заменяем на +7
+        if (cleanedPhoneNumber.startsWith('8')) {
+            cleanedPhoneNumber = '+7' + cleanedPhoneNumber.substring(1);
+        }
+        // Если номер начинается с 7 (без +), добавляем +
+        else if (cleanedPhoneNumber.startsWith('7') && !cleanedPhoneNumber.startsWith('+7')) {
+            cleanedPhoneNumber = '+' + cleanedPhoneNumber;
+        }
+        
+        if (!regex.test(cleanedPhoneNumber)) {
+            $('#phone_number_error').text('Введите корректный номер телефона (например: +79991234567)').removeClass('d-none'); // Показываем ошибку
+            event.preventDefault();
+            return false;
+        } else {
+            $('#phone_number_error').hide();
+            
+            // Сохраняем очищенный номер в формате +79991234567
+            $('#id_phone_number').val(cleanedPhoneNumber);
+        }
+        
+        return true;
+    });
+});
+</script>
+{% endblock %}

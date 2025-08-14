@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% load static %}
+
+
+{% block title %}
+    <title> {{ title }} </title>
+{% endblock title %}
+
+
+{% block content %}
+<section id="contact" class="py-5 bg-light">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4 mb-4 mb-lg-0">
+                    <h3 class="fw-bold mb-4">Контакты</h3>
+                    <div class="d-flex align-items-center mb-3">
+                        <i class="fas fa-map-marker-alt text-primary me-3"></i>
+                        <span> {{ adress }} </span>
+                    </div>
+                    <div class="d-flex align-items-center mb-3">
+                        <i class="fas fa-phone-alt text-primary me-3"></i>
+                        <span> {{ phone }} </span>
+                    </div>
+                    <div class="d-flex align-items-center mb-3">
+                        <i class="fas fa-envelope text-primary me-3"></i>
+                        <span>{{ mail }}</span>
+                    </div>
+                </div>
+                
+                <div class="col-lg-8">
+                    <div class="ratio ratio-16x9">
+<iframe src="https://www.google.com/maps/embed?pb=!1m21!1m12!1m3!1d458.692789479673!2d93.3200784486581!3d56.116629276939754!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!4m6!3e6!4m3!3m2!1d56.116648999999995!2d93.3196249!4m0!5e0!3m2!1sru!2sru!4v1754055735791!5m2!1sru!2sru" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>                </div>
+            </div>
+        </div>
+    </section>
+
+{% endblock content %}

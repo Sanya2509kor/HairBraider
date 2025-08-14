@@ -1,0 +1,5 @@
+
+<option value="">---------</option>
+{% for time in times %}
+<option value="{{ time.id }}">{{ time.time|time:"H:i" }}</option>
+{% endfor %}

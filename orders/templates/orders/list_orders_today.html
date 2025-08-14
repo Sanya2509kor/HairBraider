@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+<title>{{ title }}</title>
+{% endblock title %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="container mt-5">
+            <div class="row justify-content-center">
+                <div class="col-md-8">  <!-- Увеличил ширину для лучшего отображения -->
+                    <div class="profile-form">
+                        {% if orders %}
+                            <h3 class="text-center mb-4 form-header">Все записи на сегодня</h3>
+                            <div class="row">  <!-- Добавил row для сетки -->
+                                {% for order in orders %}
+                                <div class="col-md-6 mb-4">  <!-- Разметка в 2 колонки -->
+                                    <div class="testimonial-card p-3 shadow-sm rounded">
+                                        <h5 class="text-center mb-3">{{ order.name }}</h5>
+                                        <div class="order-details">
+                                            <p><strong>Телефон:</strong> {{ order.phone }}</p>  <!-- Исправил опечатку phome -> phone -->
+                                            <p><strong>Услуга:</strong> {{ order.product }}</p>
+                                            <p><strong>Дата:</strong> {{ order.date.date|date:"d E Y" }}</p>
+                                            <p><strong>Время:</strong> {{ order.time.time|time:"H:i" }}</p>
+                                            
+                                            {% if order.comment %}
+                                            <p><strong>Комментарий:</strong> {{ order.comment }}</p>
+                                            {% endif %}
+                                            
+                                            {% if order.colors.all %}
+                                            <div class="mt-3">
+                                                <strong>Цвета:</strong>
+                                                <div class="d-flex flex-wrap gap-2 mt-2">
+                                                    {% for color in order.colors.all %}
+                                                    <div class="color-preview">
+                                                        {% if color.image %}
+                                                            <img src="{{ color.image.url }}" 
+                                                                 alt="{{ color.name }}" 
+                                                                 class="img-thumbnail color-box" 
+                                                        
+                                                                 title="{{ color.name }}">
+                                                        {% else %}
+                                                            <div class="color-box" 
+                                                                 style="background-color: {{ color.hex_code|default:'#eee' }};"
+                                                                 title="{{ color.name }}"></div>
+                                                        {% endif %}
+                                                    </div>
+                                                    {% endfor %}
+                                                </div>
+                                            </div>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            <div class="alert alert-info text-center">
+                                У вас пока нет записей
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% if orders.has_other_pages %}
+        {% include "pagination.html" %}
+    {% endif %}
+</div>
+
+<style>
+    .color-box {
+        width: 70px;
+        height: 70px;
+        border-radius: 50%;
+        border: 1px solid #cc1414ff;
+        display: inline-block;
+    }
+    .testimonial-card {
+        background: #ffffffff;
+        transition: all 0.3s ease;
+    }
+    .testimonial-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+</style>
+{% endblock content %}

@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% load static %}
+
+
+
+{% block title %}
+    <title> {{ title }} </title>
+{% endblock title %}
+
+{% block content %}
+<section id="services" class="py-5">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="fw-bold"> {{ title_text }} </h2>
+            <p class="text-muted"> {{ text }} </p>
+        </div>
+        
+        <div class="row row-cols-1 row-cols-md-3 g-4 justify-content-center">
+            {% for product in goods %}
+                {% if product.show and product.image %}
+                    <a href="{{ product.slug }}" class="text-decoration-none">
+                        <div class="col">
+                            <div class="service-card">
+                                <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}">
+                                <div class="card-body text-center">
+                                    <h5 class="card-title"> {{ product.name }} </h5>
+                                    <p class="card-text"> {{ product.description }} </p>
+                                    <span class="price-badge">от {{ product.price }} ₽</span>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                {% endif %}
+            {% endfor %}
+        </div>
+        {% include "pagination.html" %}
+    </div>
+</section>
+{% endblock content %}
+

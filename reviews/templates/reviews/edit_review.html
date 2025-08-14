@@ -1,0 +1,143 @@
+{% extends "base.html" %}
+{% load static %}
+
+
+{% block title %}
+<title> {{ title }} </title>
+{% endblock title %}
+
+
+{% block content %}
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<link rel="stylesheet" href="{% static 'deps/css/my_css_forma_appoint.css' %}">
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="appointment-form">
+                <h2 class="form-header">Оставьте отзыв</h2>
+                <form method="post" id="reviewForm">
+                    {% csrf_token %}
+                    
+                    <!-- Поле рейтинга -->
+                    <div class="mb-4 text-center">
+                        <label class="form-label">Ваша оценка</label>
+                        <div class="rating-stars mb-3">
+                            {% for i in "12345" %}
+                                <i class="far fa-star star" data-value="{{ i }}"></i>
+                            {% endfor %}
+                            {{ form.stars }}  <!-- Скрытое поле для хранения значения -->
+                        </div>
+                    </div>
+                    
+                    <!-- Поле комментария -->
+                    <div class="mb-4">
+                        <label for="id_comment" class="form-label" value=" {{ comment }} ">Комментарий</label>
+                        {{ form.comment }}
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary btn-submit">Отправить отзыв</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .rating-stars {
+        font-size: 2rem;
+        color: #ddd;  /* Цвет незаполненных звёзд */
+        cursor: pointer;
+        margin: 10px 0;
+    }
+    .rating-stars .star {
+        margin: 0 5px;
+        transition: all 0.2s;
+    }
+    .rating-stars .fas {
+        color: #ffc107;  /* Цвет заполненных звёзд */
+    }
+    .rating-stars .star:hover {
+        transform: scale(1.2);
+    }
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const stars = document.querySelectorAll('.star');
+    const ratingInput = document.getElementById('id_stars');
+    
+    // Инициализация (если есть сохранённое значение)
+    if (ratingInput.value) {
+        highlightStars(ratingInput.value);
+    }
+    
+    stars.forEach(star => {
+        star.addEventListener('click', function() {
+            const value = this.getAttribute('data-value');
+            ratingInput.value = value;
+            highlightStars(value);
+        });
+        
+        star.addEventListener('mouseover', function() {
+            const hoverValue = this.getAttribute('data-value');
+            stars.forEach((s, index) => {
+                if (index < hoverValue) {
+                    s.classList.add('fas');
+                    s.classList.remove('far');
+                }
+            });
+        });
+        
+        star.addEventListener('mouseout', function() {
+            if (!ratingInput.value) return;
+            highlightStars(ratingInput.value);
+        });
+    });
+    
+    function highlightStars(count) {
+        stars.forEach((star, index) => {
+            if (index < count) {
+                star.classList.add('fas');
+                star.classList.remove('far');
+            } else {
+                star.classList.add('far');
+                star.classList.remove('fas');
+            }
+        });
+    }
+});
+</script>
+
+{% endblock content %}
+
+
+
+
+{% comment %} {% block content %}
+
+<link rel="stylesheet" href={% static "deps/css/my_css_forma_appoint.css" %}>
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="appointment-form">
+                <h2 class="form-header">Будем рады 5 звёздочкам</h2>
+                <form method="post" id="appointmentForm">
+                        {% csrf_token %}
+                    <!-- Поле комментария -->
+                    <div class="mb-4 text-center text-white">
+                        <label for="id_comment" class="form-label">Комментарий</label>
+                    </div>
+                    <div class="row form-header">
+                        {{ form.comment }}
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-submit">Отправить</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %} {% endcomment %}
