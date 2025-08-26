@@ -7,21 +7,22 @@
 
 {% block content %}
     <div class="gallery-container">
-        <div class="main-image-container"id="swipeContainer">
-            <img id="mainImage" src="{{ product.image.url }}" alt="{{ product.name }}" class="main-image">
+        <div class="main-image-container" id="swipeContainer">
+            <img id="mainImage" src="{{ product.image.url }}" alt="{{ product.name|escape }}" class="main-image">
         </div>
         
         <div class="thumbnails" id="thumbnailsContainer">
             <!-- Основное изображение как первый элемент -->
-            <img src="{{ product.image.url }}" class="thumbnail {% if all_images|length == 1 %}active{% endif %} but-prod" 
-                 onclick="changeImage(0)" alt="{{ product.name }}">
+            <img src="{{ product.image.url }}" class="thumbnail {% if not product.images.all %}active{% endif %} but-prod" 
+                 onclick="changeImage(0)" alt="{{ product.name|escape }}">
             
             <!-- Дополнительные изображения -->
             {% for image in product.images.all %}
                 <img src="{{ image.image.url }}" class="thumbnail but-prod" 
-                     onclick="changeImage({{ forloop.counter }})" alt="{{ image.description|default:product.name }}">
+                     onclick="changeImage({{ forloop.counter }})" alt="{{ image.description|default:product.name|escape }}">
             {% endfor %}
         </div>
+        
         {% if product.available_colors.all %}
         <div class="color-selector">
             <h5>Доступные цвета (можно выбрать несколько):</h5>
@@ -32,9 +33,9 @@
                     <label class="color-option">
                         <input type="checkbox" name="colors" value="{{ color.id }}" class="color-checkbox">
                         {% if color.image %}
-                            <img src="{{ color.image.url }}" alt="{{ color.name }}" width="100" height="100" class="color-image">
+                            <img src="{{ color.image.url }}" alt="{{ color.name|escape }}" width="100" height="100" class="color-image">
                         {% else %}
-                            <span class="color-name">{{ color.name }}</span>
+                            <span class="color-name">{{ color.name|escape }}</span>
                         {% endif %}
                     </label>
                     {% endfor %}
@@ -45,18 +46,20 @@
         {% endif %}
     </div>
 
-<section id="services" class="py-5">
-    <div class="container">
-        <div class="text-center mb-5">
-            <h1 class="fw-bold"> {{ product.name }} </h1>
-            <p class="text-muted"> {{ product.description }} </p>
-            <p> <span class="price-badge">от {{ product.price }} ₽</span></p>
-            <a href="{% url "order:appointment" %}?product_id={{ product.id }}" class="text-decoration-none">
-                <a href="#" id="appointmentLink" class="price-badge price-badge-two">Записаться</a>
-            </a>
+    <section id="services" class="py-5">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h1 class="fw-bold">{{ product.name|escape }}</h1>
+                <p class="text-muted">{{ product.description|escape }}</p>
+                <p><span class="price-badge">от {{ product.price }} ₽</span></p>
+                <a href="{% url 'order:appointment' %}?product_id={{ product.id }}" 
+                   id="appointmentLink" 
+                   class="text-decoration-none price-badge price-badge-two">
+                   Записаться
+                </a>
+            </div>
         </div>
-    </div>
-</section>
+    </section>
 
  <style>
         /* Стили для выбора цветов */
@@ -123,17 +126,6 @@
 </style>
 
 <script>
-    // Обработчик формы (можно добавить AJAX)
-        document.getElementById('colorForm').addEventListener('submit', function(e) {
-            const selectedColors = document.querySelectorAll('.color-checkbox:checked');
-            if (selectedColors.length === 0) {
-                e.preventDefault();
-                alert('Пожалуйста, выберите хотя бы один цвет');
-            }
-            // Можно добавить здесь AJAX-отправку формы
-        });
-
-        // Ваш существующий JavaScript для галереи остается без изменений
         // Собираем все URL изображений в массив
         const images = [
             "{{ product.image.url }}",  // Основное изображение
@@ -145,13 +137,19 @@
         let currentIndex = 0;
         const mainImage = document.getElementById('mainImage');
         const thumbnails = document.querySelectorAll('.thumbnail');
+        const swipeContainer = document.getElementById('swipeContainer');
         
         function updateGallery() {
-            mainImage.src = images[currentIndex];
+            mainImage.classList.add('flip');
+        
+            setTimeout(() => {
+                mainImage.src = images[currentIndex];
+                mainImage.classList.remove('flip');
             
-            thumbnails.forEach((thumb, index) => {
-                thumb.classList.toggle('active', index === currentIndex);
-            });
+                thumbnails.forEach((thumb, index) => {
+                    thumb.classList.toggle('active', index === currentIndex);
+                });
+            }, 450); // Половина от времени анимации
         }
         
         function changeImage(index) {
@@ -175,64 +173,68 @@
             if (e.key === 'ArrowLeft') prevImage();
         });
 
-        let touchStartX = 0;
-        let touchEndX = 0;
-    
-        swipeContainer.addEventListener('touchstart', (e) => {
-            touchStartX = e.changedTouches[0].screenX;
-        }, {passive: true});
-    
-        swipeContainer.addEventListener('touchend', (e) => {
-            touchEndX = e.changedTouches[0].screenX;
-            handleSwipe();
-        }, {passive: true});
-    
-        function handleSwipe() {
-            const swipeThreshold = 50; // Минимальная дистанция свайпа
+        // Обработчики для свайпа на мобильных устройствах
+        if (swipeContainer) {
+            let touchStartX = 0;
+            let touchEndX = 0;
         
-            if (touchStartX - touchEndX > swipeThreshold) {
-            // Свайп влево = следующее изображение
-                nextImage();
-            } else if (touchEndX - touchStartX > swipeThreshold) {
-                // Свайп вправо = предыдущее изображение
-                prevImage();
+            swipeContainer.addEventListener('touchstart', (e) => {
+                touchStartX = e.changedTouches[0].screenX;
+            }, {passive: true});
+        
+            swipeContainer.addEventListener('touchend', (e) => {
+                touchEndX = e.changedTouches[0].screenX;
+                handleSwipe();
+            }, {passive: true});
+        
+            function handleSwipe() {
+                const swipeThreshold = 50; // Минимальная дистанция свайпа
+            
+                if (touchStartX - touchEndX > swipeThreshold) {
+                    // Свайп влево = следующее изображение
+                    nextImage();
+                } else if (touchEndX - touchStartX > swipeThreshold) {
+                    // Свайп вправо = предыдущее изображение
+                    prevImage();
+                }
             }
         }
 
-        function updateGallery() {
-        mainImage.classList.add('flip');
-    
-        setTimeout(() => {
-            mainImage.src = images[currentIndex];
-            mainImage.classList.remove('flip');
-        
-            thumbnails.forEach((thumb, index) => {
-                thumb.classList.toggle('active', index === currentIndex);
+        // Обработчик формы выбора цветов
+        const colorForm = document.getElementById('colorForm');
+        if (colorForm) {
+            colorForm.addEventListener('submit', function(e) {
+                const selectedColors = document.querySelectorAll('.color-checkbox:checked');
+                if (selectedColors.length === 0) {
+                    e.preventDefault();
+                    alert('Пожалуйста, выберите хотя бы один цвет');
+                }
             });
-        }, 500); // Половина от времени анимации (0.7s)
         }
-        
+
+        // Обработчик для кнопки записи
+        const appointmentLink = document.getElementById('appointmentLink');
+        if (appointmentLink) {
+            appointmentLink.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                // Получаем выбранные цвета
+                const selectedColors = Array.from(document.querySelectorAll('.color-checkbox:checked'))
+                                        .map(checkbox => checkbox.value);
+                
+                // Формируем URL с GET-параметрами
+                const baseUrl = this.href.split('?')[0];
+                const params = new URLSearchParams();
+                params.append('product_id', '{{ product.id }}');
+                selectedColors.forEach(color => params.append('colors', color));
+                
+                // Перенаправляем с параметрами
+                window.location.href = `${baseUrl}?${params.toString()}`;
+            });
+        }
+
         // Инициализация галереи
         updateGallery();
-</script>
-<script>
-document.getElementById('appointmentLink').addEventListener('click', function(e) {
-    e.preventDefault();
-    
-    // Получаем выбранные цвета
-    const selectedColors = Array.from(document.querySelectorAll('.color-checkbox:checked'))
-                              .map(checkbox => checkbox.value);
-    
-    
-    // Формируем URL с GET-параметрами
-    const baseUrl = "{% url 'order:appointment' %}";
-    const params = new URLSearchParams();
-    params.append('product_id', '{{ product.id }}');
-    selectedColors.forEach(color => params.append('colors', color));
-    
-    // Перенаправляем с параметрами
-    window.location.href = `${baseUrl}?${params.toString()}`;
-});
-</script>
+    </script>
 {% endblock content %}
 

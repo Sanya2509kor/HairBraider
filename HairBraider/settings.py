@@ -48,6 +48,8 @@ INSTALLED_APPS = [
     'django_telegram_login',
     # для авторизации через телеграм
     'corsheaders',
+    # captcha
+    'captcha',
     
 ]
 
@@ -90,27 +92,27 @@ WSGI_APPLICATION = 'HairBraider.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / 'db.sqlite3',
-#     }
-# }
-
-
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'cr96562_vika',
-        'USER': 'cr96562_vika',
-        'PASSWORD': '89526136205Sa',
-        'HOST': '127.0.0.1',
-        'PORT': 3306,
-        'OPTIONS': {
-            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
-        },
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': 'cr96562_vika',
+#         'USER': 'cr96562_vika',
+#         'PASSWORD': '89526136205Sa',
+#         'HOST': '127.0.0.1',
+#         'PORT': 3306,
+#         'OPTIONS': {
+#             'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
+#         },
+#     }
+# }
 
 
 # Password validation
@@ -149,7 +151,7 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
-# STATICFILES_DIRS = [BASE_DIR / 'static/']  # Папка, где лежат CSS/JS/изображения
+STATICFILES_DIRS = [BASE_DIR / 'staticfiles/']  # Папка, где лежат CSS/JS/изображения
 
 STATIC_ROOT = BASE_DIR / 'static/'
 
@@ -196,3 +198,12 @@ CORS_ALLOWED_ORIGINS = [
 
 # YANDEX_CAPTCHA_PUBLIC_KEY = 'ysc1_jsQ0rk3kAUC3HVkh9j5PwHeHLiykKYa8pIi9EmIX448f6251'
 # YANDEX_CAPTCHA_PRIVATE_KEY = 'ysc2_jsQ0rk3kAUC3HVkh9j5PCe9gqzLaVunauUT0VGzF14ee453a'
+
+
+# Опциональные настройки (добавьте в конец settings.py)
+CAPTCHA_CHALLENGE_FUNCT = 'captcha.helpers.math_challenge'  # математическая капча
+CAPTCHA_FONT_SIZE = 30  # размер шрифта
+CAPTCHA_LETTER_ROTATION = (-25, 25)  # вращение символов
+CAPTCHA_TIMEOUT = 5  # время жизни капчи в минутах
+
+GOOGLE_RECAPTCHA_SECRET_KEY = '6LcjhJ0rAAAAAGOx4MDh-jPV136ryfGJDFfeCmqC'

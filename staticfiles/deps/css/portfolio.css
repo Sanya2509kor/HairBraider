@@ -1,4 +1,3 @@
-
 .service-card {
     border: none;
     border-radius: 15px;
@@ -15,6 +14,7 @@
     max-width: 100%;
     height: 450px;
     touch-action: pan-y;
+    -webkit-overflow-scrolling: touch; /* Плавный скролл на iOS */
 }
 
 .service-card .images {
@@ -24,9 +24,8 @@
     width: 100%;
     height: 100%;
     display: flex;
-    transition: transform 0.1s ease; /* Плавное перемещение */
-    will-change: transform; /* Оптимизация анимации */
-    
+    transition: transform 0.3s ease;
+    will-change: transform;
 }
 
 .service-card .images img {
@@ -34,6 +33,13 @@
     height: 100%;
     object-fit: cover;
     flex-shrink: 0;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    -webkit-touch-callout: none;
+    -webkit-tap-highlight-color: transparent;
+    pointer-events: none; /* Предотвращает случайные клики при скролле */
 }
 
 /* Стили для счетчика на мобильных */
@@ -47,7 +53,7 @@
     border-radius: 12px;
     font-size: 14px;
     z-index: 10;
-    display: none; /* По умолчанию скрыт */
+    display: none;
 }
 
 .service-card .controls {
@@ -75,19 +81,47 @@
     color: #555;
 }
 
-
+/* Предотвращение шатания при скролле */
+.service-card {
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    perspective: 1000px;
+}
 
 /* Адаптивные стили */
 @media (max-width: 768px) {
+    .service-card .carousel {
+        height: 350px; /* Уменьшаем высоту для мобильных */
+    }
+    
     .service-card .controls {
-        display: none; /* Скрываем кнопки на мобильных */
+        display: none;
     }
     
     .service-card .mobile-counter {
-        display: block; /* Показываем мобильный счетчик */
+        display: block;
     }
     
     .service-card .current-image {
-        display: none; /* Скрываем десктопный счетчик */
+        display: none;
     }
+    
+    /* Улучшение для touch-устройств */
+    .service-card .images {
+        -webkit-overflow-scrolling: touch;
+    }
+    
+    .service-card .images img {
+        pointer-events: auto; /* Включаем события для кликов */
+    }
+}
+
+/* Дополнительные улучшения для предотвращения шатания */
+html, body {
+    overflow-x: hidden;
+}
+
+.service-card {
+    transform: translate3d(0, 0, 0);
 }

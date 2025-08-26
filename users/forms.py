@@ -18,9 +18,14 @@ class UserLoginForm(AuthenticationForm):
     )
 
 
+    class Meta:
+        model = User
+        fields = ['username', 'password',]
+
+
 class UserRegistrationForm(UserCreationForm):
 
-    USERNAME_LIST = ['BraidsQueen', 'TwistyGirl', 'KnotsPro', 'BraidArtist']
+    USERNAME_LIST = ['лисица', 'зачик', 'ктото', 'новый ник']
     
     first_name = forms.CharField(
         label='Имя',
@@ -38,7 +43,7 @@ class UserRegistrationForm(UserCreationForm):
 
     class Meta:
         model = User
-        fields = ['first_name', 'phone_number', 'password1', 'password2']
+        fields = ['first_name', 'phone_number', 'password1', 'password2',]
         widgets = {
             'first_name': forms.TextInput(attrs={'class': 'form-control'}),
             'phone_number': forms.TextInput(attrs={'class': 'form-control'}),
@@ -57,15 +62,6 @@ class UserRegistrationForm(UserCreationForm):
             if not User.objects.filter(username=username):
                 self.instance.username = username
                 break
-        # Находим первое свободное имя из списка
-        # for username in self.USERNAME_LIST:
-        #     if not User.objects.filter(username=username).exists():
-        #         self.instance.username = username
-        #         break
-        # else:
-        #     # Если все имена заняты, генерируем случайное
-        #     self.instance.username = f"user{User.objects.count() + 1}"
-        
         return super().save(commit)
 
 

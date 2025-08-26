@@ -45,6 +45,13 @@ class UserLoginView(LoginView):
         # session_key = self.request.session.session_key
         user = form.get_user()
 
+        # Проверяем капчу
+        if not self.request.recaptcha_is_valid:
+            # Добавляем ошибку в форму
+            form.add_error(None, 'Ошибка проверки captcha. Подтвердите, что вы не робот.')
+            # Возвращаем рендер страницы с формой и ошибками
+            return self.render_to_response(self.get_context_data(form=form))
+
         if user:
             auth.login(self.request, user)
             # if session_key:
@@ -58,7 +65,7 @@ class UserLoginView(LoginView):
         
 
     def form_invalid(self, form):
-        messages.error(self.request, "Неверный номер телефона или пароль")
+        messages.success(self.request, "Неверный номер телефона или пароль")
         return super().form_invalid(form)    
     
         
@@ -133,6 +140,13 @@ class UserRegistrationView(CreateView):
     def form_valid(self, form):
         # session_key = self.request.session.session_key
         user = form.instance
+
+        # Проверяем капчу
+        if not self.request.recaptcha_is_valid:
+            # Добавляем ошибку в форму
+            form.add_error(None, 'Ошибка проверки captcha. Подтвердите, что вы не робот.')
+            # Возвращаем рендер страницы с формой и ошибками
+            return self.render_to_response(self.get_context_data(form=form))
         
         if user:
             form.save()

@@ -6,7 +6,9 @@ function initializeCarousels() {
         const images = carousel.querySelectorAll('.images img');
         let currentIndex = 0;
         let startX = 0;
+        let startY = 0;
         let isDragging = false;
+        let isHorizontalDrag = false;
         let animationFrameId = null;
         let startTime = null;
         const animationDuration = 200;
@@ -67,37 +69,53 @@ function initializeCarousels() {
             animateTransition(newIndex);
         });
         
+        // Обработчики для touch событий
         carousel.addEventListener('touchstart', handleTouchStart, {passive: true});
         carousel.addEventListener('touchmove', handleTouchMove, {passive: false});
         carousel.addEventListener('touchend', handleTouchEnd);
+        carousel.addEventListener('touchcancel', handleTouchEnd);
         
         function handleTouchStart(e) {
             if (animationFrameId) return;
             startX = e.touches[0].clientX;
+            startY = e.touches[0].clientY;
             isDragging = true;
+            isHorizontalDrag = false;
             imagesContainer.style.transition = 'none';
         }
         
         function handleTouchMove(e) {
             if (!isDragging) return;
-            e.preventDefault();
             
             const x = e.touches[0].clientX;
-            const diff = x - startX;
+            const y = e.touches[0].clientY;
+            const diffX = x - startX;
+            const diffY = y - startY;
             
-            const offset = -currentIndex * 100 + (diff / carousel.offsetWidth) * 100;
-            imagesContainer.style.transform = `translateX(${offset}%)`;
+            // Определяем, горизонтальное это движение или вертикальное
+            if (!isHorizontalDrag && Math.abs(diffX) > Math.abs(diffY)) {
+                isHorizontalDrag = true;
+                e.preventDefault(); // Предотвращаем скролл только для горизонтальных движений
+            }
+            
+            if (isHorizontalDrag) {
+                e.preventDefault();
+                const offset = -currentIndex * 100 + (diffX / carousel.offsetWidth) * 100;
+                imagesContainer.style.transform = `translateX(${offset}%)`;
+            }
         }
         
         function handleTouchEnd(e) {
             if (!isDragging) return;
             isDragging = false;
             
-            imagesContainer.style.transition = 'transform 0.5s ease';
+            if (!isHorizontalDrag) return; // Если движение было вертикальным, игнорируем
+            
+            imagesContainer.style.transition = 'transform 0.3s ease';
             
             const endX = e.changedTouches[0].clientX;
             const diff = endX - startX;
-            const threshold = carousel.offsetWidth * 0.2;
+            const threshold = carousel.offsetWidth * 0.15; // Уменьшил порог для более чувствительного перелистывания
             
             let newIndex = currentIndex;
             if (diff > threshold && currentIndex > 0) {
@@ -113,7 +131,6 @@ function initializeCarousels() {
     });
 }
 
-
 function initializeModal() {
     document.querySelectorAll('.clickable-image').forEach(img => {
         img.addEventListener('click', function() {
@@ -123,7 +140,18 @@ function initializeModal() {
     });
 }
 
+// Предотвращение скролла страницы при взаимодействии с каруселью
 document.addEventListener('DOMContentLoaded', function() {
     initializeCarousels();
     initializeModal();
+    
+    // Добавляем обработчик для предотвращения скролла при touch на карусели
+    document.querySelectorAll('.carousel').forEach(carousel => {
+        carousel.addEventListener('touchmove', function(e) {
+            // Если это горизонтальное движение внутри карусели, предотвращаем скролл страницы
+            if (e.touches.length === 1 && Math.abs(e.touches[0].clientX - startX) > Math.abs(e.touches[0].clientY - startY)) {
+                e.preventDefault();
+            }
+        }, { passive: false });
+    });
 });

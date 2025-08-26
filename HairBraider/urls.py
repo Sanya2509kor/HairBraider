@@ -23,6 +23,7 @@ from HairBraider import settings
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('main.urls', namespace='main')),
+    path('captcha/', include('captcha.urls')),  # добавляем эту строку
     path('reviews/', include('reviews.urls', namespace='reviews')),
     path('user/', include('users.urls', namespace='user')),
     path('order/', include('orders.urls', namespace='order')),
