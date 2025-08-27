@@ -2,239 +2,569 @@
 {% load static %}
 
 {% block title %}
-<title> {{ title }} </title>
+<title>{{ title }}</title>
 {% endblock title %}
 
 {% block content %}
-    <div class="gallery-container">
-        <div class="main-image-container" id="swipeContainer">
-            <img id="mainImage" src="{{ product.image.url }}" alt="{{ product.name|escape }}" class="main-image">
-        </div>
-        
-        <div class="thumbnails" id="thumbnailsContainer">
-            <!-- Основное изображение как первый элемент -->
-            <img src="{{ product.image.url }}" class="thumbnail {% if not product.images.all %}active{% endif %} but-prod" 
-                 onclick="changeImage(0)" alt="{{ product.name|escape }}">
-            
-            <!-- Дополнительные изображения -->
-            {% for image in product.images.all %}
-                <img src="{{ image.image.url }}" class="thumbnail but-prod" 
-                     onclick="changeImage({{ forloop.counter }})" alt="{{ image.description|default:product.name|escape }}">
-            {% endfor %}
-        </div>
-        
-        {% if product.available_colors.all %}
-        <div class="color-selector">
-            <h5>Доступные цвета (можно выбрать несколько):</h5>
-            <form method="post" id="colorForm">
-                {% csrf_token %}
-                <div class="color-options">
-                    {% for color in product.available_colors.all %}
-                    <label class="color-option">
-                        <input type="checkbox" name="colors" value="{{ color.id }}" class="color-checkbox">
-                        {% if color.image %}
-                            <img src="{{ color.image.url }}" alt="{{ color.name|escape }}" width="100" height="100" class="color-image">
-                        {% else %}
-                            <span class="color-name">{{ color.name|escape }}</span>
-                        {% endif %}
-                    </label>
-                    {% endfor %}
-                </div>
-                <input type="hidden" name="product_id" value="{{ product.id }}">
-            </form>
-        </div>
-        {% endif %}
-    </div>
+<div class="product-page">
+    <div class="container">
+        {% comment %} <!-- Хлебные крошки -->
+        <nav class="breadcrumb-nav mb-4">
+            <a href="{% url 'main:index' %}">Главная</a>
+            <span class="breadcrumb-separator">/</span>
+            <a href="{% url 'main:index' %}#services">Услуги</a>
+            <span class="breadcrumb-separator">/</span>
+            <span class="current">{{ product.name|escape }}</span>
+        </nav> {% endcomment %}
 
-    <section id="services" class="py-5">
-        <div class="container">
-            <div class="text-center mb-5">
-                <h1 class="fw-bold">{{ product.name|escape }}</h1>
-                <p class="text-muted">{{ product.description|escape }}</p>
-                <p><span class="price-badge">от {{ product.price }} ₽</span></p>
-                <a href="{% url 'order:appointment' %}?product_id={{ product.id }}" 
-                   id="appointmentLink" 
-                   class="text-decoration-none price-badge price-badge-two">
-                   Записаться
-                </a>
+        <div class="row">
+            <!-- Галерея изображений -->
+            <div class="col-lg-6 mb-4">
+                <div class="product-gallery">
+                    <div class="main-image-container" id="swipeContainer">
+                        <img id="mainImage" src="{{ product.image.url }}" alt="{{ product.name|escape }}" 
+                             class="main-image rounded-3 shadow">
+                        <button class="gallery-nav-btn prev-btn" onclick="prevImage()">
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
+                        <button class="gallery-nav-btn next-btn" onclick="nextImage()">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+                    
+                    <div class="thumbnails" id="thumbnailsContainer">
+                        <!-- Основное изображение -->
+                        <div class="thumbnail-wrapper {% if not product.images.all %}active{% endif %}">
+                            <img src="{{ product.image.url }}" class="thumbnail" 
+                                 onclick="changeImage(0)" alt="{{ product.name|escape }}">
+                        </div>
+                        
+                        <!-- Дополнительные изображения -->
+                        {% for image in product.images.all %}
+                        <div class="thumbnail-wrapper">
+                            <img src="{{ image.image.url }}" class="thumbnail" 
+                                 onclick="changeImage({{ forloop.counter }})" 
+                                 alt="{{ image.description|default:product.name|escape }}">
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Информация о продукте -->
+            <div class="col-lg-6">
+                <div class="product-info">
+                    <h1 class="product-title mb-3">{{ product.name|escape }}</h1>
+                    <p class="product-description text-muted mb-4">{{ product.description|escape }}</p>
+                    
+                    <div class="price-section mb-4">
+                        <span class="price-badge">от {{ product.price }} ₽</span>
+                        {% if product.old_price %}
+                        <span class="old-price text-muted ms-2">{{ product.old_price }} ₽</span>
+                        {% endif %}
+                    </div>
+
+                    <!-- Выбор цветов -->
+                    {% if product.available_colors.all %}
+                    <div class="color-section mb-4">
+                        <h5 class="mb-3">Доступные цвета:</h5>
+                        <div class="color-options">
+                            {% for color in product.available_colors.all %}
+                            <label class="color-option">
+                                <input type="checkbox" name="colors" value="{{ color.id }}" class="color-checkbox">
+                                {% if color.image %}
+                                    <img src="{{ color.image.url }}" alt="{{ color.name|escape }}" 
+                                         class="color-image rounded-2">
+                                {% else %}
+                                    <span class="color-name">{{ color.name|escape }}</span>
+                                {% endif %}
+                            </label>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <!-- Кнопка записи -->
+                    <div class="booking-section">
+                        <a href="{% url 'order:appointment' %}?product_id={{ product.id }}" 
+                           id="appointmentLink" 
+                           class="btn btn-primary btn-lg w-100 rounded-pill booking-btn">
+                           <i class="fas fa-calendar-check me-2"></i>Записаться онлайн
+                        </a>
+                        <p class="text-muted text-center mt-2 small">
+                            <i class="fas fa-clock me-1"></i>Запись подтверждается в течение 15 минут
+                        </p>
+                    </div>
+
+                    <!-- Дополнительная информация -->
+                    <div class="product-features mt-4">
+                        <div class="feature-item">
+                            <i class="fas fa-clock feature-icon"></i>
+                            <span>Время выполнения: {{ product.make_time|default:"1-2 часа" }}</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-check-circle feature-icon"></i>
+                            <span>Гарантия качества</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-star feature-icon"></i>
+                            <span>Бесплатная консультация</span>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-    </section>
+    </div>
+</div>
 
- <style>
-        /* Стили для выбора цветов */
-        .color-selector {
-            margin: 20px 0;
-            padding: 15px;
-            border-radius: 8px;
+<style>
+    .product-page {
+        padding: 2rem 0;
+        background: linear-gradient(135deg, #FFF5EE 0%, #F8F6FF 100%);
+        min-height: 100vh;
+    }
+
+    .breadcrumb-nav {
+        font-size: 0.9rem;
+        color: #6B7280;
+    }
+
+    .breadcrumb-nav a {
+        color: var(--primary-color);
+        text-decoration: none;
+    }
+
+    .breadcrumb-nav a:hover {
+        text-decoration: underline;
+    }
+
+    .breadcrumb-separator {
+        margin: 0 0.5rem;
+    }
+
+    /* Галерея */
+    .product-gallery {
+        position: relative;
+    }
+
+    .main-image-container {
+        position: relative;
+        border-radius: 20px;
+        overflow: hidden;
+        margin-bottom: 1.5rem;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+    }
+
+    .main-image {
+        width: 100%;
+        height: 400px;
+        object-fit: cover;
+        transition: transform 0.3s ease;
+    }
+
+    .main-image:hover {
+        transform: scale(1.02);
+    }
+
+    .gallery-nav-btn {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 50px;
+        height: 50px;
+        border: none;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.9);
+        color: var(--primary-color);
+        font-size: 1.2rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .prev-btn {
+        left: 20px;
+    }
+
+    .next-btn {
+        right: 20px;
+    }
+
+    .main-image-container:hover .gallery-nav-btn {
+        opacity: 1;
+    }
+
+    .thumbnails {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .thumbnail-wrapper {
+        border: 3px solid transparent;
+        border-radius: 12px;
+        padding: 3px;
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+
+    .thumbnail-wrapper.active,
+    .thumbnail-wrapper:hover {
+        border-color: var(--primary-color);
+        transform: translateY(-2px);
+    }
+
+    .thumbnail {
+        width: 70px;
+        height: 70px;
+        object-fit: cover;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+    }
+
+    /* Информация о продукте */
+    .product-title {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: var(--dark-color);
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .product-description {
+        font-size: 1.1rem;
+        line-height: 1.6;
+    }
+
+    .price-section {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .price-badge {
+        background: var(--gradient-primary);
+        color: white;
+        padding: 0.75rem 1.5rem;
+        border-radius: 25px;
+        font-weight: 700;
+        font-size: 1.5rem;
+        box-shadow: 0 4px 15px rgba(138, 43, 226, 0.3);
+    }
+
+    .old-price {
+        text-decoration: line-through;
+        font-size: 1.2rem;
+    }
+
+    /* Выбор цветов */
+    .color-section h5 {
+        font-weight: 600;
+        color: var(--dark-color);
+    }
+
+    .color-options {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+    }
+
+    .color-option {
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .color-checkbox {
+        display: none;
+    }
+
+    .color-checkbox:checked + .color-image,
+    .color-checkbox:checked ~ .color-name {
+        border: 3px solid var(--primary-color);
+        transform: scale(1.1);
+        box-shadow: 0 4px 15px rgba(138, 43, 226, 0.3);
+    }
+
+    .color-image {
+        width: 60px;
+        height: 60px;
+        object-fit: cover;
+        border-radius: 12px;
+        border: 2px solid #e5e7eb;
+        transition: all 0.3s ease;
+    }
+
+    .color-name {
+        display: inline-block;
+        padding: 0.5rem 1rem;
+        background: #f8f9fa;
+        border: 2px solid #e5e7eb;
+        border-radius: 20px;
+        transition: all 0.3s ease;
+        font-size: 0.9rem;
+    }
+
+    /* Кнопка записи */
+    .booking-btn {
+        padding: 1rem 2rem;
+        font-size: 1.2rem;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+
+    .booking-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(138, 43, 226, 0.4);
+    }
+
+    /* Особенности */
+    .product-features {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 15px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    }
+
+    .feature-item {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 1rem;
+        color: var(--dark-color);
+    }
+
+    .feature-item:last-child {
+        margin-bottom: 0;
+    }
+
+    .feature-icon {
+        color: var(--primary-color);
+        font-size: 1.2rem;
+        width: 24px;
+    }
+
+    /* Адаптация для мобильных */
+    @media (max-width: 991.98px) {
+        .product-title {
+            font-size: 2rem;
+        }
+        
+        .main-image {
+            height: 350px;
+        }
+        
+        .gallery-nav-btn {
+            opacity: 1;
+            width: 40px;
+            height: 40px;
+            font-size: 1rem;
+        }
+    }
+
+    @media (max-width: 767.98px) {
+        .product-page {
+            padding: 1rem 0;
+        }
+        
+        .product-title {
+            font-size: 1.75rem;
+            text-align: center;
+        }
+        
+        .product-description {
+            text-align: center;
+        }
+        
+        .price-section {
+            justify-content: center;
+        }
+        
+        .main-image {
+            height: 300px;
+        }
+        
+        .thumbnail {
+            width: 60px;
+            height: 60px;
         }
         
         .color-options {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin: 15px 0;
+            justify-content: center;
         }
         
-        .color-option {
-            cursor: pointer;
-            text-align: center;
-            transition: all 0.3s ease;
+        .booking-btn {
+            font-size: 1.1rem;
+            padding: 0.875rem 1.5rem;
+        }
+    }
+
+    @media (max-width: 575.98px) {
+        .product-title {
+            font-size: 1.5rem;
         }
         
-        .color-checkbox {
-            display: none;
+        .price-badge {
+            font-size: 1.25rem;
+            padding: 0.5rem 1rem;
         }
         
-        .color-checkbox:checked + .color-image {
-            border: 10px solid #bd1818ff;
-            box-shadow: 0 0 8px rgba(0,0,0,0.3);
+        .main-image {
+            height: 250px;
         }
         
-        .color-checkbox:checked + .color-name {
-            background: #000;
-            color: white;
+        .thumbnail {
+            width: 50px;
+            height: 50px;
         }
         
         .color-image {
-            border-radius: 50%;
-            border: 1px solid #ddd;
-            transition: all 0.3s ease;
+            width: 50px;
+            height: 50px;
         }
         
-        .color-name {
-            display: inline-block;
-            padding: 5px 10px;
-            background: #f5f5f5;
-            border-radius: 15px;
-            transition: all 0.3s ease;
+        .feature-item {
+            font-size: 0.9rem;
         }
-        
-        .btn-add-to-cart {
-            background: #000;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background 0.3s;
+    }
+
+    /* Анимации */
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
         }
-        
-        .btn-add-to-cart:hover {
-            background: #333;
+        to {
+            opacity: 1;
+            transform: translateY(0);
         }
+    }
+
+    .product-info {
+        animation: fadeIn 0.6s ease;
+    }
+
+    .product-gallery {
+        animation: fadeIn 0.6s ease 0.1s both;
+    }
 </style>
 
 <script>
-        // Собираем все URL изображений в массив
-        const images = [
-            "{{ product.image.url }}",  // Основное изображение
-            {% for image in product.images.all %}
-                "{{ image.image.url }}",
-            {% endfor %}
-        ];
-        
-        let currentIndex = 0;
-        const mainImage = document.getElementById('mainImage');
-        const thumbnails = document.querySelectorAll('.thumbnail');
-        const swipeContainer = document.getElementById('swipeContainer');
-        
-        function updateGallery() {
-            mainImage.classList.add('flip');
-        
-            setTimeout(() => {
-                mainImage.src = images[currentIndex];
-                mainImage.classList.remove('flip');
-            
-                thumbnails.forEach((thumb, index) => {
-                    thumb.classList.toggle('active', index === currentIndex);
-                });
-            }, 450); // Половина от времени анимации
-        }
-        
-        function changeImage(index) {
-            currentIndex = index;
-            updateGallery();
-        }
-        
-        function nextImage() {
-            currentIndex = (currentIndex + 1) % images.length;
-            updateGallery();
-        }
-        
-        function prevImage() {
-            currentIndex = (currentIndex - 1 + images.length) % images.length;
-            updateGallery();
-        }
-        
-        // Добавляем обработчик клавиатуры
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'ArrowRight') nextImage();
-            if (e.key === 'ArrowLeft') prevImage();
-        });
+    // Собираем все URL изображений в массив
+    const images = [
+        "{{ product.image.url }}",  // Основное изображение
+        {% for image in product.images.all %}
+            "{{ image.image.url }}",
+        {% endfor %}
+    ];
 
-        // Обработчики для свайпа на мобильных устройствах
-        if (swipeContainer) {
-            let touchStartX = 0;
-            let touchEndX = 0;
+    let currentIndex = 0;
+    const mainImage = document.getElementById('mainImage');
+    const thumbnails = document.querySelectorAll('.thumbnail-wrapper');
+    const swipeContainer = document.getElementById('swipeContainer');
+
+    function updateGallery() {
+        mainImage.style.opacity = '0';
         
-            swipeContainer.addEventListener('touchstart', (e) => {
-                touchStartX = e.changedTouches[0].screenX;
-            }, {passive: true});
-        
-            swipeContainer.addEventListener('touchend', (e) => {
-                touchEndX = e.changedTouches[0].screenX;
-                handleSwipe();
-            }, {passive: true});
-        
-            function handleSwipe() {
-                const swipeThreshold = 50; // Минимальная дистанция свайпа
+        setTimeout(() => {
+            mainImage.src = images[currentIndex];
+            mainImage.style.opacity = '1';
             
-                if (touchStartX - touchEndX > swipeThreshold) {
-                    // Свайп влево = следующее изображение
-                    nextImage();
-                } else if (touchEndX - touchStartX > swipeThreshold) {
-                    // Свайп вправо = предыдущее изображение
-                    prevImage();
-                }
+            thumbnails.forEach((wrapper, index) => {
+                wrapper.classList.toggle('active', index === currentIndex);
+            });
+        }, 300);
+    }
+
+    function changeImage(index) {
+        currentIndex = index;
+        updateGallery();
+    }
+
+    function nextImage() {
+        currentIndex = (currentIndex + 1) % images.length;
+        updateGallery();
+    }
+
+    function prevImage() {
+        currentIndex = (currentIndex - 1 + images.length) % images.length;
+        updateGallery();
+    }
+
+    // Обработчик клавиатуры
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowRight') nextImage();
+        if (e.key === 'ArrowLeft') prevImage();
+    });
+
+    // Обработчики для свайпа на мобильных устройствах
+    if (swipeContainer) {
+        let touchStartX = 0;
+        let touchEndX = 0;
+        
+        swipeContainer.addEventListener('touchstart', (e) => {
+            touchStartX = e.changedTouches[0].screenX;
+        }, {passive: true});
+        
+        swipeContainer.addEventListener('touchend', (e) => {
+            touchEndX = e.changedTouches[0].screenX;
+            handleSwipe();
+        }, {passive: true});
+        
+        function handleSwipe() {
+            const swipeThreshold = 50;
+            
+            if (touchStartX - touchEndX > swipeThreshold) {
+                nextImage();
+            } else if (touchEndX - touchStartX > swipeThreshold) {
+                prevImage();
             }
         }
+    }
 
-        // Обработчик формы выбора цветов
-        const colorForm = document.getElementById('colorForm');
-        if (colorForm) {
-            colorForm.addEventListener('submit', function(e) {
-                const selectedColors = document.querySelectorAll('.color-checkbox:checked');
-                if (selectedColors.length === 0) {
-                    e.preventDefault();
-                    alert('Пожалуйста, выберите хотя бы один цвет');
+    // Обработчик для кнопки записи
+    const appointmentLink = document.getElementById('appointmentLink');
+    if (appointmentLink) {
+        appointmentLink.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            // Получаем выбранные цвета
+            const selectedColors = Array.from(document.querySelectorAll('.color-checkbox:checked'))
+                                    .map(checkbox => checkbox.value);
+            
+            // Формируем URL с GET-параметрами
+            const baseUrl = this.href.split('?')[0];
+            const params = new URLSearchParams();
+            params.append('product_id', '{{ product.id }}');
+            selectedColors.forEach(color => params.append('colors', color));
+            
+            // Перенаправляем с параметрами
+            window.location.href = `${baseUrl}?${params.toString()}`;
+        });
+    }
+
+    // Инициализация галереи
+    updateGallery();
+
+    // Анимация появления элементов
+    document.addEventListener('DOMContentLoaded', function() {
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.animation = 'fadeIn 0.6s ease forwards';
+                    observer.unobserve(entry.target);
                 }
             });
-        }
-
-        // Обработчик для кнопки записи
-        const appointmentLink = document.getElementById('appointmentLink');
-        if (appointmentLink) {
-            appointmentLink.addEventListener('click', function(e) {
-                e.preventDefault();
-                
-                // Получаем выбранные цвета
-                const selectedColors = Array.from(document.querySelectorAll('.color-checkbox:checked'))
-                                        .map(checkbox => checkbox.value);
-                
-                // Формируем URL с GET-параметрами
-                const baseUrl = this.href.split('?')[0];
-                const params = new URLSearchParams();
-                params.append('product_id', '{{ product.id }}');
-                selectedColors.forEach(color => params.append('colors', color));
-                
-                // Перенаправляем с параметрами
-                window.location.href = `${baseUrl}?${params.toString()}`;
-            });
-        }
-
-        // Инициализация галереи
-        updateGallery();
-    </script>
+        }, { threshold: 0.1 });
+        
+        document.querySelectorAll('.product-info > *').forEach(el => {
+            observer.observe(el);
+        });
+    });
+</script>
 {% endblock content %}
-

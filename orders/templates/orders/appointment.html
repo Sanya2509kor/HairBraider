@@ -2,194 +2,657 @@
 {% load static %}
 
 {% block title %}
-<title> {{ title }} </title>
+<title>{{ title }}</title>
 {% endblock title %}
 
 {% block content %}
-<link rel="stylesheet" href={% static "deps/css/my_css_forma_appoint.css" %}>
+<div class="appointment-page">
+    <div class="container">
+        {% comment %} <!-- Хлебные крошки -->
+        <nav class="breadcrumb-nav mb-4">
+            <a href="{% url 'main:index' %}">Главная</a>
+            <span class="breadcrumb-separator">/</span>
+            <a href="{% url 'main:index' %}#services">Услуги</a>
+            <span class="breadcrumb-separator">/</span>
+            <span class="current">Запись</span>
+        </nav> {% endcomment %}
 
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="appointment-card">
+                    <div class="appointment-header text-center mb-4">
+                        <h1 class="appointment-title">
+                            <i class="fas fa-calendar-check me-3"></i>Запись на услугу
+                        </h1>
+                        <p class="appointment-subtitle">Выберите удобное время и дату</p>
+                    </div>
 
-<div class="container">
-    <div class="row justify-content-center">
-        <div class="col-md-8 col-lg-6">
-            <div class="appointment-form">
-                <h2 class="form-header">Запишитесь на свободную дату</h2>
-                <form method="post" id="appointmentForm">
-                    {% csrf_token %}
-                    
-                    <!-- Поле для выбора даты -->
-                    <div class="mb-3">
-                        <label for="id_date" class="form-label">Дата</label>
-                        {{ form.date }}
-                        {% if form.date.errors %}
-                            <div class="invalid-feedback d-block">
-                                {{ form.date.errors }}
-                            </div>
-                        {% endif %}
-                    </div>
-                    
-                    <!-- Поле для выбора времени -->
-                    <div class="mb-3">
-                        <label for="id_time" class="form-label">Время</label>
-                        {{ form.time }}
-                        {% if form.time.errors %}
-                            <div class="invalid-feedback d-block">
-                                {{ form.time.errors }}
-                            </div>
-                        {% endif %}
-                    </div>
-                    
-                    <!-- Поле для имени -->
-                    <div class="mb-3">
-                        <label for="id_name" class="form-label">Ваше имя</label>
-                        {{ form.name }}
-                        {% if form.name.errors %}
-                            <div class="invalid-feedback d-block">
-                                {{ form.name.errors }}
-                            </div>
-                        {% endif %}
-                    </div>
-                    
-                    <!-- Поле для телефона -->
-                    <div class="mb-3">
-                        <label for="id_phone" class="form-label">Телефон</label>
-                        {{ form.phone }}
-                        {% if form.phone.errors %}
-                            <div class="invalid-feedback d-block">
-                                {{ form.phone.errors }}
-                            </div>
-                        {% endif %}
-                    </div>
-                    
-                    <!-- Поле для продукта -->
-                    <div class="mb-4">
-                        <label for="id_product" class="form-label">Услуга/Продукт</label>
-                        {{ form.product }}
-                        {% if form.product.errors %}
-                            <div class="invalid-feedback d-block">
-                                {{ form.product.errors }}
-                            </div>
-                        {% endif %}
-                    </div>
-                    <!-- Поле для цвета -->
-                    <div class="mb-4">
-                        <label class="form-label">Цвет</label>
-                            <div class="color-options">
-                                {% for color in form.colors.field.queryset %}
-                                <label class="color-option">
-                                    <input type="checkbox" name="colors" value="{{ color.id }}" class="color-checkbox"{% if color.id in form.colors.value %}checked{% endif %}>
-                                    {% if color.image %}
-                                        <img src="{{ color.image.url }}" alt="{{ color.name }}" width="80" height="80" class="color-image">
-                                    {% else %}
-                                        <span class="color-name">{{ color.name }}</span>
+                    <form method="post" id="appointmentForm" class="appointment-form">
+                        {% csrf_token %}
+                        
+                        <div class="row">
+                            <!-- Левая колонка - основная информация -->
+                            <div class="col-md-6">
+                                <!-- Поле для выбора даты -->
+                                <div class="form-group mb-4">
+                                    <label for="id_date" class="form-label">
+                                        <i class="fas fa-calendar-alt me-2"></i>Дата
+                                    </label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">
+                                            <i class="fas fa-calendar"></i>
+                                        </span>
+                                        {{ form.date }}
+                                    </div>
+                                    {% if form.date.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {{ form.date.errors }}
+                                        </div>
                                     {% endif %}
-                                </label>
-                                {% endfor %}
-                        </div>
-                        {% if form.colors.errors %}
-                            <div class="invalid-feedback d-block">
-                                {{ form.colors.errors }}
+                                </div>
+                                
+                                <!-- Поле для выбора времени -->
+                                <div class="form-group mb-4">
+                                    <label for="id_time" class="form-label">
+                                        <i class="fas fa-clock me-2"></i>Время
+                                    </label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">
+                                            <i class="fas fa-clock"></i>
+                                        </span>
+                                        {{ form.time }}
+                                    </div>
+                                    {% if form.time.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {{ form.time.errors }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                
+                                <!-- Поле для имени -->
+                                <div class="form-group mb-4">
+                                    <label for="id_name" class="form-label">
+                                        <i class="fas fa-user me-2"></i>Ваше имя
+                                    </label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">
+                                            <i class="fas fa-user"></i>
+                                        </span>
+                                        {{ form.name }}
+                                    </div>
+                                    {% if form.name.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {{ form.name.errors }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                
+                                <!-- Поле для телефона -->
+                                <div class="form-group mb-4">
+                                    <label for="id_phone" class="form-label">
+                                        <i class="fas fa-phone me-2"></i>Телефон
+                                    </label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">
+                                            <i class="fas fa-phone"></i>
+                                        </span>
+                                        {{ form.phone }}
+                                    </div>
+                                    {% if form.phone.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {{ form.phone.errors }}
+                                        </div>
+                                    {% endif %}
+                                </div>
                             </div>
-                        {% endif %}
+
+                            <!-- Правая колонка - услуги и цвета -->
+                            <div class="col-md-6">
+                                <!-- Поле для продукта -->
+                                <div class="form-group mb-4">
+                                    <label for="id_product" class="form-label">
+                                        <i class="fas fa-concierge-bell me-2"></i>Услуга
+                                    </label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">
+                                            <i class="fas fa-spa"></i>
+                                        </span>
+                                        {{ form.product }}
+                                    </div>
+                                    {% if form.product.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {{ form.product.errors }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                
+                                <!-- Поле для цвета -->
+                                {% if form.colors.field.queryset %}
+                                <div class="form-group mb-4">
+                                    <label class="form-label">
+                                        <i class="fas fa-palette me-2"></i>Цвета
+                                    </label>
+                                    <div class="color-options">
+                                        {% for color in form.colors.field.queryset %}
+                                        <label class="color-option">
+                                            <input type="checkbox" name="colors" value="{{ color.id }}" 
+                                                   class="color-checkbox"{% if color.id in form.colors.value %}checked{% endif %}>
+                                            {% if color.image %}
+                                                <img src="{{ color.image.url }}" alt="{{ color.name }}" 
+                                                     class="color-image">
+                                                <span class="color-tooltip">{{ color.name }}</span>
+                                            {% else %}
+                                                <span class="color-name">{{ color.name }}</span>
+                                            {% endif %}
+                                        </label>
+                                        {% endfor %}
+                                    </div>
+                                    {% if form.colors.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {{ form.colors.errors }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                {% endif %}
+                                
+                                <!-- Поле комментария -->
+                                <div class="form-group mb-4">
+                                    <label for="id_comment" class="form-label">
+                                        <i class="fas fa-comment me-2"></i>Комментарий
+                                    </label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">
+                                            <i class="fas fa-edit"></i>
+                                        </span>
+                                        {{ form.comment }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Кнопка отправки -->
+                        <div class="text-center mt-4">
+                            {% if make_appoint %}
+                                <button type="submit" class="btn btn-primary btn-lg appointment-btn">
+                                    <i class="fas fa-paper-plane me-2"></i>Записаться
+                                </button>
+                            {% else %}
+                                <button type="button" class="btn btn-secondary btn-lg appointment-btn" disabled>
+                                    <i class="fas fa-clock me-2"></i>Запись временно недоступна
+                                </button>
+                            {% endif %}
+                        </div>
+                    </form>
+
+                    <!-- Дополнительная информация -->
+                    <div class="appointment-info mt-5">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="info-item text-center">
+                                    <i class="fas fa-clock info-icon"></i>
+                                    <h5>Подтверждение</h5>
+                                    <p class="text-muted">В течение 15 минут</p>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="info-item text-center">
+                                    <i class="fas fa-undo info-icon"></i>
+                                    <h5>Отмена записи</h5>
+                                    <p class="text-muted">За 24 часа бесплатно</p>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <!-- Поле комментария -->
-                    <div class="mb-4">
-                        <label for="id_comment" class="form-label">Комментарий</label>
-                        {{ form.comment }}
-                    </div>
-                    {% if make_appoint %}
-                        <button type="submit" class="btn btn-primary btn-submit">Записаться</button>
-                    {% else %}
-                        <button type="submit" class="btn btn-primary btn-submit" disabled>Записаться</button>
-                    {% endif %}
-                </form>
+                </div>
             </div>
         </div>
     </div>
 </div>
 
- <style>
-        /* Стили для выбора цветов */
-        .color-selector {
-            margin: 20px 0;
-            padding: 15px;
-            border-radius: 8px;
+<style>
+    .appointment-page {
+        padding: 2rem 0;
+        background: linear-gradient(135deg, #FFF5EE 0%, #F8F6FF 100%);
+        min-height: 100vh;
+    }
+
+    .breadcrumb-nav {
+        font-size: 0.9rem;
+        color: #6B7280;
+    }
+
+    .breadcrumb-nav a {
+        color: var(--primary-color);
+        text-decoration: none;
+    }
+
+    .breadcrumb-nav a:hover {
+        text-decoration: underline;
+    }
+
+    .breadcrumb-separator {
+        margin: 0 0.5rem;
+    }
+
+    .appointment-card {
+        background: white;
+        border-radius: 25px;
+        padding: 2.5rem;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+        border: 1px solid rgba(138, 43, 226, 0.1);
+    }
+
+    .appointment-header {
+        margin-bottom: 2.5rem;
+    }
+
+    .appointment-title {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: var(--dark-color);
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .appointment-subtitle {
+        color: #6B7280;
+        font-size: 1.1rem;
+    }
+
+    .form-group {
+        position: relative;
+    }
+
+    .form-label {
+        font-weight: 600;
+        color: var(--dark-color);
+        margin-bottom: 0.75rem;
+        display: block;
+    }
+
+    .form-label i {
+        color: var(--primary-color);
+        width: 20px;
+    }
+
+    .input-group {
+        position: relative;
+    }
+
+    .input-group-text {
+        background: var(--gradient-primary);
+        color: white;
+        border: none;
+        border-radius: 15px 0 0 15px;
+        min-width: 50px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .form-control, .form-select {
+        border: 2px solid #e9ecef;
+        border-radius: 0 15px 15px 0;
+        padding: 0.875rem 1rem;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        height: auto;
+    }
+
+    .form-control:focus, .form-select:focus {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 0.3rem rgba(138, 43, 226, 0.15);
+        transform: translateY(-2px);
+    }
+
+    /* Стили для выбора цветов */
+    .color-options {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-top: 0.5rem;
+    }
+
+    .color-option {
+        cursor: pointer;
+        text-align: center;
+        transition: all 0.3s ease;
+        position: relative;
+    }
+
+    .color-checkbox {
+        display: none;
+    }
+
+    .color-checkbox:checked + .color-image,
+    .color-checkbox:checked ~ .color-name {
+        border: 3px solid var(--primary-color);
+        transform: scale(1.1);
+        box-shadow: 0 4px 15px rgba(138, 43, 226, 0.3);
+    }
+
+    .color-image {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 2px solid #e5e7eb;
+        transition: all 0.3s ease;
+    }
+
+    .color-name {
+        display: inline-block;
+        padding: 0.5rem 1rem;
+        background: #f8f9fa;
+        border: 2px solid #e5e7eb;
+        border-radius: 20px;
+        transition: all 0.3s ease;
+        font-size: 0.9rem;
+        color: var(--dark-color);
+    }
+
+    .color-tooltip {
+        position: absolute;
+        bottom: -30px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: var(--dark-color);
+        color: white;
+        padding: 0.25rem 0.5rem;
+        border-radius: 8px;
+        font-size: 0.75rem;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        pointer-events: none;
+    }
+
+    .color-option:hover .color-tooltip {
+        opacity: 1;
+    }
+
+    /* Кнопка записи */
+    .appointment-btn {
+        background: var(--gradient-primary);
+        border: none;
+        border-radius: 25px;
+        padding: 1rem 2.5rem;
+        font-weight: 600;
+        font-size: 1.1rem;
+        transition: all 0.3s ease;
+        color: white;
+        box-shadow: 0 4px 15px rgba(138, 43, 226, 0.3);
+    }
+
+    .appointment-btn:hover:not(:disabled) {
+        background: var(--gradient-secondary);
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(255, 105, 180, 0.4);
+    }
+
+    .appointment-btn:disabled {
+        background: #6c757d;
+        cursor: not-allowed;
+    }
+
+    /* Дополнительная информация */
+    .appointment-info {
+        border-top: 1px solid #e9ecef;
+        padding-top: 2rem;
+    }
+
+    .info-item {
+        padding: 1rem;
+    }
+
+    .info-icon {
+        font-size: 2rem;
+        color: var(--primary-color);
+        margin-bottom: 1rem;
+    }
+
+    .info-item h5 {
+        font-weight: 600;
+        color: var(--dark-color);
+        margin-bottom: 0.5rem;
+    }
+
+    /* Адаптация для мобильных */
+    @media (max-width: 991.98px) {
+        .appointment-card {
+            padding: 2rem;
+        }
+        
+        .appointment-title {
+            font-size: 2rem;
+        }
+    }
+
+    @media (max-width: 767.98px) {
+        .appointment-page {
+            padding: 1rem 0;
+        }
+        
+        .appointment-card {
+            padding: 1.5rem;
+            border-radius: 20px;
+        }
+        
+        .appointment-title {
+            font-size: 1.75rem;
         }
         
         .color-options {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin: 15px 0;
-        }
-        
-        .color-option {
-            cursor: pointer;
-            text-align: center;
-            transition: all 0.3s ease;
-        }
-        
-        .color-checkbox {
-            display: none;
-        }
-        
-        .color-checkbox:checked + .color-image {
-            border: 10px solid #bd1818ff;
-            box-shadow: 0 0 8px rgba(0,0,0,0.3);
-        }
-        
-        .color-checkbox:checked + .color-name {
-            background: #000;
-            color: white;
+            justify-content: center;
         }
         
         .color-image {
-            border-radius: 50%;
-            border: 1px solid #ddd;
-            transition: all 0.3s ease;
+            width: 50px;
+            height: 50px;
+        }
+        
+        .appointment-btn {
+            padding: 0.875rem 2rem;
+            font-size: 1rem;
+        }
+    }
+
+    @media (max-width: 575.98px) {
+        .appointment-card {
+            padding: 1.25rem;
+        }
+        
+        .appointment-title {
+            font-size: 1.5rem;
+        }
+        
+        .form-control, .form-select {
+            padding: 0.75rem;
+            font-size: 0.9rem;
+        }
+        
+        .input-group-text {
+            min-width: 45px;
+            font-size: 0.9rem;
+        }
+        
+        .color-image {
+            width: 45px;
+            height: 45px;
         }
         
         .color-name {
-            display: inline-block;
-            padding: 5px 10px;
-            background: #f5f5f5;
-            border-radius: 15px;
-            transition: all 0.3s ease;
+            padding: 0.375rem 0.75rem;
+            font-size: 0.8rem;
         }
         
-        .btn-add-to-cart {
-            background: #000;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background 0.3s;
+        .info-item {
+            padding: 0.75rem;
         }
         
-        .btn-add-to-cart:hover {
-            background: #333;
+        .info-icon {
+            font-size: 1.5rem;
         }
+    }
+
+    /* Анимации */
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .appointment-card {
+        animation: fadeInUp 0.6s ease;
+    }
+
+    .form-group {
+        animation: fadeInUp 0.6s ease;
+    }
+
+    .form-group:nth-child(1) { animation-delay: 0.1s; }
+    .form-group:nth-child(2) { animation-delay: 0.2s; }
+    .form-group:nth-child(3) { animation-delay: 0.3s; }
+    .form-group:nth-child(4) { animation-delay: 0.4s; }
+    .form-group:nth-child(5) { animation-delay: 0.5s; }
+    .form-group:nth-child(6) { animation-delay: 0.6s; }
 </style>
-
-
 
 <script src={% static "deps/js/jquery/jquery-3.7.0.min.js" %}></script>
 <script>
-    // Добавьте отладку в JS (appointment.html):
-$("#id_date").change(function() {
-  console.log("Дата изменена, ID:", $(this).val()); // Проверьте, что событие срабатывает
-  $.ajax({
-    url: "{% url 'order:ajax_load_times' %}",
-    data: { 'date': $(this).val() },
-    success: function(data) {
-      console.log("Ответ сервера:", data); // Должны увидеть HTML
-      $("#id_time").html(data);
-    },
-    error: function(xhr) {
-      console.error("Ошибка AJAX:", xhr.responseText);
-    }
-  });
-});
+    $(document).ready(function() {
+        // AJAX загрузка времени при изменении даты
+        $("#id_date").change(function() {
+            const selectedDate = $(this).val();
+            console.log("Выбрана дата:", selectedDate);
+            
+            if (selectedDate) {
+                $.ajax({
+                    url: "{% url 'order:ajax_load_times' %}",
+                    type: "GET",
+                    data: { 'date': selectedDate },
+                    beforeSend: function() {
+                        $("#id_time").html('<option value="">Загрузка...</option>');
+                    },
+                    success: function(data) {
+                        console.log("Доступное время:", data);
+                        $("#id_time").html(data);
+                        
+                        // Анимация появления
+                        $("#id_time").addClass('fade-in');
+                        setTimeout(() => {
+                            $("#id_time").removeClass('fade-in');
+                        }, 300);
+                    },
+                    error: function(xhr, status, error) {
+                        console.error("Ошибка AJAX:", error);
+                        $("#id_time").html('<option value="">Ошибка загрузки</option>');
+                    }
+                });
+            }
+        });
+
+
+        // Маска для телефона
+        $('#id_phone').on('input', function(e) {
+            // Удаляем все нецифровые символы, кроме возможного плюса в начале
+            var value = e.target.value.replace(/[^\d+]/g, '');
+            
+            // Если номер начинается не с +7 или 7 или 8, добавляем +7
+            if (!value.startsWith('+7') && !value.startsWith('7') && !value.startsWith('8')) {
+                value = '+7';
+            }
+            
+            // Форматируем номер: +7 999 198-72-64
+            var formatted = value
+                .replace(/^(\+?7|8)(\d{0,3})(\d{0,3})(\d{0,2})(\d{0,2})/, function(match, p1, p2, p3, p4, p5) {
+                    let result = '+7';
+                    if (p2) result += p2;
+                    if (p3) result += p3;
+                    if (p4) result += p4;
+                    if (p5) result += p5;
+                    return result;
+                });
+            
+            e.target.value = formatted;
+        });
+
+        // Валидация формы
+        $("#appointmentForm").on('submit', function(e) {
+            let isValid = true;
+            
+            // Проверка обязательных полей
+            $('.form-control:required').each(function() {
+                if (!$(this).val().trim()) {
+                    $(this).addClass('is-invalid');
+                    isValid = false;
+                } else {
+                    $(this).removeClass('is-invalid');
+                }
+            });
+            
+            if (!isValid) {
+                e.preventDefault();
+                // Плавная прокрутка к первой ошибке
+                $('html, body').animate({
+                    scrollTop: $('.is-invalid').first().offset().top - 100
+                }, 500);
+                
+                // Анимация ошибки
+                $('.is-invalid').first().addClass('shake');
+                setTimeout(() => {
+                    $('.is-invalid').removeClass('shake');
+                }, 500);
+            }
+        });
+
+        // Анимация при фокусе
+        $('.form-control, .form-select').on('focus', function() {
+            $(this).closest('.form-group').addClass('focused');
+        }).on('blur', function() {
+            $(this).closest('.form-group').removeClass('focused');
+        });
+
+        // Инициализация tooltips для цветов
+        $('.color-option').hover(function() {
+            $(this).find('.color-tooltip').css('opacity', '1');
+        }, function() {
+            $(this).find('.color-tooltip').css('opacity', '0');
+        });
+    });
+
+    // CSS классы для анимаций
+    const style = document.createElement('style');
+    style.textContent = `
+        .fade-in {
+            animation: fadeIn 0.3s ease;
+        }
+        
+        .shake {
+            animation: shake 0.5s ease;
+        }
+        
+        .focused .input-group-text {
+            background: var(--gradient-secondary);
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+    `;
+    document.head.appendChild(style);
 </script>
 {% endblock content %}

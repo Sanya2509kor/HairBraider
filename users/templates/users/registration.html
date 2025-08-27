@@ -2,160 +2,716 @@
 {% load static %}
 
 {% block title %}
-<title> {{ title }} </title>
+<title>{{ title }}</title>
 {% endblock title %}
 
 {% block content %}
-{% comment %} <div class="row"> {% endcomment %}
-    <div class="container mt-5">
+<div class="registration-page">
+    <div class="container">
         <div class="row justify-content-center">
-            <div class="col-md-9 p-4 mb-5 mx-2 rounded custom-shadow registration-form">
-                <h2 class="text-center mb-4">Регистрация</h2>
-                <form action="{% url 'user:registration' %}" method="post" id="registration_form">
-                    {% csrf_token %}
-                    
-                    <!-- Общие ошибки формы -->
-                    {% if form.non_field_errors %}
-                        <div class="alert alert-danger alert-dismissible fade show">
-                            {% for error in form.non_field_errors %}
-                                {{ error }}
-                            {% endfor %}
-                        </div>
-                    {% endif %}
-                    
-                    <div class="row">
-                        <!-- Имя -->
-                        <div class="col-md-6 mb-3">
-                            <label for="id_first_name" class="form-label">Имя*</label>
-                            <input type="text" class="form-control" id="id_first_name"
-                                name="first_name"
-                                value="{{ form.first_name.value|default_if_none:'' }}"
-                                placeholder="Введите ваше имя" required>
-                            {% if form.first_name.errors %}
-                                <div class="alert alert-danger alert-dismissible fade show">{{ form.first_name.errors }}</div>
-                            {% endif %}
-                        </div>
-                        <!-- Номер телефона -->
-                        <div class="col-md-6 mb-3">
-                            <label for="id_phone_number" class="form-label">Номер телефона*:</label>
-                            <input type="text" class="form-control" id="id_phone_number" 
-                                name="phone_number"
-                                value="{{ form.phone_number.value|default_if_none:'+7' }}"
-                                placeholder="(000)000-0000" required
-                                maxlength="12">
-                            {% if form.phone_number.errors %}
-                                <div class="alert alert-danger alert-dismissible fade show">{{ form.phone_number.errors }}</div>
-                            {% endif %}
-                            <div class="alert alert-danger alert-dismissible fade show" style="display: none" id="phone_number_error">
-                                Неверный формат номера. Используйте формат: +7(929)999-9999
+            <div class="col-lg-6 col-md-8">
+                <div class="registration-card">
+                    <!-- Заголовок -->
+                    <div class="registration-header text-center mb-4">
+                        <h1 class="registration-title">
+                            <i class="fas fa-user-plus me-3"></i>Создать аккаунт
+                        </h1>
+                        <p class="registration-subtitle">Заполните данные для регистрации</p>
+                    </div>
+
+                    <!-- Форма регистрации -->
+                    <form action="{% url 'user:registration' %}" method="post" id="registration_form" class="registration-form">
+                        {% csrf_token %}
+                        
+                        <!-- Общие ошибки формы -->
+                        {% if form.non_field_errors %}
+                            <div class="alert alert-danger alert-dismissible fade show mb-4">
+                                <i class="fas fa-exclamation-circle me-2"></i>
+                                {% for error in form.non_field_errors %}
+                                    {{ error }}
+                                {% endfor %}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            </div>
+                        {% endif %}
+
+                        <div class="row">
+                            <!-- Имя -->
+                            <div class="col-md-6 mb-4">
+                                <label for="id_first_name" class="form-label">
+                                    <i class="fas fa-user me-2"></i>Имя*
+                                </label>
+                                <div class="input-group">
+                                    <span class="input-group-text">
+                                        <i class="fas fa-user"></i>
+                                    </span>
+                                    <input type="text" class="form-control {% if form.first_name.errors %}is-invalid{% endif %}" 
+                                           id="id_first_name" name="first_name"
+                                           value="{{ form.first_name.value|default_if_none:'' }}"
+                                           placeholder="Введите ваше имя" required>
+                                </div>
+                                {% if form.first_name.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        <i class="fas fa-exclamation-circle me-1"></i>
+                                        {{ form.first_name.errors }}
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <!-- Номер телефона -->
+                            <div class="col-md-6 mb-4">
+                                <label for="id_phone_number" class="form-label">
+                                    <i class="fas fa-phone me-2"></i>Номер телефона*
+                                </label>
+                                <div class="input-group">
+                                    <span class="input-group-text">
+                                        <i class="fas fa-mobile-alt"></i>
+                                    </span>
+                                    <input type="text" class="form-control {% if form.phone_number.errors %}is-invalid{% endif %}" 
+                                           id="id_phone_number" name="phone_number"
+                                           value="{{ form.phone_number.value|default_if_none:'+7' }}"
+                                           placeholder="+7 (999) 999-99-99" required maxlength="12">
+                                </div>
+                                {% if form.phone_number.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        <i class="fas fa-exclamation-circle me-1"></i>
+                                        {{ form.phone_number.errors }}
+                                    </div>
+                                {% endif %}
+                                <div class="alert alert-danger mt-2 d-none" id="phone_number_error">
+                                    <i class="fas fa-exclamation-circle me-1"></i>
+                                    Неверный формат номера
+                                </div>
+                            </div>
+
+                            <!-- Пароль -->
+                            <div class="col-md-6 mb-4">
+                                <label for="id_password1" class="form-label">
+                                    <i class="fas fa-lock me-2"></i>Пароль*
+                                </label>
+                                <div class="input-group">
+                                    <span class="input-group-text">
+                                        <i class="fas fa-key"></i>
+                                    </span>
+                                    <input type="password" class="form-control {% if form.password1.errors %}is-invalid{% endif %}" 
+                                           id="id_password1" name="password1"
+                                           placeholder="Введите пароль" required>
+                                    <button type="button" class="input-group-text toggle-password">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+                                {% if form.password1.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        <i class="fas fa-exclamation-circle me-1"></i>
+                                        {{ form.password1.errors }}
+                                    </div>
+                                {% endif %}
+                                <div class="password-strength mt-2">
+                                    <div class="progress mb-2">
+                                        <div class="progress-bar" role="progressbar" style="width: 0%"></div>
+                                    </div>
+                                    <small class="password-strength-text text-muted">Надежность пароля</small>
+                                </div>
+                            </div>
+
+                            <!-- Подтверждение пароля -->
+                            <div class="col-md-6 mb-4">
+                                <label for="id_password2" class="form-label">
+                                    <i class="fas fa-lock me-2"></i>Подтверждение пароля*
+                                </label>
+                                <div class="input-group">
+                                    <span class="input-group-text">
+                                        <i class="fas fa-key"></i>
+                                    </span>
+                                    <input type="password" class="form-control {% if form.password2.errors %}is-invalid{% endif %}" 
+                                           id="id_password2" name="password2"
+                                           placeholder="Подтвердите пароль" required>
+                                    <button type="button" class="input-group-text toggle-password">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+                                {% if form.password2.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        <i class="fas fa-exclamation-circle me-1"></i>
+                                        {{ form.password2.errors }}
+                                    </div>
+                                {% endif %}
+                                <div class="password-match mt-2">
+                                    <small class="text-muted match-text">Пароли должны совпадать</small>
+                                </div>
                             </div>
                         </div>
-                        <!-- Пароль -->
-                        <div class="col-md-6 mb-3">
-                            <label for="id_password1" class="form-label">Пароль*</label>
-                            <input type="password" class="form-control" id="id_password1"
-                                name="password1"
-                                placeholder="Введите пароль" required>
-                            {% if form.password1.errors %}
-                                <div class="alert alert-danger alert-dismissible fade show">{{ form.password1.errors }}</div>
-                            {% endif %}
-                        </div>
-                        
-                        <!-- Подтверждение пароля -->
-                        <div class="col-md-6 mb-3">
-                            <label for="id_password2" class="form-label">Подтверждение пароля*</label>
-                            <input type="password" class="form-control" id="id_password2"
-                                name="password2"
-                                placeholder="Подтвердите пароль" required>
-                            {% if form.password2.errors %}
-                                <div class="alert alert-danger alert-dismissible fade show">{{ form.password2.errors }}</div>
-                            {% endif %}
-                        </div>
-                        <!-- Контейнер для капчи -->
-                        <script src='https://www.google.com/recaptcha/api.js'></script>
-                        <div class="form-group g-recaptcha" data-sitekey="6LcjhJ0rAAAAAOgcSH2WR6wg_wlM99sl4Ay_BKWD"></div>
 
+                        <!-- Капча -->
+                        <div class="mb-4">
+                            <script src='https://www.google.com/recaptcha/api.js'></script>
+                            <div class="g-recaptcha" data-sitekey="6LcjhJ0rAAAAAOgcSH2WR6wg_wlM99sl4Ay_BKWD"></div>
+                        </div>
+
+                        <!-- Сообщения -->
                         {% if messages %}
-                            {% for message in messages %}
-                                {{ message }}
-                            {% endfor %}
+                            <div class="alert alert-info mb-4">
+                                {% for message in messages %}
+                                    <i class="fas fa-info-circle me-2"></i>{{ message }}
+                                {% endfor %}
+                            </div>
                         {% endif %}
+
+                        <!-- Кнопка регистрации -->
+                        <button type="submit" class="btn btn-primary btn-lg w-100 registration-btn">
+                            <i class="fas fa-user-plus me-2"></i>Зарегистрироваться
+                        </button>
+                    </form>
+
+                    <!-- Разделитель -->
+                    <div class="divider my-4">
+                        <span class="divider-text">или</span>
                     </div>
-                    
-                    <button type="submit" class="btn btn-dark btn-block">Зарегистрироваться</button>
-                </form>
-                <div class="text-center">
-                <h4> или </h4>
-                <div>
-                {% autoescape off %}{{ telegram_redirect }}{% endautoescape %} 
+
+                    <!-- Telegram кнопка -->
+                    <div class="text-center">
+                        <h5 class="mb-3">Зарегистрироваться через Telegram</h5>
+                        <div class="telegram-btn-container">
+                            {% autoescape off %}{{ telegram_redirect }}{% endautoescape %}
+                        </div>
+                    </div>
+
+                    <!-- Ссылка на вход -->
+                    <div class="text-center mt-4">
+                        <span class="text-muted">Уже есть аккаунт? </span>
+                        <a href="{% url 'user:login' %}" class="text-primary">
+                            <i class="fas fa-sign-in-alt me-1"></i>Войти
+                        </a>
+                    </div>
                 </div>
-            </div>
             </div>
         </div>
     </div>
-{% comment %} </div> {% endcomment %}
+</div>
+
+<style>
+    .registration-page {
+        padding: 2rem 0;
+        background: linear-gradient(135deg, #FFF5EE 0%, #F8F6FF 100%);
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+    }
+
+    .registration-card {
+        background: white;
+        border-radius: 25px;
+        padding: 2.5rem;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+        border: 1px solid rgba(138, 43, 226, 0.1);
+    }
+
+    .registration-header {
+        margin-bottom: 2rem;
+    }
+
+    .registration-title {
+        font-size: 2.2rem;
+        font-weight: 700;
+        color: var(--dark-color);
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        margin-bottom: 0.5rem;
+    }
+
+    .registration-subtitle {
+        color: #6B7280;
+        font-size: 1.1rem;
+    }
+
+    /* Форма */
+    .form-label {
+        font-weight: 600;
+        color: var(--dark-color);
+        margin-bottom: 0.75rem;
+        display: block;
+    }
+
+    .form-label i {
+        color: var(--primary-color);
+        width: 20px;
+    }
+
+    .input-group {
+        position: relative;
+    }
+
+    .input-group-text {
+        background: var(--gradient-primary);
+        color: white;
+        border: none;
+        border-radius: 15px 0 0 15px;
+        min-width: 50px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .form-control {
+        border: 2px solid #e9ecef;
+        border-radius: 0 15px 15px 0;
+        padding: 0.875rem 1rem;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        height: auto;
+    }
+
+    .form-control:focus {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 0.3rem rgba(138, 43, 226, 0.15);
+        transform: translateY(-2px);
+    }
+
+    .form-control.is-invalid {
+        border-color: #dc3545;
+    }
+
+    .invalid-feedback {
+        color: #dc3545;
+        font-size: 0.875rem;
+        margin-top: 0.25rem;
+    }
+
+    .toggle-password {
+        cursor: pointer;
+        background: #f8f9fa;
+        border: 2px solid #e9ecef;
+        border-left: none;
+        border-radius: 0 15px 15px 0;
+    }
+
+    .toggle-password:hover {
+        background: #e9ecef;
+    }
+
+    /* Индикатор силы пароля */
+    .password-strength .progress {
+        height: 6px;
+        border-radius: 3px;
+        background: #e9ecef;
+    }
+
+    .password-strength .progress-bar {
+        transition: all 0.3s ease;
+        border-radius: 3px;
+    }
+
+    .password-match .match-text {
+        font-size: 0.875rem;
+    }
+
+    /* Кнопка регистрации */
+    .registration-btn {
+        background: var(--gradient-primary);
+        border: none;
+        border-radius: 25px;
+        padding: 1rem 2rem;
+        font-weight: 600;
+        font-size: 1.1rem;
+        transition: all 0.3s ease;
+        color: white;
+        box-shadow: 0 4px 15px rgba(138, 43, 226, 0.3);
+    }
+
+    .registration-btn:hover {
+        background: var(--gradient-secondary);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(255, 105, 180, 0.4);
+    }
+
+    /* Разделитель */
+    .divider {
+        position: relative;
+        text-align: center;
+    }
+
+    .divider::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background: #e9ecef;
+        z-index: 1;
+    }
+
+    .divider-text {
+        background: white;
+        padding: 0 1rem;
+        position: relative;
+        z-index: 2;
+        color: #6B7280;
+        font-weight: 500;
+    }
+
+    /* Telegram кнопка */
+    .telegram-btn-container {
+        display: inline-block;
+        transition: all 0.3s ease;
+    }
+
+    .telegram-btn-container:hover {
+        transform: translateY(-2px);
+    }
+
+    /* Дополнительная информация */
+    .registration-info {
+        display: flex;
+        justify-content: center;
+        gap: 2rem;
+        flex-wrap: wrap;
+        margin-top: 2rem;
+        padding-top: 2rem;
+        border-top: 1px solid #e9ecef;
+    }
+
+    .info-item {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: #6B7280;
+        font-size: 0.9rem;
+    }
+
+    .info-icon {
+        color: var(--primary-color);
+        font-size: 1rem;
+    }
+
+    /* Капча */
+    .g-recaptcha {
+        display: flex;
+        justify-content: center;
+        transform: scale(0.9);
+        transform-origin: center;
+    }
+
+    /* Адаптация для мобильных */
+    @media (max-width: 991.98px) {
+        .registration-card {
+            padding: 2rem;
+        }
+        
+        .registration-title {
+            font-size: 2rem;
+        }
+    }
+
+    @media (max-width: 767.98px) {
+        .registration-page {
+            padding: 1rem 0;
+        }
+        
+        .registration-card {
+            padding: 1.5rem;
+            border-radius: 20px;
+        }
+        
+        .registration-title {
+            font-size: 1.75rem;
+        }
+        
+        .form-control {
+            padding: 0.75rem;
+        }
+        
+        .input-group-text {
+            min-width: 45px;
+        }
+        
+        .registration-btn {
+            padding: 0.875rem 1.5rem;
+            font-size: 1rem;
+        }
+        
+        .registration-info {
+            flex-direction: column;
+            gap: 1rem;
+            text-align: center;
+        }
+    }
+
+    @media (max-width: 575.98px) {
+        .registration-card {
+            padding: 1.25rem;
+            margin: 0 0.5rem;
+        }
+        
+        .registration-title {
+            font-size: 1.5rem;
+        }
+        
+        .registration-subtitle {
+            font-size: 1rem;
+        }
+        
+        .form-control {
+            font-size: 0.9rem;
+        }
+        
+        .g-recaptcha {
+            transform: scale(0.8);
+        }
+        
+        .row {
+            margin: 0 -0.5rem;
+        }
+        
+        .col-md-6 {
+            padding: 0 0.5rem;
+        }
+    }
+
+    /* Анимации */
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .registration-card {
+        animation: fadeInUp 0.6s ease;
+    }
+
+    @keyframes shake {
+        0%, 100% { transform: translateX(0); }
+        25% { transform: translateX(-5px); }
+        75% { transform: translateX(5px); }
+    }
+
+    .shake {
+        animation: shake 0.5s ease;
+    }
+
+    /* Цвета для индикатора пароля */
+    .password-weak { background: #dc3545; }
+    .password-medium { background: #ffc107; }
+    .password-strong { background: #28a745; }
+</style>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
     $(document).ready(function() {
-    // Форматирование ввода номера телефона в реальном времени
-    $('#id_phone_number').on('input', function(e) {
-        // Удаляем все нецифровые символы, кроме возможного плюса в начале
-        var value = e.target.value.replace(/[^\d+]/g, '');
-        
-        // Если номер начинается не с +7 или 7 или 8, добавляем +7
-        if (!value.startsWith('+7') && !value.startsWith('7') && !value.startsWith('8')) {
-            value = '+7';
-        }
-        
-        // Форматируем номер: +7 999 198-72-64
-        var formatted = value
-            .replace(/^(\+?7|8)(\d{0,3})(\d{0,3})(\d{0,2})(\d{0,2})/, function(match, p1, p2, p3, p4, p5) {
-                let result = '+7';
-                if (p2) result += p2;
-                if (p3) result += p3;
-                if (p4) result += p4;
-                if (p5) result += p5;
-                return result;
-            });
-        
-        e.target.value = formatted;
+        // Переключение видимости пароля
+        $('.toggle-password').click(function() {
+            const passwordInput = $(this).closest('.input-group').find('input[type="password"]');
+            const icon = $(this).find('i');
+            
+            if (passwordInput.attr('type') === 'password') {
+                passwordInput.attr('type', 'text');
+                icon.removeClass('fa-eye').addClass('fa-eye-slash');
+            } else {
+                passwordInput.attr('type', 'password');
+                icon.removeClass('fa-eye-slash').addClass('fa-eye');
+            }
+        });
+
+        // Маска для телефона
+        $('#id_phone_number').on('input', function(e) {
+            // Удаляем все нецифровые символы, кроме возможного плюса в начале
+            var value = e.target.value.replace(/[^\d+]/g, '');
+            
+            // Если номер начинается не с +7 или 7 или 8, добавляем +7
+            if (!value.startsWith('+7') && !value.startsWith('7') && !value.startsWith('8')) {
+                value = '+7';
+            }
+            
+            // Форматируем номер: +7 999 198-72-64
+            var formatted = value
+                .replace(/^(\+?7|8)(\d{0,3})(\d{0,3})(\d{0,2})(\d{0,2})/, function(match, p1, p2, p3, p4, p5) {
+                    let result = '+7';
+                    if (p2) result += p2;
+                    if (p3) result += p3;
+                    if (p4) result += p4;
+                    if (p5) result += p5;
+                    return result;
+                });
+            
+            e.target.value = formatted;
+        });
+
+        // Проверка силы пароля
+        $('#id_password1').on('input', function() {
+            const password = $(this).val();
+            const strengthBar = $('.progress-bar');
+            const strengthText = $('.password-strength-text');
+            
+            let strength = 0;
+            let text = '';
+            let color = '';
+            
+            if (password.length > 0) {
+                if (password.length < 6) {
+                    strength = 25;
+                    text = 'Слабый';
+                    color = 'password-weak';
+                } else if (password.length < 10) {
+                    strength = 50;
+                    text = 'Средний';
+                    color = 'password-medium';
+                } else {
+                    strength = 100;
+                    text = 'Сильный';
+                    color = 'password-strong';
+                }
+                
+                // Дополнительные проверки
+                if (/[A-Z]/.test(password)) strength += 10;
+                if (/[0-9]/.test(password)) strength += 10;
+                if (/[^A-Za-z0-9]/.test(password)) strength += 10;
+                
+                strength = Math.min(strength, 100);
+            }
+            
+            strengthBar.css('width', strength + '%').removeClass('password-weak password-medium password-strong').addClass(color);
+            strengthText.text(text ? 'Надежность: ' + text : 'Надежность пароля');
+        });
+
+        // Проверка совпадения паролей
+        $('#id_password2').on('input', function() {
+            const password1 = $('#id_password1').val();
+            const password2 = $(this).val();
+            const matchText = $('.match-text');
+            
+            if (password2.length > 0) {
+                if (password1 === password2) {
+                    matchText.html('<i class="fas fa-check text-success me-1"></i>Пароли совпадают');
+                } else {
+                    matchText.html('<i class="fas fa-times text-danger me-1"></i>Пароли не совпадают');
+                }
+            } else {
+                matchText.text('Пароли должны совпадать');
+            }
+        });
+
+        // Валидация формы
+        $('#registration_form').on('submit', function(event) {
+            let isValid = true;
+            
+            // Валидация телефона
+        // Проверка номера телефона
+            var phoneNumber = $('#id_phone_number').val();
+            
+            // Регулярное выражение для российского номера:
+            // +7 или 7 или 8, затем 10 цифр
+            var regex = /^(\+7|7|8)\d{10}$/;
+            
+            // Очищаем номер для проверки (удаляем все, кроме цифр и +)
+            var cleanedPhoneNumber = phoneNumber.replace(/[^\d+]/g, '');
+            
+            // Если номер начинается с 8, заменяем на +7
+            if (cleanedPhoneNumber.startsWith('8')) {
+                cleanedPhoneNumber = '+7' + cleanedPhoneNumber.substring(1);
+            }
+            // Если номер начинается с 7 (без +), добавляем +
+            else if (cleanedPhoneNumber.startsWith('7') && !cleanedPhoneNumber.startsWith('+7')) {
+                cleanedPhoneNumber = '+' + cleanedPhoneNumber;
+            }
+            
+            if (!regex.test(cleanedPhoneNumber)) {
+                $('#phone_number_error').text('Введите корректный номер телефона (например: +79991234567)').show();
+                event.preventDefault();
+                return false;
+            } else {
+                $('#phone_number_error').hide();
+                
+                // Сохраняем очищенный номер в формате +79991234567
+                $('#id_phone_number').val(cleanedPhoneNumber);
+            }
+
+
+            // Валидация паролей
+            const password1 = $('#id_password1').val();
+            const password2 = $('#id_password2').val();
+            
+            if (!password1) {
+                $('#id_password1').addClass('shake');
+                isValid = false;
+            }
+            
+            if (!password2) {
+                $('#id_password2').addClass('shake');
+                isValid = false;
+            }
+            
+            if (password1 !== password2) {
+                $('#id_password1, #id_password2').addClass('shake');
+                isValid = false;
+            }
+            
+            if (!isValid) {
+                event.preventDefault();
+                
+                // Прокрутка к первой ошибке
+                const firstError = $('.shake').first();
+                if (firstError.length) {
+                    $('html, body').animate({
+                        scrollTop: firstError.offset().top - 100
+                    }, 500);
+                }
+                
+                // Убираем анимацию через время
+                setTimeout(() => {
+                    $('.shake').removeClass('shake');
+                }, 500);
+            }
+            
+            return isValid;
+        });
+
+        // Анимация при фокусе
+        $('.form-control').on('focus', function() {
+            $(this).closest('.input-group').addClass('focused');
+        }).on('blur', function() {
+            $(this).closest('.input-group').removeClass('focused');
+        });
+
+        // Автофокус на поле имени
+        $('#id_first_name').focus();
     });
 
-    // Валидация формы перед отправкой
-    $('#registration_form').on('submit', function(event) {
-        // Проверка номера телефона
-        var phoneNumber = $('#id_phone_number').val();
-        
-        // Регулярное выражение для российского номера:
-        // +7 или 7 или 8, затем 10 цифр
-        var regex = /^(\+7|7|8)\d{10}$/;
-        
-        // Очищаем номер для проверки (удаляем все, кроме цифр и +)
-        var cleanedPhoneNumber = phoneNumber.replace(/[^\d+]/g, '');
-        
-        // Если номер начинается с 8, заменяем на +7
-        if (cleanedPhoneNumber.startsWith('8')) {
-            cleanedPhoneNumber = '+7' + cleanedPhoneNumber.substring(1);
-        }
-        // Если номер начинается с 7 (без +), добавляем +
-        else if (cleanedPhoneNumber.startsWith('7') && !cleanedPhoneNumber.startsWith('+7')) {
-            cleanedPhoneNumber = '+' + cleanedPhoneNumber;
+    // CSS для анимаций
+    const style = document.createElement('style');
+    style.textContent = `
+        .input-group.focused .input-group-text {
+            background: var(--gradient-secondary);
         }
         
-        if (!regex.test(cleanedPhoneNumber)) {
-            $('#phone_number_error').text('Введите корректный номер телефона (например: +79991234567)').show();
-            event.preventDefault();
-            return false;
-        } else {
-            $('#phone_number_error').hide();
-            
-            // Сохраняем очищенный номер в формате +79991234567
-            $('#id_phone_number').val(cleanedPhoneNumber);
+        .input-group.focused .form-control {
+            border-color: var(--primary-color);
         }
         
-        return true;
-    });
-});
+        .shake {
+            animation: shake 0.5s ease;
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.3s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    `;
+    document.head.appendChild(style);
 </script>
-{% endblock %}
+{% endblock content %}

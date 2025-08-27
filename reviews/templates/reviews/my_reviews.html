@@ -1,80 +1,326 @@
 {% extends "base.html" %}
 {% load static %}
 
-
 {% block title %}
-<title> {{ title }} </title>
+<title>{{ title }}</title>
 {% endblock title %}
 
-
 {% block content %}
-{% for review in my_reviews %}
-                <div class="col text-center">
-                    <div class="testimonial-card">
-                        <div class="d-flex align-items-center mb-3">
-                            {% if review.user.image %}
-                                <img src="{{ review.user.image.url }}" class="testimonial-img me-3" alt="Клиент">
-                            {% else %}
-                                <img src="{% static 'deps/images/bg-image.jpg' %}" class="testimonial-img me-3" alt="Клиент">
-                            {% endif %}
-                            <div>
-                                <h5 class="mb-0">{{ review.user.username }}</h5>
-                                <div class="text-warning">
-                                    <!-- Заполненные звёзды -->
-                                    {% for i in "12345"|make_list %}
-                                        {% if forloop.counter <= review.stars %}
-                                            <i class="fas fa-star"></i>
-                                        {% else %}
-                                            <i class="far fa-star"></i>
-                                        {% endif %}
-                                    {% endfor %}
-                        
-                                </div>
-                                
-                                {% if current_date < review.expiry_date  %}
-                                <a href="{% url 'reviews:edit_review' review.id %}" class="btn btn-primary">
-                                    Редактировать
-                                </a>
-                                {% endif %}
-                            </div>
-                        </div>
-                        {# Ограничение длины комментария #}
-                        {% if review.comment|length > 100 %}
-                            <p class="mb-0">{{ review.comment|truncatechars:100 }}</p>
-                            <a href="#" class="text-primary read-more" 
-                            data-bs-toggle="modal" 
-                            data-bs-target="#reviewModal{{ review.id }}">
-                                Читать полностью
-                            </a>
-                        {% else %}
-                            <p class="mb-0">{{ review.comment }}</p>
-                        {% endif %}
-                        <p class="mb-0">{{ review.created_at }}</p>
-                    </div>
-                </div>
-                {# Модальное окно для полного текста #}
-                {% if review.comment|length > 100 %}
-                <div class="modal fade" id="reviewModal{{ review.id }}" tabindex="-1" aria-hidden="true">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <div class="modal-header">
+<div class="my-reviews-page">
+    <div class="container">
+        {% comment %} <!-- Хлебные крошки -->
+        <nav class="breadcrumb-nav mb-4">
+            <a href="{% url 'main:index' %}">Главная</a>
+            <span class="breadcrumb-separator">/</span>
+            <a href="{% url 'reviews:reviews' %}">Отзывы</a>
+            <span class="breadcrumb-separator">/</span>
+            <span class="current">Мои отзывы</span>
+        </nav> {% endcomment %}
+
+        <div class="page-header text-center mb-5">
+            <h1 class="page-title">
+                <i class="fas fa-comments me-3"></i>
+                Мои отзывы
+            </h1>
+            <p class="page-subtitle">Все ваши отзывы в одном месте</p>
+        </div>
+
+        {% if not my_reviews %}
+        <div class="empty-state text-center p-5">
+            <div class="empty-icon mb-4">
+                <i class="fas fa-comment-slash" style="font-size: 4rem; color: #E5E7EB;"></i>
+            </div>
+            <h3 class="mb-3">Отзывов пока нет</h3>
+            <p class="text-muted mb-4">Вы еще не оставляли отзывов. Поделитесь вашим опытом!</p>
+            <a href="{% url 'reviews:add_review' %}" class="btn btn-primary btn-lg rounded-pill px-4">
+                <i class="fas fa-plus me-2"></i>
+                Оставить первый отзыв
+            </a>
+        </div>
+        {% else %}
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4 mb-5">
+            {% for review in my_reviews %}
+            <div class="col">
+                <div class="review-card card h-100 border-0 shadow-sm {% if current_date < review.expiry_date %}border-start border-4 border-success{% else %}border-start border-4 border-primary{% endif %}">
+                    <div class="card-body">
+                        <!-- Заголовок отзыва -->
+                        <div class="review-header d-flex justify-content-between align-items-start mb-3">
+                            <div class="user-info d-flex align-items-center">
                                 {% if review.user.image %}
-                                    <img src="{{ review.user.image.url }}" class="testimonial-img me-3" alt="Клиент">
+                                <img src="{{ review.user.image.url }}" alt="{{ review.user.username }}" class="user-avatar rounded-circle me-3" style="width: 50px; height: 50px; object-fit: cover; border: 3px solid var(--primary-color);">
                                 {% else %}
-                                    <img src="{% static 'deps/images/bg-image.jpg' %}" class="testimonial-img me-3" alt="Клиент">
+                                <div class="avatar-placeholder rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 50px; height: 50px; background: var(--gradient-primary); color: white;">
+                                    <i class="fas fa-user"></i>
+                                </div>
                                 {% endif %}
-                                <h5 class="modal-title">Отзыв от {{ review.user.username }}</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                <div class="user-details">
+                                    <h6 class="username mb-1 fw-bold">{{ review.user.username }}</h6>
+                                    <div class="rating-stars">
+                                        {% for i in "12345"|make_list %}
+                                        <i class="fas fa-star{% if forloop.counter > review.stars %}-o{% endif %}" style="color: {% if forloop.counter <= review.stars %}#FFD700{% else %}#E5E7EB{% endif %}; font-size: 0.9rem;"></i>
+                                        {% endfor %}
+                                    </div>
+                                </div>
                             </div>
-                            <div class="modal-body text-center">
-                                {{ review.comment }}
+                            <div class="review-meta text-end">
+                                <span class="review-date d-block text-muted small">{{ review.created_at|date:"d.m.Y" }}</span>
+                                {% if current_date < review.expiry_date %}
+                                <span class="edit-badge badge bg-success mt-1">Можно редактировать</span>
+                                {% endif %}
                             </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-primary ms-lg-3" data-bs-dismiss="modal">Закрыть</button>
-                            </div>
+                        </div>
+
+                        <!-- Контент отзыва -->
+                        <div class="review-content mb-3">
+                            <p class="review-text mb-2">{{ review.comment|truncatewords:30 }}</p>
+                            {% if review.comment|wordcount > 30 %}
+                            <button class="btn btn-link p-0 text-primary read-more-btn" data-bs-toggle="modal" data-bs-target="#reviewModal{{ review.id }}">
+                                Читать полностью
+                            </button>
+                            {% endif %}
+                        </div>
+
+                        <!-- Действия -->
+                        <div class="review-actions d-flex gap-2">
+                            {% if current_date < review.expiry_date %}
+                            <a href="{% url 'reviews:edit_review' review.id %}" class="btn btn-primary btn-sm rounded-pill">
+                                <i class="fas fa-edit me-1"></i>
+                                Редактировать
+                            </a>
+                            {% endif %}
+                            <button class="btn btn-outline-secondary btn-sm rounded-pill share-btn" data-review-id="{{ review.id }}">
+                                <i class="fas fa-share-alt me-1"></i>
+                                Поделиться
+                            </button>
                         </div>
                     </div>
                 </div>
-                {% endif %}
+            </div>
+
+            <!-- Модальное окно для полного текста -->
+            <div class="modal fade" id="reviewModal{{ review.id }}" tabindex="-1">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Полный текст отзыва</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="modal-rating mb-3">
+                                {% for i in "12345"|make_list %}
+                                <i class="fas fa-star{% if forloop.counter > review.stars %}-o{% endif %}" style="color: {% if forloop.counter <= review.stars %}#FFD700{% else %}#E5E7EB{% endif %}"></i>
+                                {% endfor %}
+                            </div>
+                            <p class="modal-text">{{ review.comment }}</p>
+                            <div class="modal-date text-muted small text-end mt-3">
+                                Оставлен {{ review.created_at|date:"d.m.Y в H:i" }}
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
             {% endfor %}
+        </div>
+        {% endif %}
+
+        <!-- Статистика -->
+        {% if my_reviews %}
+        <div class="row row-cols-1 row-cols-md-3 g-4 mb-5">
+            <div class="col">
+                <div class="stat-card card border-0 shadow-sm text-center h-100">
+                    <div class="card-body">
+                        <div class="stat-icon mx-auto mb-3 rounded-circle d-flex align-items-center justify-content-center" style="width: 60px; height: 60px; background: var(--gradient-primary); color: white; font-size: 1.5rem;">
+                            <i class="fas fa-star"></i>
+                        </div>
+                        <h3 class="fw-bold">{{ average_rating|default:"5.0" }}</h3>
+                        <p class="text-muted mb-0">Средняя оценка</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="stat-card card border-0 shadow-sm text-center h-100">
+                    <div class="card-body">
+                        <div class="stat-icon mx-auto mb-3 rounded-circle d-flex align-items-center justify-content-center" style="width: 60px; height: 60px; background: var(--gradient-primary); color: white; font-size: 1.5rem;">
+                            <i class="fas fa-comment"></i>
+                        </div>
+                        <h3 class="fw-bold">{{ my_reviews|length }}</h3>
+                        <p class="text-muted mb-0">Всего отзывов</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="stat-card card border-0 shadow-sm text-center h-100">
+                    <div class="card-body">
+                        <div class="stat-icon mx-auto mb-3 rounded-circle d-flex align-items-center justify-content-center" style="width: 60px; height: 60px; background: var(--gradient-primary); color: white; font-size: 1.5rem;">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <h3 class="fw-bold">{{ editable_reviews }}</h3>
+                        <p class="text-muted mb-0">Можно редактировать</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<style>
+    .my-reviews-page {
+        padding: 2rem 0;
+        background: linear-gradient(135deg, #FFF5EE 0%, #F8F6FF 100%);
+        min-height: 100vh;
+    }
+
+    .breadcrumb-nav {
+        font-size: 0.9rem;
+        color: #6B7280;
+    }
+
+    .breadcrumb-nav a {
+        color: var(--primary-color);
+        text-decoration: none;
+    }
+
+    .breadcrumb-nav a:hover {
+        text-decoration: underline;
+    }
+
+    .breadcrumb-separator {
+        margin: 0 0.5rem;
+    }
+
+    .page-title {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: var(--dark-color);
+        margin-bottom: 0.5rem;
+    }
+
+    .page-title i {
+        color: var(--primary-color);
+    }
+
+    .page-subtitle {
+        color: #6B7280;
+        font-size: 1.1rem;
+    }
+
+    .review-card {
+        transition: all 0.3s ease;
+    }
+
+    .review-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+    }
+
+    .user-avatar {
+        border: 3px solid var(--primary-color);
+    }
+
+    .avatar-placeholder {
+        font-size: 1.2rem;
+    }
+
+    .rating-stars {
+        line-height: 1;
+    }
+
+    .review-text {
+        color: var(--dark-color);
+        line-height: 1.6;
+    }
+
+    .read-more-btn {
+        font-size: 0.9rem;
+        text-decoration: none;
+    }
+
+    .read-more-btn:hover {
+        text-decoration: underline;
+    }
+
+    .stat-card {
+        transition: all 0.3s ease;
+    }
+
+    .stat-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+    }
+
+    /* Адаптация для мобильных */
+    @media (max-width: 768px) {
+        .page-title {
+            font-size: 2rem;
+        }
+        
+        .review-header {
+            flex-direction: column;
+            align-items: flex-start !important;
+        }
+        
+        .review-meta {
+            text-align: left !important;
+            margin-top: 1rem;
+        }
+        
+        .review-actions {
+            flex-direction: column;
+        }
+        
+        .review-actions .btn {
+            width: 100%;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .page-title {
+            font-size: 1.75rem;
+        }
+        
+        .empty-state {
+            padding: 2rem 1rem !important;
+        }
+        
+        .stat-card .card-body {
+            padding: 1.5rem 1rem;
+        }
+        
+        .stat-icon {
+            width: 50px !important;
+            height: 50px !important;
+            font-size: 1.2rem !important;
+        }
+        
+        .stat-card h3 {
+            font-size: 1.5rem;
+        }
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Обработка кнопки "Поделиться"
+        document.querySelectorAll('.share-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const reviewId = this.getAttribute('data-review-id');
+                
+                if (navigator.share) {
+                    navigator.share({
+                        title: 'Мой отзыв о HairBraider',
+                        text: 'Посмотрите мой отзыв о салоне красоты HairBraider',
+                        url: window.location.href
+                    }).catch(console.error);
+                } else {
+                    // Fallback для браузеров без поддержки Web Share API
+                    alert('Скопируйте ссылку из адресной строки браузера, чтобы поделиться');
+                }
+            });
+        });
+    });
+</script>
 {% endblock content %}

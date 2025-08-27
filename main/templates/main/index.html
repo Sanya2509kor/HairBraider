@@ -1,40 +1,407 @@
 {% extends "base.html" %}
 {% load static %}
 
-
-
 {% block title %}
-    <title> {{ title }} </title>
+    <title>{{ title }}</title>
 {% endblock title %}
 
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/services.css' %}">
+{% endblock %}
+
 {% block content %}
-<section id="services" class="py-5">
+<section id="services" class="services-section">
     <div class="container">
-        <div class="text-center mb-5">
-            <h2 class="fw-bold"> {{ title_text }} </h2>
-            <p class="text-muted"> {{ text }} </p>
+        <!-- Заголовок секции -->
+        <div class="section-header text-center">
+            <h1 class="section-title gradient-text">{{ title_text }}</h1>
+            <p class="section-subtitle">{{ text }}</p>
         </div>
         
-        <div class="row row-cols-1 row-cols-md-3 g-4 justify-content-center">
+        <!-- Сетка услуг -->
+        <div class="services-grid">
             {% for product in goods %}
                 {% if product.show and product.image %}
-                    <a href="{{ product.slug }}" class="text-decoration-none">
-                        <div class="col">
-                            <div class="service-card">
-                                <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}">
-                                <div class="card-body text-center">
-                                    <h5 class="card-title"> {{ product.name }} </h5>
-                                    <p class="card-text"> {{ product.description }} </p>
-                                    <span class="price-badge">от {{ product.price }} ₽</span>
-                                </div>
+                <a href="{{ product.slug }}" class="service-card-link">
+                    <div class="service-card">
+                        <!-- Изображение услуги -->
+                        <div class="service-image-container">
+                            <img src="{{ product.image.url }}" 
+                                 alt="{{ product.name }}" 
+                                 class="service-image"
+                                 loading="lazy">
+                            <div class="service-overlay">
+                                <span class="view-more-btn">Смотреть подробнее</span>
                             </div>
                         </div>
-                    </a>
+                        
+                        <!-- Контент карточки -->
+                        <div class="service-content">
+                            <h3 class="service-title">{{ product.name }}</h3>
+                            <p class="service-description">{{ product.description|truncatewords:15 }}</p>
+                            
+                            <div class="service-footer">
+                                <span class="service-price">от {{ product.price }} ₽</span>
+                                {% if product.make_time %}
+                                <span class="service-duration">
+                                    <i class="fas fa-clock"></i>
+                                    {{ product.make_time }}
+                                </span>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        {% comment %} <!-- Бейдж популярности -->
+                        {% if forloop.counter <= 3 %}
+                        <div class="popular-badge">
+                            <i class="fas fa-star"></i>
+                            Популярно
+                        </div>
+                        {% endif %} {% endcomment %}
+                    </div>
+                </a>
                 {% endif %}
             {% endfor %}
         </div>
+        
+        <!-- Пагинация -->
         {% include "pagination.html" %}
+        
+        <!-- CTA секция -->
+        <div class="cta-section text-center">
+            <div class="cta-content">
+                <h2>Не нашли нужный вариант?</h2>
+                <p>Свяжитесь с нами для индивидуальной консультации</p>
+                <a href="{% url 'about:contacts' %}" class="cta-button">
+                    <i class="fas fa-phone-alt"></i>
+                    Заказать консультацию
+                </a>
+            </div>
+        </div>
     </div>
 </section>
-{% endblock content %}
 
+<style>
+    /* services.css */
+    .services-section {
+        padding: 2rem 0;
+        background: linear-gradient(135deg, #FFF5EE 0%, #F8F6FF 100%);
+        min-height: 100vh;
+    }
+
+    .section-header {
+        margin-bottom: 3rem;
+    }
+
+    .section-title {
+        font-size: 2.5rem;
+        font-weight: 800;
+        margin-bottom: 1rem;
+        background: linear-gradient(135deg, #8A2BE2 0%, #FF69B4 100%);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+    }
+
+    .section-subtitle {
+        font-size: 1.1rem;
+        color: #6B7280;
+        max-width: 600px;
+        margin: 0 auto;
+    }
+
+    .services-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+        gap: 2rem;
+        margin-bottom: 3rem;
+    }
+
+    .service-card-link {
+        text-decoration: none;
+        color: inherit;
+        transition: all 0.3s ease;
+    }
+
+    .service-card-link:hover {
+        transform: translateY(-5px);
+    }
+
+    .service-card {
+        background: white;
+        border-radius: 24px;
+        overflow: hidden;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+        transition: all 0.4s ease;
+        position: relative;
+        height: 100%;
+    }
+
+    .service-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 20px 60px rgba(138, 43, 226, 0.15);
+    }
+
+    .service-image-container {
+        position: relative;
+        height: 250px;
+        overflow: hidden;
+    }
+
+    .service-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.4s ease;
+    }
+
+    .service-card:hover .service-image {
+        transform: scale(1.05);
+    }
+
+    .service-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(180deg, transparent 60%, rgba(138, 43, 226, 0.9) 100%);
+        display: flex;
+        align-items: flex-end;
+        justify-content: center;
+        padding: 2rem;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    .service-card:hover .service-overlay {
+        opacity: 1;
+    }
+
+    .view-more-btn {
+        color: white;
+        background: rgba(255, 255, 255, 0.2);
+        padding: 12px 24px;
+        border-radius: 25px;
+        backdrop-filter: blur(10px);
+        font-weight: 600;
+    }
+
+    .service-content {
+        padding: 1.5rem;
+    }
+
+    .service-title {
+        font-size: 1.3rem;
+        font-weight: 700;
+        color: #2F4F4F;
+        margin-bottom: 0.8rem;
+        line-height: 1.4;
+    }
+
+    .service-description {
+        color: #6B7280;
+        line-height: 1.6;
+        margin-bottom: 1.5rem;
+        font-size: 0.95rem;
+    }
+
+    .service-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-top: 1rem;
+        border-top: 1px solid #F3F4F6;
+    }
+
+    .service-price {
+        font-size: 1.4rem;
+        font-weight: 800;
+        color: #8A2BE2;
+    }
+
+    .service-duration {
+        color: #9CA3AF;
+        font-size: 0.9rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .popular-badge {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        background: linear-gradient(135deg, #FFD700 0%, #FF69B4 100%);
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        box-shadow: 0 4px 15px rgba(255, 105, 180, 0.3);
+    }
+
+    .cta-section {
+        background: linear-gradient(135deg, #8A2BE2 0%, #9370DB 100%);
+        padding: 3rem 2rem;
+        border-radius: 24px;
+        margin: 3rem 0;
+        color: white;
+    }
+
+    .cta-content h2 {
+        font-size: 1.8rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+    }
+
+    .cta-content p {
+        font-size: 1.1rem;
+        margin-bottom: 2rem;
+        opacity: 0.9;
+    }
+
+    .cta-button {
+        background: white;
+        color: #8A2BE2;
+        padding: 1rem 2rem;
+        border-radius: 25px;
+        text-decoration: none;
+        font-weight: 700;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .cta-button:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        color: #FF69B4;
+    }
+
+    /* Адаптация для мобильных */
+    @media (max-width: 768px) {
+        .services-section {
+            padding: 1rem 0;
+        }
+        
+        .section-title {
+            font-size: 2rem;
+        }
+        
+        .services-grid {
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+        }
+        
+        .service-image-container {
+            height: 200px;
+        }
+        
+        .service-content {
+            padding: 1.2rem;
+        }
+        
+        .service-title {
+            font-size: 1.2rem;
+        }
+        
+        .service-price {
+            font-size: 1.2rem;
+        }
+        
+        .cta-section {
+            padding: 2rem 1.5rem;
+            margin: 2rem 0;
+        }
+        
+        .cta-content h2 {
+            font-size: 1.5rem;
+        }
+        
+        .popular-badge {
+            font-size: 0.7rem;
+            padding: 0.4rem 0.8rem;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .section-title {
+            font-size: 1.8rem;
+        }
+        
+        .service-image-container {
+            height: 180px;
+        }
+        
+        .service-footer {
+            flex-direction: column;
+            gap: 1rem;
+            align-items: flex-start;
+        }
+        
+        .cta-button {
+            padding: 0.8rem 1.5rem;
+            font-size: 0.9rem;
+        }
+    }
+
+    /* Анимации */
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .service-card {
+        animation: fadeInUp 0.6s ease;
+    }
+
+    /* Улучшенная доступность */
+    @media (prefers-reduced-motion: reduce) {
+        .service-card,
+        .service-image,
+        .service-overlay,
+        .cta-button {
+            transition: none;
+        }
+        
+        .service-card {
+            animation: none;
+        }
+    }
+</style>
+
+<script>
+    // Анимация при скролле
+    document.addEventListener('DOMContentLoaded', function() {
+        const serviceCards = document.querySelectorAll('.service-card');
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, { threshold: 0.1 });
+        
+        serviceCards.forEach(card => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(30px)';
+            card.style.transition = 'all 0.6s ease';
+            observer.observe(card);
+        });
+    });
+</script>
+{% endblock content %}

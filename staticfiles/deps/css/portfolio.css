@@ -1,20 +1,21 @@
+/* portfolio.css - обновленная версия */
 .service-card {
     border: none;
-    border-radius: 15px;
+    border-radius: 20px;
     overflow: hidden;
-    transition: transform 0.3s;
-    margin-bottom: 20px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-    background-color: #cce6cf;
+    transition: all 0.3s ease;
+    margin-bottom: 25px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    background: white;
 }
 
 .service-card .carousel {
     position: relative;
     overflow: hidden;
     max-width: 100%;
-    height: 450px;
+    height: 300px;
     touch-action: pan-y;
-    -webkit-overflow-scrolling: touch; /* Плавный скролл на iOS */
+    border-radius: 15px 15px 0 0;
 }
 
 .service-card .images {
@@ -24,7 +25,7 @@
     width: 100%;
     height: 100%;
     display: flex;
-    transition: transform 0.3s ease;
+    transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     will-change: transform;
 }
 
@@ -39,60 +40,67 @@
     user-select: none;
     -webkit-touch-callout: none;
     -webkit-tap-highlight-color: transparent;
-    pointer-events: none; /* Предотвращает случайные клики при скролле */
 }
 
-/* Стили для счетчика на мобильных */
+/* Стили для счетчика */
 .service-card .mobile-counter {
     position: absolute;
-    top: 10px;
-    right: 10px;
-    background: rgba(0, 0, 0, 0.5);
+    top: 15px;
+    right: 15px;
+    background: rgba(138, 43, 226, 0.9);
     color: white;
-    padding: 3px 8px;
-    border-radius: 12px;
+    padding: 5px 12px;
+    border-radius: 15px;
     font-size: 14px;
+    font-weight: 600;
     z-index: 10;
     display: none;
 }
 
 .service-card .controls {
     position: absolute;
-    bottom: 10px;
-    right: 10px;
+    bottom: 15px;
+    right: 15px;
     display: flex;
-    gap: 10px;
+    align-items: center;
+    gap: 12px;
     z-index: 10;
-    background: rgba(255, 255, 255, 0.7);
-    padding: 5px 10px;
-    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.95);
+    padding: 8px 15px;
+    border-radius: 25px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
 
 .service-card .controls button {
-    background: none;
+    background: var(--gradient-primary);
     border: none;
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
     cursor: pointer;
-    font-size: 20px;
-    color: #333;
+    font-size: 16px;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.service-card .controls button:hover {
+    transform: scale(1.1);
+    background: var(--gradient-secondary);
 }
 
 .service-card .current-image {
     font-size: 14px;
-    color: #555;
+    font-weight: 600;
+    color: var(--dark-color);
 }
 
-/* Предотвращение шатания при скролле */
-.service-card {
-    -webkit-transform: translateZ(0);
-    transform: translateZ(0);
-    backface-visibility: hidden;
-    perspective: 1000px;
-}
-
-/* Адаптивные стили */
+/* Адаптивные стили для мобильных */
 @media (max-width: 768px) {
     .service-card .carousel {
-        height: 350px; /* Уменьшаем высоту для мобильных */
+        height: 250px;
     }
     
     .service-card .controls {
@@ -107,21 +115,43 @@
         display: none;
     }
     
-    /* Улучшение для touch-устройств */
+    /* Улучшения для touch-устройств */
     .service-card .images {
         -webkit-overflow-scrolling: touch;
+        scroll-snap-type: x mandatory;
     }
     
     .service-card .images img {
-        pointer-events: auto; /* Включаем события для кликов */
+        scroll-snap-align: center;
+        pointer-events: auto;
     }
 }
 
-/* Дополнительные улучшения для предотвращения шатания */
-html, body {
-    overflow-x: hidden;
+@media (max-width: 480px) {
+    .service-card .carousel {
+        height: 220px;
+    }
+    
+    .service-card .mobile-counter {
+        top: 10px;
+        right: 10px;
+        font-size: 12px;
+        padding: 4px 10px;
+    }
+}
+
+/* Анимация появления */
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .service-card {
-    transform: translate3d(0, 0, 0);
+    animation: slideIn 0.6s ease;
 }

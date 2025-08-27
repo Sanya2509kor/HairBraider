@@ -1,143 +1,501 @@
 {% extends "base.html" %}
 {% load static %}
 
-
 {% block title %}
-<title> {{ title }} </title>
+<title>{{ title }}</title>
 {% endblock title %}
 
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/reviews.css' %}">
+{% endblock %}
 
 {% block content %}
+<div class="review-page">
+    <div class="container">
+        {% comment %} <!-- Хлебные крошки -->
+        <nav class="breadcrumb-nav">
+            <a href="{% url 'main:index' %}">Главная</a>
+            <span class="breadcrumb-separator">/</span>
+            <a href="{% url 'reviews:reviews' %}">Отзывы</a>
+            <span class="breadcrumb-separator">/</span>
+            <span class="current">{% if review %}Редактирование{% else %}Новый отзыв{% endif %}</span>
+        </nav> {% endcomment %}
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-<link rel="stylesheet" href="{% static 'deps/css/my_css_forma_appoint.css' %}">
+        <div class="review-form-container">
+            <div class="review-form-card">
+                <div class="form-header">
+                    <h1 class="form-title">
+                        <i class="fas fa-star"></i>
+                        {% if review %}Редактировать отзыв{% else %}Оставить отзыв{% endif %}
+                    </h1>
+                    <p class="form-subtitle">Поделитесь вашим опытом и помогите другим сделать правильный выбор</p>
+                </div>
 
-<div class="container">
-    <div class="row justify-content-center">
-        <div class="col-md-8 col-lg-6">
-            <div class="appointment-form">
-                <h2 class="form-header">Оставьте отзыв</h2>
-                <form method="post" id="reviewForm">
+                <form method="post" id="reviewForm" class="review-form">
                     {% csrf_token %}
                     
-                    <!-- Поле рейтинга -->
-                    <div class="mb-4 text-center">
-                        <label class="form-label">Ваша оценка</label>
-                        <div class="rating-stars mb-3">
+                    <!-- Рейтинг -->
+                    <div class="rating-section">
+                        <label class="rating-label">Ваша оценка</label>
+                        <div class="stars-rating">
                             {% for i in "12345" %}
-                                <i class="far fa-star star" data-value="{{ i }}"></i>
+                            <input type="radio" 
+                                   name="stars" 
+                                   value="{{ i }}" 
+                                   id="star{{ i }}" 
+                                   class="star-input"
+                                   {% if form.stars.value == i %}checked{% endif %}>
+                            <label for="star{{ i }}" class="star-label">
+                                <i class="fas fa-star"></i>
+                            </label>
                             {% endfor %}
-                            {{ form.stars }}  <!-- Скрытое поле для хранения значения -->
                         </div>
+                        {% if form.stars.errors %}
+                        <div class="error-message">{{ form.stars.errors }}</div>
+                        {% endif %}
                     </div>
-                    
-                    <!-- Поле комментария -->
-                    <div class="mb-4">
-                        <label for="id_comment" class="form-label">Комментарий</label>
-                        {{ form.comment }}
+
+                    <!-- Комментарий -->
+                    <div class="comment-section">
+                        <label for="id_comment" class="comment-label">
+                            <i class="fas fa-comment"></i>
+                            Ваш комментарий
+                        </label>
+                        <div class="comment-wrapper">
+                            {{ form.comment }}
+                            <div class="comment-counter">
+                                <span id="charCount">0</span>/500
+                            </div>
+                        </div>
+                        {% if form.comment.errors %}
+                        <div class="error-message">{{ form.comment.errors }}</div>
+                        {% endif %}
                     </div>
-                    
-                    <button type="submit" class="btn btn-primary btn-submit">Отправить отзыв</button>
+
+                    <!-- Кнопки -->
+                    <div class="form-actions">
+                        <button type="submit" class="submit-btn primary-btn">
+                            <i class="fas fa-paper-plane"></i>
+                            {% if review %}Обновить отзыв{% else %}Опубликовать отзыв{% endif %}
+                        </button>
+                        <a href="{% if review %}{% url 'reviews:my_reviews' %}{% else %}{% url 'reviews:reviews' %}{% endif %}" 
+                           class="cancel-btn secondary-btn">
+                            <i class="fas fa-times"></i>
+                            Отмена
+                        </a>
+                    </div>
                 </form>
+
+                <!-- Подсказки -->
+                <div class="form-tips">
+                    <div class="tip-item">
+                        <i class="fas fa-lightbulb"></i>
+                        <span>Опишите ваш опыт подробнее - это поможет другим клиентам</span>
+                    </div>
+                    <div class="tip-item">
+                        <i class="fas fa-heart"></i>
+                        <span>Мы ценим ваше мнение и постоянно работаем над улучшением</span>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </div>
 
 <style>
-    .rating-stars {
-        font-size: 2rem;
-        color: #ddd;  /* Цвет незаполненных звёзд */
+    /* reviews.css */
+    .review-page {
+        padding: 2rem 0;
+        background: linear-gradient(135deg, #FFF5EE 0%, #F8F6FF 100%);
+        min-height: 100vh;
+    }
+
+    /* Хлебные крошки */
+    .breadcrumb-nav {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-bottom: 2rem;
+        font-size: 0.9rem;
+    }
+
+    .breadcrumb-nav a {
+        color: var(--primary-color);
+        text-decoration: none;
+        transition: color 0.3s ease;
+    }
+
+    .breadcrumb-nav a:hover {
+        color: var(--secondary-color);
+    }
+
+    .breadcrumb-separator {
+        color: #6B7280;
+    }
+
+    .breadcrumb-nav .current {
+        color: var(--dark-color);
+        font-weight: 600;
+    }
+
+    /* Форма */
+    .review-form-container {
+        max-width: 600px;
+        margin: 0 auto;
+    }
+
+    .review-form-card {
+        background: white;
+        padding: 2.5rem;
+        border-radius: 24px;
+        box-shadow: 0 20px 60px rgba(138, 43, 226, 0.1);
+    }
+
+    .form-header {
+        text-align: center;
+        margin-bottom: 2.5rem;
+    }
+
+    .form-title {
+        font-size: 2.2rem;
+        font-weight: 700;
+        color: var(--dark-color);
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.75rem;
+    }
+
+    .form-title i {
+        color: #FFD700;
+    }
+
+    .form-subtitle {
+        color: #6B7280;
+        font-size: 1.1rem;
+    }
+
+    /* Рейтинг */
+    .rating-section {
+        text-align: center;
+        margin-bottom: 2.5rem;
+    }
+
+    .rating-label {
+        display: block;
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: var(--dark-color);
+        margin-bottom: 1rem;
+    }
+
+    .stars-rating {
+        display: flex;
+        justify-content: center;
+        gap: 0.5rem;
+        margin: 1rem 0;
+    }
+
+    .star-input {
+        display: none;
+    }
+
+    .star-label {
         cursor: pointer;
-        margin: 10px 0;
+        transition: all 0.3s ease;
+        font-size: 2.5rem;
+        color: #E5E7EB;
     }
-    .rating-stars .star {
-        margin: 0 5px;
-        transition: all 0.2s;
-    }
-    .rating-stars .fas {
-        color: #ffc107;  /* Цвет заполненных звёзд */
-    }
-    .rating-stars .star:hover {
+
+    .star-label:hover,
+    .star-input:checked ~ .star-label {
+        color: #FFD700;
         transform: scale(1.2);
+    }
+
+    .star-label:hover ~ .star-label {
+        color: #E5E7EB;
+    }
+
+    /* Комментарий */
+    .comment-section {
+        margin-bottom: 2.5rem;
+    }
+
+    .comment-label {
+        display: block;
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: var(--dark-color);
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .comment-label i {
+        color: var(--primary-color);
+    }
+
+    .comment-wrapper {
+        position: relative;
+    }
+
+    #id_comment {
+        width: 100%;
+        min-height: 150px;
+        padding: 1.5rem;
+        border: 2px solid #E5E7EB;
+        border-radius: 16px;
+        font-size: 1rem;
+        line-height: 1.6;
+        resize: vertical;
+        transition: all 0.3s ease;
+        background: white;
+    }
+
+    #id_comment:focus {
+        outline: none;
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 3px rgba(138, 43, 226, 0.1);
+    }
+
+    .comment-counter {
+        position: absolute;
+        bottom: 1rem;
+        right: 1rem;
+        font-size: 0.8rem;
+        color: #6B7280;
+        background: rgba(255, 255, 255, 0.9);
+        padding: 0.25rem 0.5rem;
+        border-radius: 10px;
+    }
+
+    /* Кнопки */
+    .form-actions {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        margin-bottom: 2rem;
+    }
+
+    .primary-btn,
+    .secondary-btn {
+        padding: 1rem 2rem;
+        border-radius: 25px;
+        font-size: 1rem;
+        font-weight: 600;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: all 0.3s ease;
+        border: none;
+        cursor: pointer;
+    }
+
+    .primary-btn {
+        background: var(--gradient-primary);
+        color: white;
+    }
+
+    .primary-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(138, 43, 226, 0.3);
+    }
+
+    .secondary-btn {
+        background: transparent;
+        color: var(--primary-color);
+        border: 2px solid var(--primary-color);
+    }
+
+    .secondary-btn:hover {
+        background: var(--primary-color);
+        color: white;
+        transform: translateY(-2px);
+    }
+
+    /* Подсказки */
+    .form-tips {
+        background: linear-gradient(135deg, #F8F6FF 0%, #FFF5EE 100%);
+        padding: 1.5rem;
+        border-radius: 16px;
+        border-left: 4px solid var(--primary-color);
+    }
+
+    .tip-item {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        margin-bottom: 0.75rem;
+        color: #6B7280;
+    }
+
+    .tip-item:last-child {
+        margin-bottom: 0;
+    }
+
+    .tip-item i {
+        color: var(--primary-color);
+        font-size: 1.1rem;
+    }
+
+    /* Сообщения об ошибках */
+    .error-message {
+        color: #DC2626;
+        font-size: 0.9rem;
+        margin-top: 0.5rem;
+        padding: 0.5rem;
+        background: #FEF2F2;
+        border-radius: 8px;
+        border-left: 3px solid #DC2626;
+    }
+
+    /* Анимации */
+    @keyframes starPulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.3); }
+        100% { transform: scale(1); }
+    }
+
+    .star-label:hover {
+        animation: starPulse 0.6s ease;
+    }
+
+    /* Адаптация для мобильных */
+    @media (max-width: 768px) {
+        .review-page {
+            padding: 1rem 0;
+        }
+        
+        .review-form-card {
+            padding: 2rem;
+        }
+        
+        .form-title {
+            font-size: 1.8rem;
+        }
+        
+        .stars-rating {
+            gap: 0.25rem;
+        }
+        
+        .star-label {
+            font-size: 2rem;
+        }
+        
+        .form-actions {
+            flex-direction: column;
+        }
+        
+        .primary-btn,
+        .secondary-btn {
+            width: 100%;
+            justify-content: center;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .review-form-card {
+            padding: 1.5rem;
+        }
+        
+        .form-title {
+            font-size: 1.5rem;
+        }
+        
+        .star-label {
+            font-size: 1.8rem;
+        }
+        
+        #id_comment {
+            min-height: 120px;
+            padding: 1rem;
+        }
+        
+        .form-tips {
+            padding: 1rem;
+        }
+        
+        .tip-item {
+            font-size: 0.9rem;
+        }
+    }
+
+    /* Улучшенная доступность */
+    @media (prefers-reduced-motion: reduce) {
+        .star-label,
+        .primary-btn,
+        .secondary-btn {
+            transition: none;
+        }
+        
+        .star-label:hover {
+            animation: none;
+        }
     }
 </style>
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    const stars = document.querySelectorAll('.star');
-    const ratingInput = document.getElementById('id_stars');
-    
-    // Инициализация (если есть сохранённое значение)
-    if (ratingInput.value) {
-        highlightStars(ratingInput.value);
-    }
-    
-    stars.forEach(star => {
-        star.addEventListener('click', function() {
-            const value = this.getAttribute('data-value');
-            ratingInput.value = value;
-            highlightStars(value);
-        });
+    document.addEventListener('DOMContentLoaded', function() {
+        // Подсчет символов
+        const commentField = document.getElementById('id_comment');
+        const charCount = document.getElementById('charCount');
         
-        star.addEventListener('mouseover', function() {
-            const hoverValue = this.getAttribute('data-value');
-            stars.forEach((s, index) => {
-                if (index < hoverValue) {
-                    s.classList.add('fas');
-                    s.classList.remove('far');
+        if (commentField && charCount) {
+            // Установить начальное значение
+            charCount.textContent = commentField.value.length;
+            
+            // Слушатель изменения
+            commentField.addEventListener('input', function() {
+                const length = this.value.length;
+                charCount.textContent = length;
+                
+                // Изменение цвета при приближении к лимиту
+                if (length > 450) {
+                    charCount.style.color = '#DC2626';
+                } else if (length > 400) {
+                    charCount.style.color = '#F59E0B';
+                } else {
+                    charCount.style.color = '#6B7280';
                 }
             });
-        });
+        }
         
-        star.addEventListener('mouseout', function() {
-            if (!ratingInput.value) return;
-            highlightStars(ratingInput.value);
+        // Валидация формы
+        const reviewForm = document.getElementById('reviewForm');
+        if (reviewForm) {
+            reviewForm.addEventListener('submit', function(e) {
+                const rating = document.querySelector('input[name="stars"]:checked');
+                const comment = document.getElementById('id_comment');
+                
+                if (!rating) {
+                    e.preventDefault();
+                    alert('Пожалуйста, выберите оценку');
+                    return false;
+                }
+                
+                if (comment.value.trim().length < 10) {
+                    e.preventDefault();
+                    alert('Комментарий должен содержать не менее 10 символов');
+                    return false;
+                }
+                
+                if (comment.value.length > 500) {
+                    e.preventDefault();
+                    alert('Комментарий не должен превышать 500 символов');
+                    return false;
+                }
+            });
+        }
+        
+        // Анимация звезд при загрузке
+        const stars = document.querySelectorAll('.star-label');
+        stars.forEach((star, index) => {
+            star.style.animationDelay = `${index * 0.1}s`;
         });
     });
-    
-    function highlightStars(count) {
-        stars.forEach((star, index) => {
-            if (index < count) {
-                star.classList.add('fas');
-                star.classList.remove('far');
-            } else {
-                star.classList.add('far');
-                star.classList.remove('fas');
-            }
-        });
-    }
-});
 </script>
-
 {% endblock content %}
-
-
-
-
-{% comment %} {% block content %}
-
-<link rel="stylesheet" href={% static "deps/css/my_css_forma_appoint.css" %}>
-
-<div class="container">
-    <div class="row justify-content-center">
-        <div class="col-md-8 col-lg-6">
-            <div class="appointment-form">
-                <h2 class="form-header">Будем рады 5 звёздочкам</h2>
-                <form method="post" id="appointmentForm">
-                        {% csrf_token %}
-                    <!-- Поле комментария -->
-                    <div class="mb-4 text-center text-white">
-                        <label for="id_comment" class="form-label">Комментарий</label>
-                    </div>
-                    <div class="row form-header">
-                        {{ form.comment }}
-                    </div>
-                    <button type="submit" class="btn btn-primary btn-submit">Отправить</button>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
-
-{% endblock content %} {% endcomment %}

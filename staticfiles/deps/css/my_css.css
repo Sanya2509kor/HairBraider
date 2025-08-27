@@ -1,86 +1,131 @@
 :root {
-    --primary-color: #0DFFFA;
-    --secondary-color: #0FFF2A;
-    --accent-color: #faedcd;
-    --dark-color: #6c584c;
-    --light-color: #f8f9fa;
+    --primary-color: #8A2BE2;
+    --secondary-color: #FF69B4;
+    --accent-color: #FFD700;
+    --dark-color: #2F4F4F;
+    --light-color: #FFF5EE;
+    --gradient-primary: linear-gradient(135deg, #8A2BE2 0%, #9370DB 100%);
+    --gradient-secondary: linear-gradient(135deg, #FF69B4 0%, #FFB6C1 100%);
+    --shadow-soft: 0 8px 25px rgba(0, 0, 0, 0.1);
+    --shadow-hover: 0 12px 35px rgba(0, 0, 0, 0.15);
 }
 
 body {
-    background-image: url("../images/bg-image.jpg");
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    /* background-color: var(--secondary-color); */
+    font-family: 'Poppins', 'Segoe UI', sans-serif;
+    background: var(--light-color);
     color: var(--dark-color);
+    line-height: 1.6;
 }
 
+/* Навигация */
 .navbar {
-    background-color: white;
-    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    box-shadow: var(--shadow-soft);
+    padding: 15px 0;
 }
 
 .navbar-brand {
     font-weight: 700;
-    color: #0DFFFA;
-
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    font-size: 1.4rem;
 }
 
-.navbar-brand:hover {
-    border-color: #0FFF2A;
-    color: #0FFF2A;
+.navbar-nav .nav-link {
+    color: var(--dark-color) !important;
+    font-weight: 500;
+    padding: 10px 15px;
+    border-radius: 20px;
+    margin: 5px;
+    transition: all 0.3s ease;
 }
 
+.navbar-nav .nav-link:hover {
+    background: var(--gradient-primary);
+    color: white !important;
+    transform: translateY(-2px);
+}
 
 .btn-primary {
-    background-color: var(--primary-color);
-    border-color: var(--primary-color);
+    background: var(--gradient-primary);
+    border: none;
+    border-radius: 25px;
+    padding: 12px 25px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: var(--shadow-soft);
 }
 
 .btn-primary:hover {
-    background-color: var(--secondary-color);
-    border-color: var(--secondary-color);
+    background: var(--gradient-secondary);
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-hover);
 }
 
+/* Карточки услуг */
 .service-card {
     border: none;
-    border-radius: 15px;
+    border-radius: 20px;
     overflow: hidden;
-    transition: transform 0.3s;
-    margin-bottom: 20px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-    background-color: #cce6cf;
+    transition: all 0.3s ease;
+    margin-bottom: 25px;
+    box-shadow: var(--shadow-soft);
+    background: white;
 }
 
 .service-card:hover {
-    transform: translateY(-10px);
+    transform: translateY(-8px);
+    box-shadow: var(--shadow-hover);
 }
 
 .service-card img {
-    height: 400px;
+    height: 300px;
     object-fit: cover;
-}
-
-.service-card .carousel {
-    height: 550px; /* Стало (или любое другое значение) */
-}
-
-.card-body {
-    background-color: white;
+    width: 100%;
 }
 
 .price-badge {
-    background-color: var(--primary-color);
+    background: var(--gradient-primary);
     color: white;
     font-weight: bold;
-    padding: 5px 15px;
+    padding: 8px 20px;
     border-radius: 20px;
+    font-size: 1.1rem;
 }
 
+.price-badge-two {
+    background: var(--gradient-secondary);
+    color: white;
+    font-weight: bold;
+    padding: 12px 25px;
+    border-radius: 25px;
+    font-size: 1.2rem;
+    text-decoration: none;
+    display: inline-block;
+    transition: all 0.3s ease;
+}
+
+.price-badge-two:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-hover);
+}
+
+/* Отзывы */
 .testimonial-card {
-    background-color: white;
-    border-radius: 15px;
-    padding: 20px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    background: white;
+    border-radius: 20px;
+    padding: 25px;
+    box-shadow: var(--shadow-soft);
+    transition: all 0.3s ease;
     margin-bottom: 20px;
+}
+
+.testimonial-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-hover);
 }
 
 .testimonial-img {
@@ -91,157 +136,275 @@ body {
     border: 3px solid var(--primary-color);
 }
 
-.footer {
-    background-color: var(--dark-color);
-    color: white;
-    padding: 40px 0;
-}
-
-.social-icon {
-    color: white;
-    font-size: 1.5rem;
-    margin-right: 15px;
-    transition: color 0.3s;
-}
-
-.social-icon:hover {
-    color: var(--primary-color);
-}
-
-.booking-form {
-    background-color: white;
-    border-radius: 15px;
+/* Формы */
+.appointment-form,
+.registration-form,
+.profile-form {
+    background: white;
+    border-radius: 25px;
+    box-shadow: var(--shadow-soft);
     padding: 30px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    margin: 30px 0;
+    transition: all 0.3s ease;
 }
 
-.gallery-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    max-width: 1000px;
-    margin: 0 auto;
-    padding: 20px;
+.appointment-form:hover,
+.registration-form:hover,
+.profile-form:hover {
+    box-shadow: var(--shadow-hover);
 }
 
-
-.arrow {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
+.form-header {
+    text-align: center;
+    margin-bottom: 30px;
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    font-weight: 700;
     font-size: 2rem;
-    cursor: pointer;
-    background: rgba(0, 0, 0, 0.5);
-    color: white;
+}
+
+.form-label {
+    font-weight: 600;
+    color: var(--dark-color);
+    margin-bottom: 8px;
+}
+
+.form-control {
+    border: 2px solid #e9ecef;
+    border-radius: 15px;
+    padding: 12px 20px;
+    transition: all 0.3s ease;
+    font-size: 1rem;
+}
+
+.form-control:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.3rem rgba(138, 43, 226, 0.15);
+    transform: translateY(-2px);
+}
+
+.btn-submit {
+    background: var(--gradient-primary);
     border: none;
-    padding: 10px 15px;
-    border-radius: 50%;
-    z-index: 10;
-}
-
-.arrow-left {
-    left: 200px;
-}
-
-.arrow-right {
-    right: 200px;
-}
-
-.thumbnails {
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 10px;
+    border-radius: 25px;
+    padding: 15px 30px;
+    font-weight: 600;
+    font-size: 1.1rem;
+    transition: all 0.3s ease;
+    width: 100%;
+    color: white;
     margin-top: 20px;
 }
 
-.thumbnail {
-    width: 80px;
-    height: 80px;
-    object-fit: cover;
+.btn-submit:hover:not(:disabled) {
+    background: var(--gradient-secondary);
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-hover);
+}
+
+/* Звезды рейтинга */
+.rating-stars {
+    font-size: 2rem;
+    color: #ddd;
     cursor: pointer;
-    border: 2px solid transparent;
-    opacity: 0.7;
-    transition: all 0.3s;
+    margin: 10px 0;
 }
 
-.arrow:hover {
-    background: rgba(0, 0, 0, 0.8);
+.rating-stars .star {
+    margin: 0 5px;
+    transition: all 0.2s;
 }
 
-.arrow svg {
-    width: 20px;
-    height: 20px;
-    color: white;
+.rating-stars .fas {
+    color: #ffc107;
 }
 
-.thumbnail:hover,
-.thumbnail.active {
-    opacity: 1;
-    border-color: #0066cc;
+.rating-stars .star:hover {
+    transform: scale(1.2);
 }
 
-.main-image-container {
-    position: relative;
-    width: 100%;
-    max-height: 70vh;
-    margin-bottom: 20px;
-    border-radius: 12px; /* Добавляем скругление */
-    overflow: hidden; /* Обязательно для корректного обрезания углов */
-    perspective: 1000px;
-    touch-action: pan-y;
-    user-select: none;
+/* Анимации */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
-.main-image {
-    width: 100%;
-    height: auto;
-    max-height: 70vh;
-    object-fit: contain;
-    display: block;
-    margin: 0 auto;
-    pointer-events: none;
-    transform-style: preserve-3d;
-    transition: transform 0.7s ease;
-    border-radius: 12px; /* Дублируем на случай проблем с контейнером */
+@keyframes slideInForm {
+    from {
+        opacity: 0;
+        transform: translateY(50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
-.main-image.flip {
-    transform: rotateY(180deg);
+.service-card,
+.testimonial-card,
+.appointment-form,
+.registration-form,
+.profile-form {
+    animation: fadeInUp 0.6s ease;
 }
 
-.price-badge-two {
-    background-color: red;
-    color: white;
-    font-weight: bold;
+/* Модальные окна */
+.modal-content {
     border-radius: 20px;
-    padding: 10px 20px; /* Увеличивает внутренние отступы */
-    font-size: 20px;    /* Увеличивает размер текста */
-    display: inline-block; /* Чтобы padding работал правильно */
+    border: none;
+    box-shadow: var(--shadow-soft);
 }
 
-.registration-form {
-    background-color: #ec7732;
+.modal-header {
+    border-bottom: 2px solid #f8f9fa;
+    border-radius: 20px 20px 0 0;
+}
+
+.modal-footer {
+    border-top: 2px solid #f8f9fa;
+    border-radius: 0 0 20px 20px;
+}
+
+/* Улучшенный скроллбар */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--gradient-primary);
     border-radius: 10px;
-    box-shadow: 0 0 20px rgba(226, 138, 138, 0.1);
-    padding: 30px;
-    margin-top: 30px;
 }
 
-.but-prod {
-    border-radius: 12px;
+::-webkit-scrollbar-thumb:hover {
+    background: var(--gradient-secondary);
 }
 
+/* Мобильная адаптация */
 @media (max-width: 768px) {
-    .hero-section {
-        padding: 60px 0;
+    .navbar-brand {
+        font-size: 1.2rem;
     }
-
-    .hero-section h1 {
-        font-size: 2rem;
+    
+    .navbar-nav .nav-link {
+        padding: 8px 12px;
+        margin: 3px;
+        font-size: 0.9rem;
     }
+    
+    .btn-primary {
+        padding: 10px 20px;
+        font-size: 0.9rem;
+    }
+    
+    .service-card img {
+        height: 250px;
+    }
+    
+    .appointment-form,
+    .registration-form,
+    .profile-form {
+        padding: 20px;
+        margin: 20px 0;
+    }
+    
+    .form-header {
+        font-size: 1.5rem;
+        margin-bottom: 20px;
+    }
+    
+    .form-control {
+        padding: 10px 15px;
+        font-size: 0.9rem;
+    }
+    
+    .btn-submit {
+        padding: 12px 20px;
+        font-size: 1rem;
+    }
+    
+    .rating-stars {
+        font-size: 1.8rem;
+    }
+    
+    .testimonial-img {
+        width: 50px;
+        height: 50px;
+    }
+}
 
-    .service-card {
-        margin-bottom: 15px;
+@media (max-width: 480px) {
+    body {
+        font-size: 14px;
+    }
+    
+    h2 {
+        font-size: 1.5rem;
+    }
+    
+    .service-card img {
+        height: 200px;
+    }
+    
+    .btn-primary {
+        min-height: 44px;
+        min-width: 44px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .appointment-form,
+    .registration-form,
+    .profile-form {
+        padding: 15px;
+        margin: 15px 0;
+        border-radius: 20px;
+    }
+    
+    .form-header {
+        font-size: 1.3rem;
+    }
+    
+    .rating-stars {
+        font-size: 1.6rem;
+    }
+    
+    .testimonial-img {
+        width: 45px;
+        height: 45px;
+    }
+}
+
+/* Улучшения для очень маленьких экранов */
+@media (max-width: 360px) {
+    .service-card img {
+        height: 180px;
+    }
+    
+    .appointment-form,
+    .registration-form,
+    .profile-form {
+        padding: 12px;
+        margin: 12px 0;
+    }
+    
+    .form-header {
+        font-size: 1.2rem;
+    }
+    
+    .rating-stars {
+        font-size: 1.4rem;
     }
 }

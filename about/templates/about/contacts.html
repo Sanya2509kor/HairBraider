@@ -1,37 +1,405 @@
 {% extends "base.html" %}
 {% load static %}
 
-
 {% block title %}
-    <title> {{ title }} </title>
+    <title>{{ title }}</title>
 {% endblock title %}
 
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/contacts.css' %}">
+{% endblock %}
 
 {% block content %}
-<section id="contact" class="py-5 bg-light">
+<section class="contacts-section">
+    <!-- Hero секция -->
+    <div class="contacts-hero">
         <div class="container">
-            <div class="row">
-                <div class="col-lg-4 mb-4 mb-lg-0">
-                    <h3 class="fw-bold mb-4">Контакты</h3>
-                    <div class="d-flex align-items-center mb-3">
-                        <i class="fas fa-map-marker-alt text-primary me-3"></i>
-                        <span> {{ adress }} </span>
-                    </div>
-                    <div class="d-flex align-items-center mb-3">
-                        <i class="fas fa-phone-alt text-primary me-3"></i>
-                        <span> {{ phone }} </span>
-                    </div>
-                    <div class="d-flex align-items-center mb-3">
-                        <i class="fas fa-envelope text-primary me-3"></i>
-                        <span>{{ mail }}</span>
-                    </div>
+            <div class="hero-content">
+                <h1 class="hero-title">Свяжитесь с нами</h1>
+                <p class="hero-subtitle">Мы всегда рады помочь вам создать идеальный образ</p>
+                <div class="hero-decoration">
+                    <div class="decoration-item"></div>
+                    <div class="decoration-item"></div>
+                    <div class="decoration-item"></div>
                 </div>
-                
-                <div class="col-lg-8">
-                    <div class="ratio ratio-16x9">
-<iframe src="https://www.google.com/maps/embed?pb=!1m21!1m12!1m3!1d458.692789479673!2d93.3200784486581!3d56.116629276939754!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!4m6!3e6!4m3!3m2!1d56.116648999999995!2d93.3196249!4m0!5e0!3m2!1sru!2sru!4v1754055735791!5m2!1sru!2sru" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>                </div>
             </div>
         </div>
-    </section>
+    </div>
 
+    <div class="container">
+        <div class="contacts-content">
+            <!-- Контактная информация -->
+            <div class="contacts-grid">
+                <div class="contacts-info">
+                    <div class="info-card">
+                        <div class="info-header">
+                            <h2 class="info-title">Наши контакты</h2>
+                            <p class="info-subtitle">Приходите в гости или звоните - мы всегда на связи</p>
+                        </div>
+
+                        <div class="contact-items">
+                            <div class="contact-item">
+                                <div class="contact-icon">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                </div>
+                                <div class="contact-details">
+                                    <h4 class="contact-label">Адрес</h4>
+                                    <p class="contact-value">{{ adress }}</p>
+                                </div>
+                            </div>
+
+                            <div class="contact-item">
+                                <div class="contact-icon">
+                                    <i class="fas fa-phone-alt"></i>
+                                </div>
+                                <div class="contact-details">
+                                    <h4 class="contact-label">Телефон</h4>
+                                    <p class="contact-value">
+                                        <a href="tel:{{ phone }}" class="contact-link">{{ phone }}</a>
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="contact-item">
+                                <div class="contact-icon">
+                                    <i class="fas fa-envelope"></i>
+                                </div>
+                                <div class="contact-details">
+                                    <h4 class="contact-label">Email</h4>
+                                    <p class="contact-value">
+                                        <a href="mailto:{{ mail }}" class="contact-link">{{ mail }}</a>
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="contact-item">
+                                <div class="contact-icon">
+                                    <i class="fas fa-clock"></i>
+                                </div>
+                                <div class="contact-details">
+                                    <h4 class="contact-label">Часы работы</h4>
+                                    <p class="contact-value">Ежедневно с 10:00 до 20:00</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="social-links">
+                            <h4 class="social-title">Мы в соцсетях</h4>
+                            <div class="social-buttons">
+                                <a href="#" class="social-btn">
+                                    <i class="fab fa-instagram"></i>
+                                </a>
+                                <a href="#" class="social-btn">
+                                    <i class="fab fa-vk"></i>
+                                </a>
+                                <a href="#" class="social-btn">
+                                    <i class="fab fa-telegram"></i>
+                                </a>
+                                <a href="#" class="social-btn">
+                                    <i class="fab fa-whatsapp"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+    .contacts-section {
+        padding: 0;
+    }
+
+    /* Hero секция */
+    .contacts-hero {
+        background: linear-gradient(135deg, #8A2BE2 0%, #9370DB 50%, #FF69B4 100%);
+        color: white;
+        padding: 4rem 0;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .hero-content {
+        position: relative;
+        z-index: 2;
+    }
+
+    .hero-title {
+        font-size: 3rem;
+        font-weight: 800;
+        margin-bottom: 1rem;
+        background: linear-gradient(135deg, #ffffff 0%, #FFD700 100%);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+    }
+
+    .hero-subtitle {
+        font-size: 1.3rem;
+        opacity: 0.9;
+        margin-bottom: 2rem;
+    }
+
+    .hero-decoration {
+        display: flex;
+        justify-content: center;
+        gap: 1rem;
+        margin-top: 2rem;
+    }
+
+    .decoration-item {
+        width: 8px;
+        height: 8px;
+        background: white;
+        border-radius: 50%;
+        opacity: 0.6;
+        animation: bounce 2s infinite;
+    }
+
+    .decoration-item:nth-child(2) {
+        animation-delay: 0.2s;
+    }
+
+    .decoration-item:nth-child(3) {
+        animation-delay: 0.4s;
+    }
+
+    @keyframes bounce {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-10px); }
+    }
+
+    /* Основной контент */
+    .contacts-content {
+        padding: 4rem 0;
+    }
+
+    .contacts-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 3rem;
+        margin-bottom: 4rem;
+    }
+
+    /* Контактная информация */
+    .contacts-info {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .info-card {
+        background: white;
+        padding: 2.5rem;
+        border-radius: 24px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+        height: 100%;
+    }
+
+    .info-header {
+        margin-bottom: 2.5rem;
+        text-align: center;
+    }
+
+    .info-title {
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--dark-color);
+        margin-bottom: 0.5rem;
+    }
+
+    .info-subtitle {
+        color: #6B7280;
+        font-size: 1.1rem;
+    }
+
+    .contact-items {
+        margin-bottom: 2.5rem;
+    }
+
+    .contact-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+        padding: 1rem;
+        border-radius: 16px;
+        transition: all 0.3s ease;
+    }
+
+    .contact-item:hover {
+        background: linear-gradient(135deg, #F8F6FF 0%, #FFF5EE 100%);
+        transform: translateX(5px);
+    }
+
+    .contact-icon {
+        background: var(--gradient-primary);
+        width: 50px;
+        height: 50px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+    }
+
+    .contact-icon i {
+        color: white;
+        font-size: 1.2rem;
+    }
+
+    .contact-details {
+        flex: 1;
+    }
+
+    .contact-label {
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: var(--primary-color);
+        margin-bottom: 0.25rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .contact-value {
+        font-size: 1.1rem;
+        color: var(--dark-color);
+        font-weight: 500;
+        margin: 0;
+    }
+
+    .contact-link {
+        color: inherit;
+        text-decoration: none;
+        transition: color 0.3s ease;
+    }
+
+    .contact-link:hover {
+        color: var(--primary-color);
+    }
+
+    /* Социальные сети */
+    .social-links {
+        text-align: center;
+    }
+
+    .social-title {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: var(--dark-color);
+        margin-bottom: 1rem;
+    }
+
+    .social-buttons {
+        display: flex;
+        justify-content: center;
+        gap: 1rem;
+    }
+
+    .social-btn {
+        width: 50px;
+        height: 50px;
+        background: var(--gradient-primary);
+        color: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        font-size: 1.2rem;
+    }
+
+    .social-btn:hover {
+        transform: translateY(-3px) scale(1.1);
+        box-shadow: 0 8px 25px rgba(138, 43, 226, 0.3);
+    }
+
+    /* Адаптация для мобильных */
+    @media (max-width: 768px) {
+        .hero-title {
+            font-size: 2.2rem;
+        }
+        
+        .info-card {
+            padding: 2rem;
+        }
+        
+        .contact-item {
+            flex-direction: column;
+            text-align: center;
+            padding: 1.5rem;
+        }
+        
+        .contact-icon {
+            margin: 0 auto;
+        }
+        
+        .social-buttons {
+            flex-wrap: wrap;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .hero-title {
+            font-size: 1.8rem;
+        }
+        
+        .info-card {
+            padding: 1.5rem;
+        }
+        
+        .contact-item {
+            padding: 1rem;
+        }
+    }
+
+    /* Анимации */
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .contacts-grid {
+        animation: fadeInUp 0.6s ease;
+    }
+
+    /* Улучшенная доступность */
+    @media (prefers-reduced-motion: reduce) {
+        .contact-item,
+        .social-btn {
+            transition: none;
+        }
+        
+        .hero-decoration .decoration-item {
+            animation: none;
+        }
+        
+        .contacts-grid {
+            animation: none;
+        }
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        
+        // Параллакс эффект для hero
+        window.addEventListener('scroll', function() {
+            const scrolled = window.pageYOffset;
+            const hero = document.querySelector('.contacts-hero');
+            if (hero) {
+                hero.style.transform = `translateY(${scrolled * 0.4}px)`;
+            }
+        });
+    });
+</script>
 {% endblock content %}

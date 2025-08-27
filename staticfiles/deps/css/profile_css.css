@@ -1,27 +1,204 @@
 .profile-form {
-    background-color: #87e761;
+    background: white;
     border-radius: 25px;
-    box-shadow: 0 0 20px rgba(226, 138, 138, 0.1);
+    box-shadow: var(--shadow-soft);
     padding: 30px;
-    margin-top: 30px;
+    margin: 30px 0;
+    transition: all 0.3s ease;
 }
+
+.profile-form:hover {
+    box-shadow: var(--shadow-hover);
+}
+
 .form-header {
     text-align: center;
     margin-bottom: 30px;
-    color: #ffffff;
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    font-weight: 700;
+    font-size: 2rem;
 }
-.form-control:focus {
-    border-color: #6c757d;
-    box-shadow: 0 0 0 0.25rem rgba(108, 117, 125, 0.25);
+
+/* Стили для карточек заказов */
+.testimonial-card {
+    background: white;
+    border-radius: 20px;
+    padding: 25px;
+    box-shadow: var(--shadow-soft);
+    transition: all 0.3s ease;
+    height: 100%;
+    border: 1px solid #f8f9fa;
 }
-.btn-submit {
-    background-color: #0DFFFA;
-    border-color: #ffffff;
-    width: 100%;
-    padding: 10px;
+
+.testimonial-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-hover);
+}
+
+.testimonial-card h5 {
+    color: var(--dark-color);
+    font-weight: 600;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.order-details p {
+    margin-bottom: 12px;
+    line-height: 1.5;
+}
+
+.order-details strong {
+    color: var(--primary-color);
+}
+
+/* Цветовые превью */
+.color-preview {
+    display: inline-block;
+    margin: 5px;
+}
+
+.color-box {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    border: 2px solid #ddd;
+    transition: all 0.3s ease;
+    object-fit: cover;
+}
+
+.color-box:hover {
+    transform: scale(1.1);
+    box-shadow: var(--shadow-soft);
+}
+
+/* Алерты */
+.alert-info {
+    background: var(--gradient-primary);
+    color: white;
+    border: none;
+    border-radius: 15px;
+    padding: 20px;
+    text-align: center;
     font-weight: 500;
 }
-.btn-submit:hover {
-    background-color: #3fe915;
-    border-color: #ffffff;
+
+/* Пагинация в профиле */
+.pagination {
+    margin-top: 30px;
+}
+
+.pagination .page-item .page-link {
+    border: none;
+    border-radius: 15px;
+    margin: 0 5px;
+    color: var(--dark-color);
+    transition: all 0.3s ease;
+}
+
+.pagination .page-item.active .page-link {
+    background: var(--gradient-primary);
+    color: white;
+}
+
+.pagination .page-item .page-link:hover {
+    background: var(--gradient-secondary);
+    color: white;
+    transform: translateY(-2px);
+}
+
+/* Анимации */
+@keyframes fadeInCards {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.testimonial-card {
+    animation: fadeInCards 0.6s ease;
+}
+
+/* Адаптация для мобильных */
+@media (max-width: 768px) {
+    .profile-form {
+        padding: 20px;
+        margin: 20px 0;
+    }
+    
+    .form-header {
+        font-size: 1.5rem;
+        margin-bottom: 20px;
+    }
+    
+    .testimonial-card {
+        padding: 20px;
+    }
+    
+    .color-box {
+        width: 50px;
+        height: 50px;
+    }
+    
+    .order-details p {
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .profile-form {
+        padding: 15px;
+        margin: 15px 0;
+        border-radius: 20px;
+    }
+    
+    .form-header {
+        font-size: 1.3rem;
+    }
+    
+    .testimonial-card {
+        padding: 15px;
+    }
+    
+    .color-box {
+        width: 40px;
+        height: 40px;
+    }
+    
+    .alert-info {
+        padding: 15px;
+        font-size: 0.9rem;
+    }
+    
+    .order-details p {
+        font-size: 0.85rem;
+        margin-bottom: 10px;
+    }
+}
+
+/* Сетка для карточек заказов */
+.row-cols-md-2 .col-md-6 {
+    margin-bottom: 20px;
+}
+
+/* Улучшенное отображение на очень маленьких экранах */
+@media (max-width: 360px) {
+    .testimonial-card {
+        padding: 12px;
+    }
+    
+    .color-box {
+        width: 35px;
+        height: 35px;
+    }
+    
+    .order-details p {
+        font-size: 0.8rem;
+    }
 }

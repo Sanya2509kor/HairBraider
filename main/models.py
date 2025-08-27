@@ -27,6 +27,9 @@ class Product(models.Model):
     discount = models.DecimalField(default=0.00, max_digits=4, decimal_places=2, verbose_name='Скидка в %')
     available_colors = models.ManyToManyField(Color, verbose_name='Доступные цвета', related_name='products', blank=True)
     show = models.BooleanField(verbose_name='Показать на сайте?', default=True)
+
+    make_time = models.CharField(max_length=100, verbose_name='Время занятости', blank=True, null=True, default='30 мин')
+
     
 
 

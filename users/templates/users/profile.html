@@ -1,246 +1,784 @@
 {% extends "base.html" %}
 {% load static %}
-{% comment %} {% load carts_tags %} {% endcomment %}
 
 {% block title %}
-<title> {{ title }} </title>
+<title>{{ title }}</title>
 {% endblock title %}
 
-
 {% block content %}
-<link rel="stylesheet" href={% static "deps/css/profile_css.css" %}>
+<div class="profile-page">
+    <div class="container">
+        <!-- Хлебные крошки -->
+        <nav class="breadcrumb-nav mb-4">
+            <a href="{% url 'main:index' %}">Главная</a>
+            <span class="breadcrumb-separator">/</span>
+            <span class="current">Профиль</span>
+        </nav>
 
-<div class="container">
-    <div class="row justify-content-center">
-        <div class="col-12 col-md-8 col-lg-6">
-            {% if current_app or future_app or past_app %}
-            <div class="profile-form">
-                {% if current_app %}
-                    <h3 class="text-center mb-4 form-header">Записи на сегодня</h3>
-                    {% for appointment in current_app %}
-                    <div class="col text-center">
-                        <div class="testimonial-card">
-                            <p class="mb-0">{{ appointment.date.date|date:"d E Y" }}</p>
-                            <p class="mb-0">{{ appointment.time.time|time:"H:i" }}</p>
-                            <p class="mb-0">{{ appointment.product }}</p>
+        <div class="row">
+            <!-- Блок с записями -->
+            <div class="col-lg-6 mb-4">
+                {% if current_app or future_app or past_app %}
+                <div class="profile-card appointments-card">
+                    {% if current_app %}
+                    <div class="appointments-section">
+                        <h3 class="section-title">
+                            <i class="fas fa-calendar-day me-2"></i>Записи на сегодня
+                        </h3>
+                        <div class="appointments-grid">
+                            {% for appointment in current_app %}
+                            <div class="appointment-card current">
+                                <div class="appointment-date">
+                                    <span class="date-day">{{ appointment.date.date|date:"d" }}</span>
+                                    <span class="date-month">{{ appointment.date.date|date:"E" }}</span>
+                                </div>
+                                <div class="appointment-info">
+                                    <span class="appointment-time">
+                                        <i class="fas fa-clock me-1"></i>{{ appointment.time.time|time:"H:i" }}
+                                    </span>
+                                    <span class="appointment-service">{{ appointment.product }}</span>
+                                </div>
+                                <div class="appointment-status current">Текущая</div>
+                            </div>
+                            {% endfor %}
                         </div>
                     </div>
-                    {% endfor %}
-                {% endif %}
-                {% if future_app %}
-                    <h3 class="text-center mb-4 form-header">Ближайшие записи</h3>
-                    {% for appointment in future_app %}
-                    <div class="col text-center">
-                        <div class="testimonial-card">
-                            <p class="mb-0">{{ appointment.date.date|date:"d E Y" }}</p>
-                            <p class="mb-0">{{ appointment.time.time|time:"H:i" }}</p>
-                            <p class="mb-0">{{ appointment.product }}</p>
+                    {% endif %}
+
+                    {% if future_app %}
+                    <div class="appointments-section">
+                        <h3 class="section-title">
+                            <i class="fas fa-calendar-alt me-2"></i>Ближайшие записи
+                        </h3>
+                        <div class="appointments-grid">
+                            {% for appointment in future_app %}
+                            <div class="appointment-card future">
+                                <div class="appointment-date">
+                                    <span class="date-day">{{ appointment.date.date|date:"d" }}</span>
+                                    <span class="date-month">{{ appointment.date.date|date:"E" }}</span>
+                                </div>
+                                <div class="appointment-info">
+                                    <span class="appointment-time">
+                                        <i class="fas fa-clock me-1"></i>{{ appointment.time.time|time:"H:i" }}
+                                    </span>
+                                    <span class="appointment-service">{{ appointment.product }}</span>
+                                </div>
+                                <div class="appointment-status upcoming">Предстоящая</div>
+                            </div>
+                            {% endfor %}
                         </div>
                     </div>
-                    {% endfor %}
-                {% endif %}
-                {% if past_app %}
-                    <h3 class="text-center mb-4 form-header">Прошедшие записи</h3>
-                    {% for appointment in past_app %}
-                    <div class="col text-center">
-                        <div class="testimonial-card">
-                            <p class="mb-0">{{ appointment.date.date|date:"d E Y" }}</p>
-                            <p class="mb-0">{{ appointment.time.time|time:"H:i" }}</p>
-                            <p class="mb-0">{{ appointment.product }}</p>
+                    {% endif %}
+
+                    {% if past_app %}
+                    <div class="appointments-section">
+                        <h3 class="section-title">
+                            <i class="fas fa-history me-2"></i>Прошедшие записи
+                        </h3>
+                        <div class="appointments-grid">
+                            {% for appointment in past_app %}
+                            <div class="appointment-card past">
+                                <div class="appointment-date">
+                                    <span class="date-day">{{ appointment.date.date|date:"d" }}</span>
+                                    <span class="date-month">{{ appointment.date.date|date:"E" }}</span>
+                                </div>
+                                <div class="appointment-info">
+                                    <span class="appointment-time">
+                                        <i class="fas fa-clock me-1"></i>{{ appointment.time.time|time:"H:i" }}
+                                    </span>
+                                    <span class="appointment-service">{{ appointment.product }}</span>
+                                </div>
+                                <div class="appointment-status completed">Завершена</div>
+                            </div>
+                            {% endfor %}
                         </div>
                     </div>
-                    {% endfor %}
+                    {% endif %}
+                </div>
+                {% else %}
+                <div class="profile-card empty-appointments">
+                    <div class="empty-state text-center">
+                        <i class="fas fa-calendar-plus empty-icon"></i>
+                        <h4>Тут будут ваши записи!</h4>
+                        <p class="text-muted">У вас пока нет активных записей</p>
+                        <a href="{% url 'order:appointment' %}" class="btn btn-primary">
+                            <i class="fas fa-plus me-2"></i>Записаться
+                        </a>
+                    </div>
+                </div>
                 {% endif %}
             </div>
-            {% else %}
-                <div class="profile-form">
-                <h3 class="text-center mb-4 form-header">Тут будут ваши записи!!!</h3>
-            {% endif %} 
-        </div>
-        
-        <div class="col-12 col-md-8 col-lg-6 mt-4 mt-md-5">
-            <div class="profile-form">
-                <h3 class="text-center mb-4 form-header">Профиль пользователя</h3>
-                <form action="{% url "users:profile" %}" method="post" enctype="multipart/form-data" id="profile_form">
-                    {% csrf_token %}
-                    <div class="row">
-                        <div class="col-md-12 mb-3 text-center">
-                            {% if user.image %}
-                                <img src="{{ user.image.url }}"
-                                    alt="Аватар пользователя" class="img-fluid rounded-circle"
-                                    style="max-width: 150px;">
-                            {% else %}
-                                <img src="{% static "deps/images/bg-image.jpg" %}"
-                                    alt="Аватар пользователя" class="img-fluid rounded-circle"
-                                    style="max-width: 150px;">
+
+            <!-- Блок профиля пользователя -->
+            <div class="col-lg-6">
+                <div class="profile-card user-profile-card">
+                    <h3 class="section-title">
+                        <i class="fas fa-user-circle me-2"></i>Профиль пользователя
+                    </h3>
+
+                    <form action="{% url 'users:profile' %}" method="post" enctype="multipart/form-data" id="profile_form">
+                        {% csrf_token %}
+                        
+                        <!-- Аватар -->
+                        <div class="avatar-section text-center mb-4">
+                            <div class="avatar-container">
+                                {% if user.image %}
+                                    <img src="{{ user.image.url }}" alt="Аватар пользователя" class="avatar-image">
+                                {% else %}
+                                    <div class="avatar-placeholder">
+                                        <i class="fas fa-user"></i>
+                                    </div>
+                                {% endif %}
+                                <label for="id_image" class="avatar-upload-btn">
+                                    <i class="fas fa-camera"></i>
+                                    <input type="file" id="id_image" name="image" accept="image/*" class="d-none">
+                                </label>
+                            </div>
+                            {% if form.image.errors %}
+                                <div class="alert alert-danger mt-2">{{ form.image.errors }}</div>
                             {% endif %}
-                            <input type="file" class="form-control mt-3" id="id_image"
-                                name="image"
-                                accept="image/*">
-                                {% if form.image.errors %}
-                                    <div class="alert alert-danger alert-dismissible fade show">{{ form.image.errors }}</div>
-                                {% endif %}
-                        </div>
-                        <div class="col-md-12 mb-3">
-                            <label for="id_first_name" class="form-label">Имя*</label>
-                            <input type="text" class="form-control" id="id_first_name"
-                                name="first_name"
-                                placeholder="Введите ваше имя" 
-                                value="{{form.first_name.value}}"
-                                required
-                                {% if not user.edit_name %}
-                                    readonly
-                                    style="background-color: #f8f9fa; cursor: not-allowed;"
-                                {% endif %}
-                                >
-                                {% if not user.edit_name %}
-                                    <small class="form-text text-muted">
-                                        Имя нельзя изменить. Для изменения обратитесь в поддержку.
-                                    </small>
-                                {% endif %}
-                                {% if form.first_name.errors %}
-                                    <div class="alert alert-danger alert-dismissible fade show">{{ form.first_name.errors }}</div>
-                                {% endif %}
-                        </div>
-                        <div class="col-md-12 mb-3">
-                            <label for="id_username" class="form-label">Имя пользователя*</label>
-                            <input type="text" class="form-control" id="id_username"
-                                name="username"
-                                placeholder="Введите ваше имя пользователя" 
-                                value="{{form.username.value}}" 
-                                required
-                                {% if not user.edit_username %}
-                                    readonly
-                                    style="background-color: #f8f9fa; cursor: not-allowed;"
-                                {% endif %}
-                                >
-                                {% if not user.edit_username %}
-                                    <small class="form-text text-muted">
-                                        Имя пользователя нельзя изменить. Для изменения обратитесь в поддержку.
-                                    </small>
-                                {% endif %}
-                                {% if form.username.errors %}
-                                    <div class="alert alert-danger alert-dismissible fade show">{{ form.username.errors }}</div>
-                                {% endif %}
                         </div>
 
-                        <div class="col-md-12 mb-3">
-                            <label for="id_username" class="form-label">Номер телефона*</label>
-                            <input type="text" class="form-control" id="id_phone_number"
-                                name="phone_number"
-                                maxlength="12"
-                                placeholder="+79123456789" 
-                                value="{{form.phone_number.value}}"
-                                readonly
-                                style="background-color: #f8f9fa; cursor: not-allowed;"       
-                            >
+                        <!-- Поля формы -->
+                        <div class="form-grid">
+                            <!-- Имя -->
+                            <div class="form-group">
+                                <label for="id_first_name" class="form-label">
+                                    <i class="fas fa-user me-2"></i>Имя
+                                </label>
+                                <div class="input-group">
+                                    {{ form.first_name }}
+                                    <span class="input-group-text">
+                                        <i class="fas fa-user"></i>
+                                    </span>
+                                </div>
+                                {% if not user.edit_name %}
+                                <small class="form-text text-muted">
+                                    <i class="fas fa-info-circle me-1"></i>Имя нельзя изменить
+                                </small>
+                                {% endif %}
+                                {% if form.first_name.errors %}
+                                    <div class="invalid-feedback d-block">{{ form.first_name.errors }}</div>
+                                {% endif %}
+                            </div>
+
+                            <!-- Имя пользователя -->
+                            <div class="form-group">
+                                <label for="id_username" class="form-label">
+                                    <i class="fas fa-at me-2"></i>Имя пользователя
+                                </label>
+                                <div class="input-group">
+                                    {{ form.username }}
+                                    <span class="input-group-text">
+                                        <i class="fas fa-at"></i>
+                                    </span>
+                                </div>
+                                {% if not user.edit_username %}
+                                <small class="form-text text-muted">
+                                    <i class="fas fa-info-circle me-1"></i>Имя пользователя нельзя изменить
+                                </small>
+                                {% endif %}
+                                {% if form.username.errors %}
+                                    <div class="invalid-feedback d-block">{{ form.username.errors }}</div>
+                                {% endif %}
+                            </div>
+
+                            <!-- Телефон -->
+                            <div class="form-group">
+                                <label for="id_phone_number" class="form-label">
+                                    <i class="fas fa-phone me-2"></i>Телефон
+                                </label>
+                                <div class="input-group">
+                                    {{ form.phone_number }}
+                                    <span class="input-group-text">
+                                        <i class="fas fa-phone"></i>
+                                    </span>
+                                </div>
                                 {% if form.phone_number.value|slice:":3" == 'tg_' %}
-                                    <small class="form-text text-muted">
-                                        Нажмите на кнопку чтобы добавить номер телефона
-                                    </small>
+                                <small class="form-text text-muted">
+                                    <i class="fas fa-info-circle me-1"></i>Нажмите на кнопку чтобы добавить номер телефона
+                                </small>
                                 {% else %}
-                                    <small class="form-text text-muted">
-                                        Номер телефона нельзя изменить после регистрации. Для изменения обратитесь в поддержку.
-                                    </small>
+                                <small class="form-text text-muted">
+                                    <i class="fas fa-info-circle me-1"></i>Номер телефона нельзя изменить
+                                </small>
                                 {% endif %}
                                 <div id="phone_number_error" class="alert alert-danger mt-2 d-none"></div>
                                 {% if form.phone_number.errors %}
-                                    <div class="alert alert-danger alert-dismissible fade show">{{ form.phone_number.errors }}</div>
+                                    <div class="invalid-feedback d-block">{{ form.phone_number.errors }}</div>
                                 {% endif %}
-                        </div>
+                            </div>
 
-                        <div class="col-md-12 mb-3">
-                            <label for="id_email" class="form-label">Email*</label>
-                            <input type="email" class="form-control" id="id_email"
-                                name="email"
-                                placeholder="Введите ваш email *youremail@example.com" 
-                                value="{{form.email.value}}"
-                                >
+                            <!-- Email -->
+                            <div class="form-group">
+                                <label for="id_email" class="form-label">
+                                    <i class="fas fa-envelope me-2"></i>Email
+                                </label>
+                                <div class="input-group">
+                                    {{ form.email }}
+                                    <span class="input-group-text">
+                                        <i class="fas fa-envelope"></i>
+                                    </span>
+                                </div>
                                 <small class="form-text text-muted">
-                                    Для рассылки акций и предложений
+                                    <i class="fas fa-info-circle me-1"></i>Для рассылки акций и предложений
                                 </small>
                                 {% if form.email.errors %}
-                                    <div class="alert alert-danger alert-dismissible fade show">{{ form.email.errors }}</div>
+                                    <div class="invalid-feedback d-block">{{ form.email.errors }}</div>
                                 {% endif %}
+                            </div>
                         </div>
-                        
-                        <button type="submit" class="btn btn-submit mt-5">Сохранить</button>
-                        {% if user.is_admin or user.is_staff %}
-                            <a class="btn btn-primary mt-5" href="{% url "admin:index" %}">Админ панель</a>
-                            <a class="btn btn-primary mt-5" href="{% url "order:list_orders_today" %}">Записи на сегодня</a>
-                            <a class="btn btn-primary mt-5" href="{% url "order:list_orders" %}">Ближайшие записи</a>
-                        {% endif %}
-                        <a href="{% url "user:logout" %}" class="btn btn-dark mt-5">Выход</a>
-                    </div>
-                </form>
+
+                        <!-- Кнопки действий -->
+                        <div class="action-buttons">
+                            <button type="submit" class="btn btn-primary btn-save">
+                                <i class="fas fa-save me-2"></i>Сохранить изменения
+                            </button>
+                            
+                            {% if user.is_admin or user.is_staff %}
+                            <div class="admin-buttons mt-3">
+                                <a class="btn btn-outline-primary" href="{% url 'admin:index' %}">
+                                    <i class="fas fa-cog me-2"></i>Админ панель
+                                </a>
+                                <a class="btn btn-outline-primary" href="{% url 'order:list_orders_today' %}">
+                                    <i class="fas fa-list me-2"></i>Записи на сегодня
+                                </a>
+                                <a class="btn btn-outline-primary" href="{% url 'order:list_orders' %}">
+                                    <i class="fas fa-calendar me-2"></i>Ближайшие записи
+                                </a>
+                            </div>
+                            {% endif %}
+                            
+                            <a href="{% url 'user:logout' %}" class="btn btn-outline-danger mt-3">
+                                <i class="fas fa-sign-out-alt me-2"></i>Выйти
+                            </a>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
 </div>
 
+<style>
+    .profile-page {
+        padding: 2rem 0;
+        background: linear-gradient(135deg, #FFF5EE 0%, #F8F6FF 100%);
+        min-height: 100vh;
+    }
 
+    .breadcrumb-nav {
+        font-size: 0.9rem;
+        color: #6B7280;
+    }
+
+    .breadcrumb-nav a {
+        color: var(--primary-color);
+        text-decoration: none;
+    }
+
+    .breadcrumb-nav a:hover {
+        text-decoration: underline;
+    }
+
+    .breadcrumb-separator {
+        margin: 0 0.5rem;
+    }
+
+    /* Карточки */
+    .profile-card {
+        background: white;
+        border-radius: 20px;
+        padding: 2rem;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+        border: 1px solid rgba(138, 43, 226, 0.1);
+        height: 100%;
+    }
+
+    .section-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: var(--dark-color);
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+    }
+
+    .section-title i {
+        color: var(--primary-color);
+    }
+
+    /* Записи */
+    .appointments-grid {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .appointment-card {
+        display: flex;
+        align-items: center;
+        padding: 1rem;
+        border-radius: 15px;
+        background: #f8f9fa;
+        transition: all 0.3s ease;
+        border-left: 4px solid transparent;
+    }
+
+    .appointment-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .appointment-card.current {
+        border-left-color: #28a745;
+        background: linear-gradient(135deg, #f8fff9 0%, #e8f5e9 100%);
+    }
+
+    .appointment-card.future {
+        border-left-color: #ffc107;
+        background: linear-gradient(135deg, #fffbf0 0%, #fff3cd 100%);
+    }
+
+    .appointment-card.past {
+        border-left-color: #6c757d;
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    }
+
+    .appointment-date {
+        text-align: center;
+        min-width: 60px;
+        margin-right: 1rem;
+    }
+
+    .date-day {
+        display: block;
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--primary-color);
+    }
+
+    .date-month {
+        display: block;
+        font-size: 0.8rem;
+        color: #6B7280;
+        text-transform: lowercase;
+    }
+
+    .appointment-info {
+        flex: 1;
+    }
+
+    .appointment-time {
+        display: block;
+        font-weight: 600;
+        color: var(--dark-color);
+        margin-bottom: 0.25rem;
+    }
+
+    .appointment-service {
+        display: block;
+        color: #6B7280;
+        font-size: 0.9rem;
+    }
+
+    .appointment-status {
+        padding: 0.25rem 0.75rem;
+        border-radius: 15px;
+        font-size: 0.8rem;
+        font-weight: 600;
+    }
+
+    .appointment-status.current {
+        background: #28a745;
+        color: white;
+    }
+
+    .appointment-status.upcoming {
+        background: #ffc107;
+        color: var(--dark-color);
+    }
+
+    .appointment-status.completed {
+        background: #6c757d;
+        color: white;
+    }
+
+    /* Аватар */
+    .avatar-section {
+        position: relative;
+    }
+
+    .avatar-container {
+        position: relative;
+        display: inline-block;
+    }
+
+    .avatar-image {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 4px solid var(--primary-color);
+        box-shadow: 0 4px 15px rgba(138, 43, 226, 0.3);
+    }
+
+    .avatar-placeholder {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        background: var(--gradient-primary);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 3rem;
+        border: 4px solid var(--primary-color);
+    }
+
+    .avatar-upload-btn {
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        width: 40px;
+        height: 40px;
+        background: var(--gradient-primary);
+        color: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        border: 2px solid white;
+    }
+
+    .avatar-upload-btn:hover {
+        transform: scale(1.1);
+        background: var(--gradient-secondary);
+    }
+
+    /* Форма */
+    .form-grid {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+
+    .form-group {
+        position: relative;
+    }
+
+    .form-label {
+        font-weight: 600;
+        color: var(--dark-color);
+        margin-bottom: 0.5rem;
+        display: block;
+    }
+
+    .form-label i {
+        color: var(--primary-color);
+        width: 20px;
+    }
+
+    .input-group {
+        position: relative;
+    }
+
+    .input-group .form-control {
+        border: 2px solid #e9ecef;
+        border-radius: 15px;
+        padding: 0.875rem 1rem;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+    }
+
+    .input-group .form-control:focus {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 0.3rem rgba(138, 43, 226, 0.15);
+        transform: translateY(-2px);
+    }
+
+    .input-group .form-control:read-only {
+        background-color: #f8f9fa;
+        cursor: not-allowed;
+    }
+
+    .input-group-text {
+        background: var(--gradient-primary);
+        color: white;
+        border: none;
+        border-radius: 0 15px 15px 0;
+        min-width: 50px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .form-text {
+        font-size: 0.8rem;
+        margin-top: 0.25rem;
+    }
+
+    /* Кнопки */
+    .action-buttons {
+        margin-top: 2rem;
+    }
+
+    .btn-save {
+        background: var(--gradient-primary);
+        border: none;
+        border-radius: 25px;
+        padding: 1rem 2rem;
+        font-weight: 600;
+        font-size: 1.1rem;
+        transition: all 0.3s ease;
+        width: 100%;
+        color: white;
+        box-shadow: 0 4px 15px rgba(138, 43, 226, 0.3);
+    }
+
+    .btn-save:hover {
+        background: var(--gradient-secondary);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(255, 105, 180, 0.4);
+    }
+
+    .admin-buttons {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+
+    .admin-buttons .btn {
+        flex: 1;
+        min-width: 120px;
+    }
+
+    /* Состояние пустого списка */
+    .empty-appointments {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 300px;
+    }
+
+    .empty-state {
+        text-align: center;
+    }
+
+    .empty-icon {
+        font-size: 4rem;
+        color: #E5E7EB;
+        margin-bottom: 1rem;
+    }
+
+    .empty-state h4 {
+        color: var(--dark-color);
+        margin-bottom: 0.5rem;
+    }
+
+    /* Адаптация для мобильных */
+    @media (max-width: 991.98px) {
+        .profile-card {
+            padding: 1.5rem;
+        }
+        
+        .appointment-card {
+            flex-direction: column;
+            text-align: center;
+            gap: 1rem;
+        }
+        
+        .appointment-date {
+            margin-right: 0;
+        }
+    }
+
+    @media (max-width: 767.98px) {
+        .profile-page {
+            padding: 1rem 0;
+        }
+        
+        .section-title {
+            font-size: 1.3rem;
+        }
+        
+        .avatar-image,
+        .avatar-placeholder {
+            width: 100px;
+            height: 100px;
+        }
+        
+        .avatar-upload-btn {
+            width: 35px;
+            height: 35px;
+        }
+        
+        .input-group .form-control {
+            padding: 0.75rem;
+        }
+        
+        .btn-save {
+            padding: 0.875rem 1.5rem;
+            font-size: 1rem;
+        }
+    }
+
+    @media (max-width: 575.98px) {
+        .profile-card {
+            padding: 1.25rem;
+            border-radius: 15px;
+        }
+        
+        .appointment-card {
+            padding: 0.875rem;
+        }
+        
+        .date-day {
+            font-size: 1.25rem;
+        }
+        
+        .avatar-image,
+        .avatar-placeholder {
+            width: 80px;
+            height: 80px;
+        }
+        
+        .admin-buttons {
+            flex-direction: column;
+        }
+        
+        .admin-buttons .btn {
+            width: 100%;
+        }
+    }
+
+    /* Анимации */
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .profile-card {
+        animation: fadeInUp 0.6s ease;
+    }
+
+    .appointment-card {
+        animation: fadeInUp 0.6s ease;
+    }
+
+    .appointment-card:nth-child(1) { animation-delay: 0.1s; }
+    .appointment-card:nth-child(2) { animation-delay: 0.2s; }
+    .appointment-card:nth-child(3) { animation-delay: 0.3s; }
+</style>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
     $(document).ready(function() {
-    // Форматирование ввода номера телефона в реальном времени
-    $('#id_phone_number').on('input', function(e) {
-        // Удаляем все нецифровые символы, кроме возможного плюса в начале
-        var value = e.target.value.replace(/[^\d+]/g, '');
-        
-        // Если номер начинается не с +7 или 7 или 8, добавляем +7
-        if (!value.startsWith('+7') && !value.startsWith('7') && !value.startsWith('8')) {
-            value = '+7';
-        }
-        
-        // Форматируем номер: +7 999 198-72-64
-        var formatted = value
-            .replace(/^(\+?7|8)(\d{0,3})(\d{0,3})(\d{0,2})(\d{0,2})/, function(match, p1, p2, p3, p4, p5) {
-                let result = '+7';
-                if (p2) result += p2;
-                if (p3) result += p3;
-                if (p4) result += p4;
-                if (p5) result += p5;
-                return result;
-            });
-        
-        e.target.value = formatted;
+        // Превью аватара
+        $('#id_image').change(function() {
+            const file = this.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    if ($('.avatar-image').length) {
+                        $('.avatar-image').attr('src', e.target.result);
+                    } else {
+                        $('.avatar-placeholder').replaceWith(
+                            `<img src="${e.target.result}" alt="Аватар пользователя" class="avatar-image">`
+                        );
+                    }
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Маска для телефона
+        $('#id_phone_number').on('input', function(e) {
+            // Удаляем все нецифровые символы, кроме возможного плюса в начале
+            var value = e.target.value.replace(/[^\d+]/g, '');
+            
+            // Если номер начинается не с +7 или 7 или 8, добавляем +7
+            if (!value.startsWith('+7') && !value.startsWith('7') && !value.startsWith('8')) {
+                value = '+7';
+            }
+            
+            // Форматируем номер: +7 999 198-72-64
+            var formatted = value
+                .replace(/^(\+?7|8)(\d{0,3})(\d{0,3})(\d{0,2})(\d{0,2})/, function(match, p1, p2, p3, p4, p5) {
+                    let result = '+7';
+                    if (p2) result += p2;
+                    if (p3) result += p3;
+                    if (p4) result += p4;
+                    if (p5) result += p5;
+                    return result;
+                });
+            
+            e.target.value = formatted;
+        });
+
+        // Валидация формы
+        $('#profile_form').on('submit', function(e) {
+            const phoneNumber = $('#id_phone_number').val().replace(/\D/g, '');
+            
+            if (phoneNumber.length !== 11 || !phoneNumber.startsWith('7')) {
+                $('#phone_number_error').text('Введите корректный номер телефона (например: +7 999 999-99-99)').removeClass('d-none');
+                e.preventDefault();
+                
+                // Анимация ошибки
+                $('#id_phone_number').addClass('shake');
+                setTimeout(() => {
+                    $('#id_phone_number').removeClass('shake');
+                }, 500);
+                
+                // Прокрутка к ошибке
+                $('html, body').animate({
+                    scrollTop: $('#id_phone_number').offset().top - 100
+                }, 500);
+            }
+        });
+
+        // Анимация при фокусе
+        $('.form-control').on('focus', function() {
+            $(this).closest('.input-group').addClass('focused');
+        }).on('blur', function() {
+            $(this).closest('.input-group').removeClass('focused');
+        });
     });
 
-    // Валидация формы перед отправкой
-    $('#profile_form').on('submit', function(event) {
-        // Проверка номера телефона
-        var phoneNumber = $('#id_phone_number').val();
-        
-        // Регулярное выражение для российского номера:
-        // +7 или 7 или 8, затем 10 цифр
-        var regex = /^(\+7|7|8)\d{10}$/;
-        
-        // Очищаем номер для проверки (удаляем все, кроме цифр и +)
-        var cleanedPhoneNumber = phoneNumber.replace(/[^\d+]/g, '');
-        
-        // Если номер начинается с 8, заменяем на +7
-        if (cleanedPhoneNumber.startsWith('8')) {
-            cleanedPhoneNumber = '+7' + cleanedPhoneNumber.substring(1);
-        }
-        // Если номер начинается с 7 (без +), добавляем +
-        else if (cleanedPhoneNumber.startsWith('7') && !cleanedPhoneNumber.startsWith('+7')) {
-            cleanedPhoneNumber = '+' + cleanedPhoneNumber;
+    // CSS для анимаций
+    const style = document.createElement('style');
+    style.textContent = `
+        .input-group.focused .input-group-text {
+            background: var(--gradient-secondary);
         }
         
-        if (!regex.test(cleanedPhoneNumber)) {
-            $('#phone_number_error').text('Введите корректный номер телефона (например: +79991234567)').removeClass('d-none'); // Показываем ошибку
-            event.preventDefault();
-            return false;
-        } else {
-            $('#phone_number_error').hide();
-            
-            // Сохраняем очищенный номер в формате +79991234567
-            $('#id_phone_number').val(cleanedPhoneNumber);
+        .shake {
+            animation: shake 0.5s ease;
         }
         
-        return true;
-    });
-});
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.3s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    `;
+    document.head.appendChild(style);
 </script>
-{% endblock %}
+{% endblock content %}

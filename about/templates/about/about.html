@@ -2,35 +2,504 @@
 {% load static %}
 
 {% block title %}
-<title> {{ title }} </title>
+<title>{{ title }}</title>
 {% endblock title %}
 
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/about.css' %}">
+{% endblock %}
+
 {% block content %}
-<section id="about" class="py-5 bg-light">
-    <div class="container">
-        <div class="row align-items-center">
-            <div class="col-lg-6 mb-4 mb-lg-0">
-                <img src="{% static 'deps/images/about.jpg' %}" class="img-fluid rounded" alt="О нас">
+<section class="about-section">
+    <!-- Hero секция -->
+    <div class="about-hero">
+        <div class="container">
+            <div class="hero-content">
+                <h1 class="hero-title">О HairBraider</h1>
+                <p class="hero-subtitle">Искусство создания прекрасных причесок</p>
+                <div class="hero-stats">
+                    <div class="stat-item">
+                        <span class="stat-number" data-count="500">0</span>
+                        <span class="stat-label">Довольных клиентов</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number" data-count="3">0</span>
+                        <span class="stat-label">Года опыта</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number" data-count="1000">0</span>
+                        <span class="stat-label">Причесок создано</span>
+                    </div>
+                </div>
             </div>
-            <div class="col-lg-6">
-                <h2 class="fw-bold mb-4">О HairBraider</h2>
-                <p>{{ description }}</p>
-                {% for g in gal %}
-                <div class="d-flex align-items-center mb-3">
-                    <i class="fas fa-check-circle text-primary me-2"></i>
-                    <span>{{ g }}</span>
+        </div>
+    </div>
+
+    <!-- Основной контент -->
+    <div class="container">
+        <div class="about-content">
+            <div class="about-grid">
+                <!-- Изображение -->
+                <div class="about-image">
+                    <div class="image-container">
+                        <img src="{% static 'deps/images/about.jpg' %}" 
+                             alt="О нас" 
+                             class="main-image"
+                             loading="eager">
+                        <div class="image-overlay">
+                            <div class="play-btn">
+                                <i class="fas fa-play"></i>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                {% endfor %}
-                {% comment %} <div class="d-flex align-items-center mb-3">
-                    <i class="fas fa-check-circle text-primary me-2"></i>
-                    <span>Гипоаллергенные материалы</span>
+
+                <!-- Текстовый контент -->
+                <div class="about-text">
+                    <div class="section-header">
+                        <h2 class="section-title">Моя история</h2>
+                        <div class="section-divider"></div>
+                    </div>
+                    
+                    <p class="about-description">{{ description }}</p>
+
+                    <div class="features-list">
+                        {% for g in gal %}
+                        <div class="feature-item">
+                            <div class="feature-icon">
+                                <i class="fas fa-check-circle"></i>
+                            </div>
+                            <div class="feature-content">
+                                <h4 class="feature-title">{{ g }}</h4>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
                 </div>
-                <div class="d-flex align-items-center">
-                    <i class="fas fa-check-circle text-primary me-2"></i>
-                    <span>Индивидуальный подход к каждому клиенту</span>
-                </div> {% endcomment %}
+            </div>
+        </div>
+    </div>
+    <!-- CTA секция -->
+    <div class="about-cta">
+        <div class="container">
+            <div class="cta-content">
+                <h2 class="cta-title">Готовы преобразиться?</h2>
+                <p class="cta-text">Запишитесь на консультацию и получите индивидуальный подход</p>
+                <div class="cta-buttons">
+                    <a href="{% url 'order:appointment' %}" class="cta-btn primary-btn">
+                        <i class="fas fa-calendar-check"></i>
+                        Записаться онлайн
+                    </a>
+                    <a href="tel:+79999999999" class="cta-btn secondary-btn">
+                        <i class="fas fa-phone"></i>
+                        Позвонить нам
+                    </a>
+                </div>
             </div>
         </div>
     </div>
 </section>
+
+<style>
+    .about-section {
+        padding: 0;
+    }
+
+    /* Hero секция */
+    .about-hero {
+        background: linear-gradient(135deg, #8A2BE2 0%, #9370DB 50%, #FF69B4 100%);
+        color: white;
+        padding: 4rem 0;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .about-hero::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23ffffff' fill-opacity='0.1' fill-rule='evenodd'/%3E%3C/svg%3E");
+        opacity: 0.3;
+    }
+
+    .hero-content {
+        position: relative;
+        z-index: 2;
+    }
+
+    .hero-title {
+        font-size: 3.5rem;
+        font-weight: 800;
+        margin-bottom: 1rem;
+        background: linear-gradient(135deg, #ffffff 0%, #FFD700 100%);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+    }
+
+    .hero-subtitle {
+        font-size: 1.3rem;
+        opacity: 0.9;
+        margin-bottom: 3rem;
+    }
+
+    .hero-stats {
+        display: flex;
+        justify-content: center;
+        gap: 4rem;
+        flex-wrap: wrap;
+    }
+
+    .stat-item {
+        text-align: center;
+    }
+
+    .stat-number {
+        display: block;
+        font-size: 3rem;
+        font-weight: 800;
+        color: #FFD700;
+        margin-bottom: 0.5rem;
+    }
+
+    .stat-label {
+        font-size: 1.1rem;
+        opacity: 0.9;
+    }
+
+    /* Основной контент */
+    .about-content {
+        padding: 4rem 0;
+    }
+
+    .about-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 4rem;
+        align-items: center;
+    }
+
+    .about-image {
+        position: relative;
+    }
+
+    .image-container {
+        position: relative;
+        border-radius: 24px;
+        overflow: hidden;
+        box-shadow: 0 20px 60px rgba(138, 43, 226, 0.2);
+    }
+
+    .main-image {
+        width: 100%;
+        height: 500px;
+        object-fit: cover;
+        transition: transform 0.5s ease;
+    }
+
+    .image-container:hover .main-image {
+        transform: scale(1.05);
+    }
+
+    .image-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(180deg, transparent 60%, rgba(0, 0, 0, 0.7) 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    .image-container:hover .image-overlay {
+        opacity: 1;
+    }
+
+    .play-btn {
+        width: 80px;
+        height: 80px;
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        backdrop-filter: blur(10px);
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .play-btn:hover {
+        transform: scale(1.1);
+        background: rgba(255, 255, 255, 0.3);
+    }
+
+    .play-btn i {
+        font-size: 2rem;
+        color: white;
+    }
+
+    /* Текстовый контент */
+    .section-header {
+        margin-bottom: 2rem;
+    }
+
+    .section-title {
+        font-size: 2.2rem;
+        font-weight: 700;
+        color: var(--dark-color);
+        margin-bottom: 1rem;
+    }
+
+    .section-divider {
+        width: 60px;
+        height: 4px;
+        background: var(--gradient-primary);
+        border-radius: 2px;
+    }
+
+    .about-description {
+        font-size: 1.1rem;
+        line-height: 1.7;
+        color: #4B5563;
+        margin-bottom: 2rem;
+    }
+
+    .features-list {
+        margin-bottom: 3rem;
+    }
+
+    .feature-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .feature-icon {
+        background: var(--gradient-primary);
+        width: 50px;
+        height: 50px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+    }
+
+    .feature-icon i {
+        color: white;
+        font-size: 1.2rem;
+    }
+
+    .feature-content {
+        flex: 1;
+    }
+
+    .feature-title {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: var(--dark-color);
+        margin-bottom: 0.5rem;
+    }
+
+    /* CTA секция */
+    .about-cta {
+        background: linear-gradient(135deg, #8A2BE2 0%, #9370DB 100%);
+        padding: 4rem 0;
+        color: white;
+        text-align: center;
+    }
+
+    .cta-title {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+    }
+
+    .cta-text {
+        font-size: 1.2rem;
+        margin-bottom: 2rem;
+        opacity: 0.9;
+    }
+
+    .cta-buttons {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .cta-btn {
+        padding: 1rem 2rem;
+        border-radius: 25px;
+        text-decoration: none;
+        font-weight: 700;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.75rem;
+        transition: all 0.3s ease;
+    }
+
+    .primary-btn {
+        background: white;
+        color: var(--primary-color);
+    }
+
+    .primary-btn:hover {
+        background: #FFD700;
+        color: var(--dark-color);
+        transform: translateY(-3px);
+    }
+
+    .secondary-btn {
+        background: transparent;
+        color: white;
+        border: 2px solid white;
+    }
+
+    .secondary-btn:hover {
+        background: white;
+        color: var(--primary-color);
+        transform: translateY(-3px);
+    }
+
+    /* Адаптация для мобильных */
+    @media (max-width: 768px) {
+        .hero-title {
+            font-size: 2.5rem;
+        }
+        
+        .hero-stats {
+            gap: 2rem;
+        }
+        
+        .stat-number {
+            font-size: 2.5rem;
+        }
+        
+        .about-grid {
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+        
+        .main-image {
+            height: 350px;
+        }
+        
+        .cta-buttons {
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .cta-btn {
+            width: 100%;
+            justify-content: center;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .hero-title {
+            font-size: 2rem;
+        }
+        
+        .hero-subtitle {
+            font-size: 1.1rem;
+        }
+        
+        .hero-stats {
+            gap: 1.5rem;
+        }
+        
+        .stat-item {
+            flex: 1;
+            min-width: 100px;
+        }
+        
+        .main-image {
+            height: 280px;
+        }
+        
+        .feature-item {
+            flex-direction: column;
+            text-align: center;
+        }
+        
+        .feature-icon {
+            margin: 0 auto;
+        }
+    }
+
+    /* Анимации */
+    @keyframes countUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .stat-number {
+        animation: countUp 1s ease;
+    }
+
+    /* Улучшенная доступность */
+    @media (prefers-reduced-motion: reduce) {
+        .main-image,
+        .play-btn,
+        .cta-btn {
+            transition: none;
+        }
+        
+        .stat-number {
+            animation: none;
+        }
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Анимация счетчиков
+        const counters = document.querySelectorAll('.stat-number');
+        const speed = 200;
+        
+        counters.forEach(counter => {
+            const target = parseInt(counter.getAttribute('data-count'));
+            const count = parseInt(counter.textContent);
+            const increment = Math.ceil(target / speed);
+            
+            let current = 0;
+            
+            const updateCount = () => {
+                if (current < target) {
+                    current += increment;
+                    if (current > target) current = target;
+                    counter.textContent = current;
+                    setTimeout(updateCount, 1);
+                }
+            };
+            
+            updateCount();
+        });
+        
+        // Параллакс эффект для hero секции
+        window.addEventListener('scroll', function() {
+            const scrolled = window.pageYOffset;
+            const parallax = document.querySelector('.about-hero');
+            if (parallax) {
+                parallax.style.transform = `translateY(${scrolled * 0.4}px)`;
+            }
+        });
+    });
+</script>
 {% endblock content %}

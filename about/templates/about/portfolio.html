@@ -2,68 +2,809 @@
 {% load static %}
 
 {% block title %}
-    <title> {{ title }} </title>
+    <title>{{ title }}</title>
 {% endblock title %}
 
+{% comment %} {% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/portfolio.css' %}">
+{% endblock %} {% endcomment %}
+
 {% block content %}
-    <link rel="stylesheet" href={% static "deps/css/portfolio.css" %}>
-
-<section id="services" class="py-5">
-
-    <div class="modal fade" id="imageModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-lg">
-            <div class="modal-content">
-                <div class="modal-body text-center">
-                    <img src="" id="modalImage" class="img-fluid main-image" alt="Full size image">
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+<!-- Модальное окно для полноразмерного изображения -->
+<div class="modal fade" id="imageModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalImageTitle">Работа из портфолио</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center p-0">
+                <img src="" id="modalImage" class="img-fluid" alt="Full size image" style="border-radius: 0;">
+                <div class="image-nav">
+                    <button class="nav-btn prev-modal-btn" onclick="navigateModal(-1)">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <button class="nav-btn next-modal-btn" onclick="navigateModal(1)">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
                 </div>
             </div>
         </div>
     </div>
+</div>
 
-
+<section class="portfolio-section">
     <div class="container">
-        <div class="text-center mb-5">
-            {% comment %} <h2 class="fw-bold"> {{ title_text }} </h2>
-            <p class="text-muted"> {{ text }} </p> {% endcomment %}
+        <!-- Заголовок секции -->
+        <div class="section-header text-center">
+            <h1 class="section-title gradient-text">Наше Портфолио</h1>
+            <p class="section-subtitle">Лучшие работы наших мастеров по заплетанию косичек</p>
         </div>
-        
-        <div class="row row-cols-1 row-cols-md-3 g-4 justify-content-center">
+
+        <!-- Фильтры -->
+        <div class="portfolio-filters">
+            <div class="filter-buttons">
+                <button class="filter-btn active" data-filter="all">Все работы</button>
+                <button class="filter-btn" data-filter="braids">Косички</button>
+                <button class="filter-btn" data-filter="afro">Афрокосички</button>
+                <button class="filter-btn" data-filter="dreadlocks">Дреды</button>
+                <button class="filter-btn" data-filter="wedding">Свадебные</button>
+            </div>
+        </div>
+
+        <!-- Сетка портфолио -->
+        <div class="portfolio-grid">
             {% for object in objects %}
-                {% comment %} {% if object.image %} {% endcomment %}
-                        <div class="col">
-                            <div class="service-card">
-                                <div class="carousel">
-                                    <div class="images">
-                                        {% for image in object.images.all %}
-                                            <img src="{{ image.image.url }}" 
-                                            alt="{{ object.name }}"
-                                            class="clickable-image"
-                                            data-bs-toggle="modal" 
-                                            data-bs-target="#imageModal"
-                                            data-fullsize="{{ image.image.url }}">
-                                        {% endfor %}
-                                    </div>
-                                    <!-- Добавлен отдельный счетчик для мобильных -->
-                                    <div class="mobile-counter">1 / {{ object.images.count }}</div>
-                                    <div class="controls">
-                                        <button class="prev">⬅</button>
-                                        <span class="current-image">1 / {{ object.images.count }}</span>
-                                        <button class="next">➡</button>
-                                    </div>
-                                </div>
-                                <div class="card-body text-center">
-                                    <h5 class="card-title"> {{ object.name }} </h5>
-                                    <p class="card-text"> {{ object.description }} </p>
-                                </div>
+            <div class="portfolio-item" data-category="{{ object.category|default:'braids' }}">
+                <div class="portfolio-card">
+                    <!-- Карусель изображений -->
+                    <div class="portfolio-carousel">
+                        <div class="carousel-images">
+                            {% for image in object.images.all %}
+                            <div class="carousel-slide {% if forloop.first %}active{% endif %}">
+                                <img src="{{ image.image.url }}" 
+                                     alt="{{ object.name }}"
+                                     class="portfolio-image clickable-image"
+                                     data-bs-toggle="modal" 
+                                     data-bs-target="#imageModal"
+                                     data-fullsize="{{ image.image.url }}"
+                                     data-index="{{ forloop.counter0 }}"
+                                     data-object-id="{{ object.id }}"
+                                     loading="lazy">
                             </div>
+                            {% endfor %}
                         </div>
-                {% comment %} {% endif %} {% endcomment %}
+
+                        <!-- Навигация -->
+                        {% if object.images.count > 1 %}
+                        <div class="carousel-controls">
+                            <button class="carousel-nav prev-btn">
+                                <i class="fas fa-chevron-left"></i>
+                            </button>
+                            <div class="carousel-counter">
+                                <span class="current-slide">1</span>
+                                <span class="counter-separator">/</span>
+                                <span class="total-slides">{{ object.images.count }}</span>
+                            </div>
+                            <button class="carousel-nav next-btn">
+                                <i class="fas fa-chevron-right"></i>
+                            </button>
+                        </div>
+
+                        <!-- Индикаторы -->
+                        <div class="carousel-indicators">
+                            {% for image in object.images.all %}
+                            <button class="indicator {% if forloop.first %}active{% endif %}" 
+                                    data-slide="{{ forloop.counter0 }}"></button>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Информация о работе -->
+                    <div class="portfolio-info">
+                        <h3 class="portfolio-title">{{ object.name }}</h3>
+                        <p class="portfolio-description">{{ object.description }}</p>
+                        
+                        <div class="portfolio-meta">
+                            <span class="portfolio-category">
+                                <i class="fas fa-tag"></i>
+                                {{ object.get_category_display|default:"Косички" }}
+                            </span>
+                            <span class="portfolio-date">
+                                <i class="fas fa-calendar"></i>
+                                {{ object.created_at|date:"d.m.Y" }}
+                            </span>
+                        </div>
+
+                        <div class="portfolio-actions">
+                            <button class="like-btn">
+                                <i class="far fa-heart"></i>
+                                <span class="like-count">12</span>
+                            </button>
+                            <button class="share-btn">
+                                <i class="fas fa-share-alt"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
             {% endfor %}
         </div>
-    {% include "pagination.html" %}
+
+        <!-- Пагинация -->
+        {% include "pagination.html" %}
+
+        <!-- CTA секция -->
+        <div class="portfolio-cta">
+            <div class="cta-content">
+                <h2>Хотите такую же прическу?</h2>
+                <p>Запишитесь к нашему мастеру и получите бесплатную консультацию</p>
+                <a href="{% url 'order:appointment' %}" class="cta-btn primary-btn">
+                    <i class="fas fa-calendar-check"></i>
+                    Записаться
+                </a>
+            </div>
+        </div>
     </div>
 </section>
+
+<style>
+    /* portfolio.css */
+    .portfolio-section {
+        padding: 3rem 0;
+        background: linear-gradient(135deg, #FFF5EE 0%, #F8F6FF 100%);
+        min-height: 100vh;
+    }
+
+    .section-header {
+        margin-bottom: 3rem;
+    }
+
+    .section-title {
+        font-size: 2.8rem;
+        font-weight: 800;
+        margin-bottom: 1rem;
+        background: linear-gradient(135deg, #8A2BE2 0%, #FF69B4 100%);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+    }
+
+    .section-subtitle {
+        font-size: 1.2rem;
+        color: #6B7280;
+        max-width: 600px;
+        margin: 0 auto;
+    }
+
+    /* Фильтры */
+    .portfolio-filters {
+        margin-bottom: 3rem;
+        text-align: center;
+    }
+
+    .filter-buttons {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+
+    .filter-btn {
+        background: white;
+        border: 2px solid #E5E7EB;
+        padding: 0.75rem 1.5rem;
+        border-radius: 25px;
+        font-weight: 600;
+        color: #6B7280;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .filter-btn:hover,
+    .filter-btn.active {
+        background: var(--gradient-primary);
+        color: white;
+        border-color: transparent;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(138, 43, 226, 0.2);
+    }
+
+    /* Сетка портфолио */
+    .portfolio-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+        gap: 2rem;
+        margin-bottom: 3rem;
+    }
+
+    .portfolio-item {
+        transition: all 0.3s ease;
+    }
+
+    .portfolio-card {
+        background: white;
+        border-radius: 24px;
+        overflow: hidden;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+        transition: all 0.4s ease;
+        height: 100%;
+    }
+
+    .portfolio-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 20px 60px rgba(138, 43, 226, 0.15);
+    }
+
+    /* Карусель */
+    .portfolio-carousel {
+        position: relative;
+        height: 300px;
+        overflow: hidden;
+        border-radius: 24px 24px 0 0;
+    }
+
+    .carousel-images {
+        position: relative;
+        height: 100%;
+    }
+
+    .carousel-slide {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0;
+        transition: opacity 0.5s ease;
+    }
+
+    .carousel-slide.active {
+        opacity: 1;
+    }
+
+    .portfolio-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        cursor: pointer;
+        transition: transform 0.3s ease;
+    }
+
+    .portfolio-image:hover {
+        transform: scale(1.05);
+    }
+
+    /* Навигация карусели */
+    .carousel-controls {
+        position: absolute;
+        bottom: 1rem;
+        right: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        background: rgba(255, 255, 255, 0.95);
+        padding: 0.75rem 1rem;
+        border-radius: 25px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .carousel-nav {
+        background: var(--gradient-primary);
+        border: none;
+        width: 35px;
+        height: 35px;
+        border-radius: 50%;
+        color: white;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .carousel-nav:hover {
+        transform: scale(1.1);
+        background: var(--gradient-secondary);
+    }
+
+    .carousel-counter {
+        font-weight: 600;
+        color: var(--dark-color);
+        font-size: 0.9rem;
+    }
+
+    /* Индикаторы */
+    .carousel-indicators {
+        position: absolute;
+        bottom: 1rem;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        gap: 0.5rem;
+    }
+
+    .indicator {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        border: none;
+        background: rgba(255, 255, 255, 0.5);
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .indicator.active {
+        background: white;
+        transform: scale(1.2);
+    }
+
+    /* Информация о работе */
+    .portfolio-info {
+        padding: 1.5rem;
+    }
+
+    .portfolio-title {
+        font-size: 1.3rem;
+        font-weight: 700;
+        color: var(--dark-color);
+        margin-bottom: 0.75rem;
+    }
+
+    .portfolio-description {
+        color: #6B7280;
+        line-height: 1.6;
+        margin-bottom: 1rem;
+    }
+
+    .portfolio-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .portfolio-category,
+    .portfolio-date {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.9rem;
+        color: #9CA3AF;
+    }
+
+    .portfolio-category i,
+    .portfolio-date i {
+        color: var(--primary-color);
+    }
+
+    .portfolio-actions {
+        display: flex;
+        gap: 1rem;
+    }
+
+    .like-btn,
+    .share-btn {
+        background: #F3F4F6;
+        border: none;
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .like-btn:hover,
+    .share-btn:hover {
+        background: var(--gradient-primary);
+        color: white;
+        transform: translateY(-2px);
+    }
+
+    /* CTA секция */
+    .portfolio-cta {
+        background: linear-gradient(135deg, #8A2BE2 0%, #9370DB 100%);
+        padding: 3rem 2rem;
+        border-radius: 24px;
+        margin: 3rem 0;
+        color: white;
+        text-align: center;
+    }
+
+    .cta-content h2 {
+        font-size: 2rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+    }
+
+    .cta-content p {
+        font-size: 1.2rem;
+        margin-bottom: 2rem;
+        opacity: 0.9;
+    }
+
+    .cta-btn {
+        background: white;
+        color: #8A2BE2;
+        padding: 1rem 2rem;
+        border-radius: 25px;
+        text-decoration: none;
+        font-weight: 700;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.75rem;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .cta-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        color: #FF69B4;
+    }
+
+    /* Модальное окно */
+    .modal-content {
+        border-radius: 24px;
+        border: none;
+        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
+    }
+
+    .modal-header {
+        border-bottom: 2px solid #F3F4F6;
+        padding: 1.5rem;
+    }
+
+    .modal-title {
+        font-weight: 700;
+        color: var(--dark-color);
+    }
+
+    .image-nav {
+        position: absolute;
+        top: 50%;
+        left: 0;
+        right: 0;
+        transform: translateY(-50%);
+        display: flex;
+        justify-content: space-between;
+        padding: 0 2rem;
+        pointer-events: none;
+    }
+
+    .nav-btn {
+        pointer-events: auto;
+        background: rgba(255, 255, 255, 0.95);
+        border: none;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .nav-btn:hover {
+        background: var(--primary-color);
+        color: white;
+        transform: scale(1.1);
+    }
+
+    /* Адаптация для мобильных */
+    @media (max-width: 768px) {
+        .portfolio-section {
+            padding: 2rem 0;
+        }
+        
+        .section-title {
+            font-size: 2.2rem;
+        }
+        
+        .filter-buttons {
+            gap: 0.5rem;
+        }
+        
+        .filter-btn {
+            padding: 0.6rem 1.2rem;
+            font-size: 0.9rem;
+        }
+        
+        .portfolio-grid {
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+        }
+        
+        .portfolio-carousel {
+            height: 250px;
+        }
+        
+        .carousel-controls {
+            padding: 0.5rem 0.75rem;
+        }
+        
+        .carousel-nav {
+            width: 30px;
+            height: 30px;
+        }
+        
+        .portfolio-info {
+            padding: 1.2rem;
+        }
+        
+        .portfolio-cta {
+            padding: 2rem 1.5rem;
+            margin: 2rem 0;
+        }
+        
+        .cta-content h2 {
+            font-size: 1.6rem;
+        }
+        
+        .nav-btn {
+            width: 40px;
+            height: 40px;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .section-title {
+            font-size: 1.8rem;
+        }
+        
+        .portfolio-carousel {
+            height: 220px;
+        }
+        
+        .carousel-indicators {
+            bottom: 0.5rem;
+        }
+        
+        .portfolio-meta {
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        
+        .portfolio-actions {
+            justify-content: center;
+        }
+        
+        .nav-btn {
+            width: 35px;
+            height: 35px;
+        }
+    }
+
+    /* Анимации */
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .portfolio-item {
+        animation: fadeInUp 0.6s ease;
+    }
+
+    .portfolio-item:nth-child(odd) {
+        animation-delay: 0.1s;
+    }
+
+    .portfolio-item:nth-child(even) {
+        animation-delay: 0.2s;
+    }
+
+    /* Улучшенная доступность */
+    @media (prefers-reduced-motion: reduce) {
+        .portfolio-card,
+        .portfolio-image,
+        .carousel-nav,
+        .filter-btn,
+        .cta-btn,
+        .nav-btn {
+            transition: none;
+        }
+        
+        .portfolio-item {
+            animation: none;
+        }
+        
+        .carousel-slide {
+            transition: none;
+        }
+    }
+</style>
+
+<script>
+    // portfolio.js
+    document.addEventListener('DOMContentLoaded', function() {
+        // Инициализация каруселей
+        const portfolioItems = document.querySelectorAll('.portfolio-item');
+        
+        portfolioItems.forEach(item => {
+            const carousel = item.querySelector('.portfolio-carousel');
+            if (!carousel) return;
+            
+            const slides = carousel.querySelectorAll('.carousel-slide');
+            const prevBtn = carousel.querySelector('.prev-btn');
+            const nextBtn = carousel.querySelector('.next-btn');
+            const indicators = carousel.querySelectorAll('.indicator');
+            const currentSlideEl = carousel.querySelector('.current-slide');
+            const totalSlidesEl = carousel.querySelector('.total-slides');
+            
+            let currentSlide = 0;
+            
+            // Установка общего количества слайдов
+            if (totalSlidesEl) {
+                totalSlidesEl.textContent = slides.length;
+            }
+            
+            function updateCarousel() {
+                // Скрыть все слайды
+                slides.forEach((slide, index) => {
+                    slide.classList.remove('active');
+                    if (indicators[index]) {
+                        indicators[index].classList.remove('active');
+                    }
+                });
+                
+                // Показать текущий слайд
+                slides[currentSlide].classList.add('active');
+                if (indicators[currentSlide]) {
+                    indicators[currentSlide].classList.add('active');
+                }
+                
+                // Обновить счетчик
+                if (currentSlideEl) {
+                    currentSlideEl.textContent = currentSlide + 1;
+                }
+            }
+            
+            // Обработчики навигации
+            if (prevBtn) {
+                prevBtn.addEventListener('click', () => {
+                    currentSlide = (currentSlide - 1 + slides.length) % slides.length;
+                    updateCarousel();
+                });
+            }
+            
+            if (nextBtn) {
+                nextBtn.addEventListener('click', () => {
+                    currentSlide = (currentSlide + 1) % slides.length;
+                    updateCarousel();
+                });
+            }
+            
+            // Обработчики индикаторов
+            indicators.forEach((indicator, index) => {
+                indicator.addEventListener('click', () => {
+                    currentSlide = index;
+                    updateCarousel();
+                });
+            });
+            
+            // Инициализация
+            updateCarousel();
+        });
+        
+        // Фильтрация работ
+        const filterButtons = document.querySelectorAll('.filter-btn');
+        const portfolioItemsAll = document.querySelectorAll('.portfolio-item');
+        
+        filterButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const filter = button.getAttribute('data-filter');
+                
+                // Обновить активную кнопку
+                filterButtons.forEach(btn => btn.classList.remove('active'));
+                button.classList.add('active');
+                
+                // Фильтрация элементов
+                portfolioItemsAll.forEach(item => {
+                    const category = item.getAttribute('data-category');
+                    
+                    if (filter === 'all' || category === filter) {
+                        item.style.display = 'block';
+                        setTimeout(() => {
+                            item.style.opacity = '1';
+                            item.style.transform = 'translateY(0)';
+                        }, 50);
+                    } else {
+                        item.style.opacity = '0';
+                        item.style.transform = 'translateY(20px)';
+                        setTimeout(() => {
+                            item.style.display = 'none';
+                        }, 300);
+                    }
+                });
+            });
+        });
+        
+        // Обработка модального окна
+        const modal = new bootstrap.Modal(document.getElementById('imageModal'));
+        const modalImage = document.getElementById('modalImage');
+        const modalTitle = document.getElementById('modalImageTitle');
+        let currentModalIndex = 0;
+        let currentModalImages = [];
+        let currentObjectId = null;
+        
+        // Обработчик клика по изображению
+        document.querySelectorAll('.clickable-image').forEach(img => {
+            img.addEventListener('click', function() {
+                const fullsizeUrl = this.getAttribute('data-fullsize');
+                const index = parseInt(this.getAttribute('data-index'));
+                const objectId = this.getAttribute('data-object-id');
+                
+                modalImage.src = fullsizeUrl;
+                currentModalIndex = index;
+                currentObjectId = objectId;
+                
+                // Собрать все изображения для этого объекта
+                currentModalImages = [];
+                document.querySelectorAll(`[data-object-id="${objectId}"]`).forEach(img => {
+                    currentModalImages.push(img.getAttribute('data-fullsize'));
+                });
+                
+                // Обновить заголовок
+                const portfolioTitle = this.closest('.portfolio-item').querySelector('.portfolio-title');
+                if (portfolioTitle) {
+                    modalTitle.textContent = portfolioTitle.textContent;
+                }
+                
+                modal.show();
+            });
+        });
+        
+        // Навигация в модальном окне
+        window.navigateModal = function(direction) {
+            if (currentModalImages.length === 0) return;
+            
+            currentModalIndex = (currentModalIndex + direction + currentModalImages.length) % currentModalImages.length;
+            modalImage.style.opacity = '0';
+            
+            setTimeout(() => {
+                modalImage.src = currentModalImages[currentModalIndex];
+                modalImage.style.opacity = '1';
+            }, 300);
+        };
+        
+        // Обработка клавиатуры в модальном окне
+        document.addEventListener('keydown', function(e) {
+            if (modal._isShown) {
+                if (e.key === 'ArrowLeft') navigateModal(-1);
+                if (e.key === 'ArrowRight') navigateModal(1);
+                if (e.key === 'Escape') modal.hide();
+            }
+        });
+        
+        // Лайки
+        document.querySelectorAll('.like-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                this.classList.toggle('liked');
+                const heartIcon = this.querySelector('i');
+                const likeCount = this.querySelector('.like-count');
+                
+                if (this.classList.contains('liked')) {
+                    heartIcon.classList.remove('far');
+                    heartIcon.classList.add('fas');
+                    likeCount.textContent = parseInt(likeCount.textContent) + 1;
+                } else {
+                    heartIcon.classList.remove('fas');
+                    heartIcon.classList.add('far');
+                    likeCount.textContent = parseInt(likeCount.textContent) - 1;
+                }
+            });
+        });
+    });
+</script>
 {% endblock content %}
