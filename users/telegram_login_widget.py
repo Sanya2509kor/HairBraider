@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.urls import reverse
 
 from django_telegram_login.widgets.constants import (
     SMALL, 
@@ -11,13 +12,21 @@ from django_telegram_login.widgets.generator import (
     create_redirect_login_widget,
 )
 
-
 bot_name = settings.TELEGRAM_BOT_NAME
 bot_token = settings.TELEGRAM_BOT_TOKEN
+
+# Используем абсолютный URL для redirect
 redirect_url = settings.TELEGRAM_LOGIN_REDIRECT_URL
 
-telegram_login_widget_callback = create_callback_login_widget(bot_name, corner_radius=10, size=MEDIUM)
+telegram_login_widget_callback = create_callback_login_widget(
+    bot_name, 
+    corner_radius=10, 
+    size=MEDIUM
+)
 
 telegram_login_widget_redirect = create_redirect_login_widget(
-    redirect_url, bot_name, size=LARGE, corner_radius=20, 
+    redirect_url, 
+    bot_name, 
+    size=LARGE, 
+    corner_radius=20,
 )

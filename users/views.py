@@ -1,11 +1,13 @@
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import LoginView
-from django.views.generic import CreateView, UpdateView
+from django.views.generic import CreateView, UpdateView, View
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import auth, messages
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import redirect
 from django.urls import reverse, reverse_lazy
+from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import csrf_exempt
 
 from users.models import User
 from .forms import ProfileForm, UserLoginForm, UserRegistrationForm
@@ -19,6 +21,96 @@ from django_telegram_login.errors import (
     TelegramDataIsOutdatedError,
 )
 
+# Импортируйте декоратор
+from .utils import check_recaptcha
+
+
+class TelegramLoginView(View):
+    """Отдельный view для обработки Telegram аутентификации"""
+    
+    @method_decorator(csrf_exempt)
+    def dispatch(self, *args, **kwargs):
+        return super().dispatch(*args, **kwargs)
+
+    def get(self, request):
+        print("Telegram login request received:", request.GET)
+        
+        if 'hash' not in request.GET:
+            print("No hash parameter found")
+            return redirect('users:login')
+        
+        try:
+            # Проверяем данные Telegram
+            result = verify_telegram_authentication(
+                bot_token=bot_token, 
+                request_data=request.GET
+            )
+            print("Telegram authentication successful:", result)
+            
+            telegram_id = result['id']
+            username = result.get('username') or f"tg_{telegram_id}"
+            first_name = result.get('first_name', 'Пользователь')
+            
+            # Ищем пользователя по telegram_id
+            user = User.objects.filter(telegram_id=telegram_id).first()
+            
+            if not user:
+                # Ищем по username если telegram_id не найден
+                user = User.objects.filter(username=username).first()
+            
+            if user:
+                # Обновляем существующего пользователя
+                print(f"Updating existing user: {user}")
+                user.telegram_id = telegram_id
+                user.telegram_username = result.get('username')
+                user.telegram_photo_url = result.get('photo_url')
+                user.first_name = first_name
+                
+                # Сохраняем только если номер начинается с tg_
+                if not user.phone_number or user.phone_number.startswith('tg_'):
+                    user.phone_number = f"tg_{telegram_id}"
+                
+                if not user.username or user.username.startswith('tg_'):
+                    user.username = username
+                
+                user.save()
+                print(f"User updated: {user}")
+            else:
+                # Создаем нового пользователя
+                print("Creating new user")
+                user = User(
+                    telegram_id=telegram_id,
+                    username=username,
+                    first_name=first_name,
+                    telegram_username=result.get('username'),
+                    telegram_photo_url=result.get('photo_url'),
+                    phone_number=f"tg_{telegram_id}",
+                )
+                user.set_unusable_password()
+                user.save()
+                print(f"New user created: {user}")
+            
+            # Логиним пользователя
+            auth.login(request, user)
+            messages.success(request, f"Вы успешно вошли через Telegram!")
+            print("User logged in successfully")
+            return redirect('users:profile')
+        
+        except TelegramDataIsOutdatedError as e:
+            print(f"Telegram data outdated: {e}")
+            messages.error(request, 'Данные аутентификации устарели')
+            return redirect('users:login')
+        
+        except NotTelegramDataError as e:
+            print(f"Not Telegram data: {e}")
+            messages.error(request, 'Ошибка аутентификации Telegram')
+            return redirect('users:login')
+        
+        except Exception as e:
+            print(f"Unexpected error: {e}")
+            messages.error(request, f'Произошла ошибка: {str(e)}')
+            return redirect('users:login')
+
 
 class UserLoginView(LoginView):
     template_name = 'users/login.html'
@@ -26,8 +118,10 @@ class UserLoginView(LoginView):
     form_class = UserLoginForm
     success_url = reverse_lazy('main:index')
 
-    
-
+    # Добавьте декоратор к dispatch методу
+    @method_decorator(check_recaptcha)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -42,94 +136,33 @@ class UserLoginView(LoginView):
         return reverse_lazy('main:index')
     
     def form_valid(self, form):
-        # session_key = self.request.session.session_key
-        user = form.get_user()
-
-        # Проверяем капчу
+        # Проверяем капчу только для обычного входа
         if not self.request.recaptcha_is_valid:
-            # Добавляем ошибку в форму
             form.add_error(None, 'Ошибка проверки captcha. Подтвердите, что вы не робот.')
-            # Возвращаем рендер страницы с формой и ошибками
             return self.render_to_response(self.get_context_data(form=form))
 
+        user = form.get_user()
         if user:
             auth.login(self.request, user)
-            # if session_key:
-                # forgot_carts = Cart.objects.filter(user=user)
-                # if forgot_carts.exists():
-                    # forgot_carts.delete()
-                # Cart.objects.filter(session_key=session_key).update(user=user)
             messages.success(self.request, f"{user.username}, Вы вошли в аккаунт!")
-
             return HttpResponseRedirect(self.get_success_url())
         
+        return super().form_valid(form)
 
     def form_invalid(self, form):
-        messages.success(self.request, "Неверный номер телефона или пароль")
-        return super().form_invalid(form)    
-    
-        
+        messages.error(self.request, "Неверный номер телефона или пароль")
+        return super().form_invalid(form)
+
 
 class UserRegistrationView(CreateView):
     template_name = 'users/registration.html'
     form_class = UserRegistrationForm
     success_url = reverse_lazy('users:profile')
 
-
-    def telegram_login(self, request):
-        try:
-            result = verify_telegram_authentication(bot_token=bot_token, request_data=request.GET)
-            
-            # Генерируем уникальные значения
-            telegram_id = result['id']
-            username = result.get('username') or f"tg_{telegram_id}"
-            phone_number = f"tg_{telegram_id}"
-            
-            # Пытаемся найти пользователя по telegram_id
-            user = User.objects.filter(telegram_id=telegram_id).first()
-            
-            if user:
-                # Обновляем существующего пользователя
-                user.telegram_username = result.get('username')
-                user.telegram_photo_url = result.get('photo_url')
-                user.first_name = result.get('first_name', '')
-                if not user.phone_number:
-                    user.phone_number = phone_number
-                if not user.username:
-                    user.username = username
-                user.save()
-            else:
-                # Создаем нового пользователя
-                user = User(
-                    telegram_id=telegram_id,
-                    username=username,
-                    email='',
-                    first_name=result.get('first_name', ''),
-                    telegram_username=result.get('username'),
-                    telegram_photo_url=result.get('photo_url'),
-                    phone_number=phone_number,
-                    password='telegram_auth',  # Пароль не используется
-                )
-                user.set_unusable_password()  # Более корректный способ для OAuth
-                user.save()
-            
-            auth.login(request, user)
-            messages.success(request, f"Вы успешно вошли через Telegram!")
-            return HttpResponseRedirect(self.success_url)
-        
-        except TelegramDataIsOutdatedError:
-            messages.error(request, 'Данные аутентификации устарели (более 1 дня)')
-            return HttpResponseRedirect(reverse('users:login'))
-        
-        except NotTelegramDataError:
-            messages.error(request, 'Данные не связаны с Telegram!')
-            return HttpResponseRedirect(reverse('users:login'))
-
-    def get(self, request, *args, **kwargs):
-        if 'hash' in request.GET:
-            return self.telegram_login(request)
-        return super().get(request, *args, **kwargs)
-
+    # Добавьте декоратор к dispatch методу
+    @method_decorator(check_recaptcha)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -138,26 +171,15 @@ class UserRegistrationView(CreateView):
         return context
     
     def form_valid(self, form):
-        # session_key = self.request.session.session_key
-        user = form.instance
-
         # Проверяем капчу
         if not self.request.recaptcha_is_valid:
-            # Добавляем ошибку в форму
             form.add_error(None, 'Ошибка проверки captcha. Подтвердите, что вы не робот.')
-            # Возвращаем рендер страницы с формой и ошибками
             return self.render_to_response(self.get_context_data(form=form))
         
-        if user:
-            form.save()
-            auth.login(self.request, user)
-
-        # if  session_key:
-            # Cart.objects.filter(session_key=session_key).update(user=user)
-            
+        user = form.save()
+        auth.login(self.request, user)
         messages.success(self.request, f"{user.username}, Вы успешно зарегистрированы и вошли в аккаунт")
         return HttpResponseRedirect(self.success_url)
-    
 
 
 class UserProfileView(LoginRequiredMixin, UpdateView):
@@ -167,6 +189,11 @@ class UserProfileView(LoginRequiredMixin, UpdateView):
     current_name = None
     current_username = None
 
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['edit_name'] = self.request.user.edit_name
+        kwargs['edit_username'] = self.request.user.edit_username
+        return kwargs
 
     def get_object(self, queryset=None):
         self.current_name = self.request.user.first_name
@@ -189,25 +216,18 @@ class UserProfileView(LoginRequiredMixin, UpdateView):
         messages.error(self.request, 'Произошла ошибка')
         return super().form_invalid(form)    
     
-    
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Личный кабинет'
         if self.request.user.is_authenticated:
             user_app = Appointment.objects.filter(user=self.request.user)
             today = timezone.now().date()
-            context['current_app'] = user_app.filter(date__date=today).order_by('-date', 'time')
-            context['past_app'] = user_app.filter(date__date__lt=today).order_by('-date', 'time')
-            context['future_app'] = user_app.filter(date__date__gt=today).order_by('-date', 'time')
-
-        # context['orders'] = Order.objects.filter(user=self.request.user).prefetch_related(
-                # Prefetch(
-                    # "orderitem_set",
-                    # queryset=OrderItem.objects.select_related("product"),
-                # )
-            # ).order_by("-id")
+            context['today'] = today  # Добавьте today в контекст
+            context['current_app'] = user_app.filter(date__date=today).order_by('-date', 'time')[:5]
+            context['past_app'] = user_app.filter(date__date__lt=today).order_by('-date', 'time')[:5]
+            context['future_app'] = user_app.filter(date__date__gt=today).order_by('-date', 'time')[:5]
         return context
-    
+
 
 @login_required
 def logout(request):

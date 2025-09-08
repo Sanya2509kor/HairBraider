@@ -69,7 +69,6 @@
         @media (max-width: 991.98px) {
             .navbar-collapse {
                 background: white;
-                padding: 20px;
                 border-radius: 15px;
                 margin-top: 10px;
                 box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
@@ -92,51 +91,6 @@
                 margin-left: auto;
                 margin-right: auto;
             }
-        }
-        
-        /* Улучшения для очень маленьких экранов */
-        @media (max-width: 575.98px) {
-            .navbar-brand {
-                font-size: 1.3rem;
-            }
-            
-            .container {
-                padding-left: 15px;
-                padding-right: 15px;
-            }
-            
-            .btn-primary {
-                padding: 10px 20px;
-                font-size: 0.9rem;
-            }
-        }
-        
-        /* Анимации */
-        @keyframes slideDown {
-            from {
-                opacity: 0;
-                transform: translateY(-20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        
-        .navbar {
-            animation: slideDown 0.3s ease;
-        }
-        
-        /* Улучшенный фокус для доступности */
-        .nav-link:focus,
-        .btn-primary:focus {
-            outline: 2px solid var(--primary-color);
-            outline-offset: 2px;
-        }
-        
-        /* Плавная прокрутка */
-        html {
-            scroll-behavior: smooth;
         }
     </style>
 </head>
@@ -210,40 +164,8 @@
     <!-- Bootstrap JS и зависимости -->
     {% comment %} <script src={% static "deps/js/jquery/jquery-3.7.0.min.js" %}></script> {% endcomment %}
     {% comment %} <script src={% static "deps/js/jquery-events.js" %}></script> {% endcomment %}
-    <script src={% static "deps/js/product_gallery.js" %}></script>
-    <script src={% static "deps/js/about/portfolio.js" %}></script>
+    {% comment %} <script src={% static "deps/js/product_gallery.js" %}></script>
+    <script src={% static "deps/js/about/portfolio.js" %}></script> {% endcomment %}
     <script src={% static "deps/js/bootstrap/bootstrap.bundle.min.js" %}></script>
-
-    <script>
-        // Улучшение мобильного меню
-        document.addEventListener('DOMContentLoaded', function() {
-            // Закрытие меню при клике на ссылку
-            const navLinks = document.querySelectorAll('.nav-link');
-            const navbarCollapse = document.querySelector('.navbar-collapse');
-            
-            navLinks.forEach(link => {
-                link.addEventListener('click', () => {
-                    if (window.innerWidth < 992) {
-                        const bsCollapse = new bootstrap.Collapse(navbarCollapse);
-                        bsCollapse.hide();
-                    }
-                });
-            });
-            
-            // Плавная прокрутка для якорей
-            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-                anchor.addEventListener('click', function (e) {
-                    e.preventDefault();
-                    const target = document.querySelector(this.getAttribute('href'));
-                    if (target) {
-                        target.scrollIntoView({
-                            behavior: 'smooth',
-                            block: 'start'
-                        });
-                    }
-                });
-            });
-        });
-    </script>
 </body>
 </html>

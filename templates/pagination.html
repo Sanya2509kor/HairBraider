@@ -1,44 +1,256 @@
-    <!-- Пагинация -->
 {% if is_paginated %}
-<nav aria-label="Page navigation">
-    <ul class="pagination justify-content-center">
-        {% if page_obj.has_previous %}
-        <li class="page-item">
-            <a class="page-link" href="?page=1" aria-label="First">
-                <span aria-hidden="true">&laquo;&laquo;</span>
-            </a>
-        </li>
-        <li class="page-item">
-            <a class="page-link" href="?page={{ page_obj.previous_page_number }}" aria-label="Previous">
-                <span aria-hidden="true">&laquo;</span>
-            </a>
-        </li>
-        {% endif %}
-        
-        {% for num in page_obj.paginator.page_range %}
-            {% if page_obj.number == num %}
-            <li class="page-item active">
-                <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+<div class="pagination-container">
+    <nav class="pagination-nav" aria-label="Page navigation">
+        <ul class="pagination">
+            {% if page_obj.has_previous %}
+            <li class="pagination-item">
+                <a class="pagination-link pagination-first" href="?page=1" aria-label="First">
+                    <span class="pagination-icon">
+                        <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd" d="M8.354 1.646a.5.5 0 0 1 0 .708L2.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z"/>
+                            <path fill-rule="evenodd" d="M12.354 1.646a.5.5 0 0 1 0 .708L6.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z"/>
+                        </svg>
+                    </span>
+                </a>
             </li>
-            {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
-            <li class="page-item">
-                <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+            <li class="pagination-item">
+                <a class="pagination-link pagination-prev" href="?page={{ page_obj.previous_page_number }}" aria-label="Previous">
+                    <span class="pagination-icon">
+                        <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd" d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z"/>
+                        </svg>
+                    </span>
+                </a>
+            </li>
+            {% else %}
+            <li class="pagination-item disabled">
+                <span class="pagination-link pagination-first disabled">
+                    <span class="pagination-icon">
+                        <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd" d="M8.354 1.646a.5.5 0 0 1 0 .708L2.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z"/>
+                            <path fill-rule="evenodd" d="M12.354 1.646a.5.5 0 0 1 0 .708L6.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z"/>
+                        </svg>
+                    </span>
+                </span>
+            </li>
+            <li class="pagination-item disabled">
+                <span class="pagination-link pagination-prev disabled">
+                    <span class="pagination-icon">
+                        <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd" d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z"/>
+                        </svg>
+                    </span>
+                </span>
             </li>
             {% endif %}
-        {% endfor %}
+            
+            {% for num in page_obj.paginator.page_range %}
+                {% if page_obj.number == num %}
+                <li class="pagination-item active">
+                    <span class="pagination-link pagination-number active">{{ num }}</span>
+                </li>
+                {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                <li class="pagination-item">
+                    <a class="pagination-link pagination-number" href="?page={{ num }}">{{ num }}</a>
+                </li>
+                {% elif num == page_obj.number|add:'-3' or num == page_obj.number|add:'3' %}
+                <li class="pagination-item pagination-ellipsis">
+                    <span class="pagination-link">...</span>
+                </li>
+                {% endif %}
+            {% endfor %}
+            
+            {% if page_obj.has_next %}
+            <li class="pagination-item">
+                <a class="pagination-link pagination-next" href="?page={{ page_obj.next_page_number }}" aria-label="Next">
+                    <span class="pagination-icon">
+                        <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z"/>
+                        </svg>
+                    </span>
+                </a>
+            </li>
+            <li class="pagination-item">
+                <a class="pagination-link pagination-last" href="?page={{ page_obj.paginator.num_pages }}" aria-label="Last">
+                    <span class="pagination-icon">
+                        <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd" d="M3.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L9.293 8 3.646 2.354a.5.5 0 0 1 0-.708z"/>
+                            <path fill-rule="evenodd" d="M7.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L13.293 8 7.646 2.354a.5.5 0 0 1 0-.708z"/>
+                        </svg>
+                    </span>
+                </a>
+            </li>
+            {% else %}
+            <li class="pagination-item disabled">
+                <span class="pagination-link pagination-next disabled">
+                    <span class="pagination-icon">
+                        <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z"/>
+                        </svg>
+                    </span>
+                </span>
+            </li>
+            <li class="pagination-item disabled">
+                <span class="pagination-link pagination-last disabled">
+                    <span class="pagination-icon">
+                        <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd" d="M3.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L9.293 8 3.646 2.354a.5.5 0 0 1 0-.708z"/>
+                            <path fill-rule="evenodd" d="M7.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L13.293 8 7.646 2.354a.5.5 0 0 1 0-.708z"/>
+                        </svg>
+                    </span>
+                </span>
+            </li>
+            {% endif %}
+        </ul>
+    </nav>
+    
+    <div class="pagination-info">
+        <span class="pagination-text">
+            Показано с {{ page_obj.start_index }} по {{ page_obj.end_index }} из {{ page_obj.paginator.count }} записей
+        </span>
+    </div>
+</div>
+
+<style>
+    .pagination-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin: 2rem 0;
+        padding: 1rem 0;
+    }
+    
+    .pagination-nav {
+        margin-bottom: 1rem;
+    }
+    
+    .pagination {
+        display: flex;
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        gap: 0.5rem;
+    }
+    
+    .pagination-item {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .pagination-link {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 2.5rem;
+        height: 2.5rem;
+        padding: 0 0.5rem;
+        border-radius: 12px;
+        font-weight: 500;
+        color: #6B7280;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        border: 2px solid transparent;
+        background: #F9FAFB;
+    }
+    
+    .pagination-link:hover:not(.disabled):not(.active) {
+        background: #E5E7EB;
+        color: #374151;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    
+    .pagination-link.active {
+        background: linear-gradient(135deg, #8A2BE2 0%, #FF69B4 100%);
+        color: white;
+        border-color: transparent;
+        box-shadow: 0 4px 12px rgba(138, 43, 226, 0.3);
+    }
+    
+    .pagination-link.disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+    
+    .pagination-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .pagination-ellipsis .pagination-link {
+        background: transparent;
+        cursor: default;
+    }
+    
+    .pagination-ellipsis .pagination-link:hover {
+        transform: none;
+        box-shadow: none;
+    }
+    
+    .pagination-info {
+        text-align: center;
+    }
+    
+    .pagination-text {
+        font-size: 0.875rem;
+        color: #6B7280;
+    }
+    
+    /* Анимации */
+    @keyframes paginationBounce {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.1); }
+        100% { transform: scale(1); }
+    }
+    
+    .pagination-link:not(.disabled):not(.active):hover {
+        animation: paginationBounce 0.5s ease;
+    }
+    
+    /* Адаптивность */
+    @media (max-width: 640px) {
+        .pagination {
+            gap: 0.25rem;
+        }
         
-        {% if page_obj.has_next %}
-        <li class="page-item">
-            <a class="page-link" href="?page={{ page_obj.next_page_number }}" aria-label="Next">
-                <span aria-hidden="true">&raquo;</span>
-            </a>
-        </li>
-        <li class="page-item">
-            <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}" aria-label="Last">
-                <span aria-hidden="true">&raquo;&raquo;</span>
-            </a>
-        </li>
-        {% endif %}
-    </ul>
-</nav>
+        .pagination-link {
+            min-width: 2.25rem;
+            height: 2.25rem;
+            font-size: 0.875rem;
+        }
+        
+        .pagination-info {
+            font-size: 0.75rem;
+        }
+    }
+    
+    @media (max-width: 480px) {
+        .pagination-link.pagination-number:nth-child(n+6):nth-child(-n+10) {
+            display: none;
+        }
+        
+        .pagination-ellipsis {
+            display: none;
+        }
+    }
+    
+    /* Темная тема (опционально) */
+    @media (prefers-color-scheme: dark) {
+        .pagination-link:not(.active) {
+            background: #374151;
+            color: #D1D5DB;
+        }
+        
+        .pagination-link:hover:not(.disabled):not(.active) {
+            background: #4B5563;
+            color: #F9FAFB;
+        }
+        
+        .pagination-text {
+            color: #D1D5DB;
+        }
+    }
+</style>
 {% endif %}

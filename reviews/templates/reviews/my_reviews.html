@@ -8,15 +8,6 @@
 {% block content %}
 <div class="my-reviews-page">
     <div class="container">
-        {% comment %} <!-- Хлебные крошки -->
-        <nav class="breadcrumb-nav mb-4">
-            <a href="{% url 'main:index' %}">Главная</a>
-            <span class="breadcrumb-separator">/</span>
-            <a href="{% url 'reviews:reviews' %}">Отзывы</a>
-            <span class="breadcrumb-separator">/</span>
-            <span class="current">Мои отзывы</span>
-        </nav> {% endcomment %}
-
         <div class="page-header text-center mb-5">
             <h1 class="page-title">
                 <i class="fas fa-comments me-3"></i>
@@ -151,7 +142,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col">
+            {% comment %} <div class="col">
                 <div class="stat-card card border-0 shadow-sm text-center h-100">
                     <div class="card-body">
                         <div class="stat-icon mx-auto mb-3 rounded-circle d-flex align-items-center justify-content-center" style="width: 60px; height: 60px; background: var(--gradient-primary); color: white; font-size: 1.5rem;">
@@ -161,7 +152,7 @@
                         <p class="text-muted mb-0">Можно редактировать</p>
                     </div>
                 </div>
-            </div>
+            </div> {% endcomment %}
         </div>
         {% endif %}
     </div>

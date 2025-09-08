@@ -5,6 +5,7 @@ class Portfolio(models.Model):
 
     name = models.CharField(verbose_name='Название', blank=False, null=False, max_length=255)
     description = models.TextField(verbose_name='Описание', blank=True, null=True, )
+    created_at = models.DateTimeField(verbose_name='Дата создания', auto_now_add=True)
     # image = models.ImageField(upload_to='portfolio_images', blank=True, null=True, verbose_name='Изображение')
 
 

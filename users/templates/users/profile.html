@@ -6,251 +6,259 @@
 {% endblock title %}
 
 {% block content %}
-<div class="profile-page">
-    <div class="container">
-        <!-- Хлебные крошки -->
-        <nav class="breadcrumb-nav mb-4">
-            <a href="{% url 'main:index' %}">Главная</a>
-            <span class="breadcrumb-separator">/</span>
-            <span class="current">Профиль</span>
-        </nav>
+<div class="modern-profile">
+    <!-- Мобильное плавающее меню -->
+    <div class="mobile-nav-tabs d-lg-none">
+        <button class="nav-tab active" data-target="appointments">
+            <i class="fas fa-calendar-alt"></i>
+            <span>Записи</span>
+        </button>
+        <button class="nav-tab" data-target="profile">
+            <i class="fas fa-user"></i>
+            <span>Профиль</span>
+        </button>
+    </div>
 
-        <div class="row">
+    <div class="container">
+        <div class="profile-content">
             <!-- Блок с записями -->
-            <div class="col-lg-6 mb-4">
+            <div class="content-section active" id="appointments-section">
                 {% if current_app or future_app or past_app %}
-                <div class="profile-card appointments-card">
+                <div class="modern-card">
                     {% if current_app %}
-                    <div class="appointments-section">
-                        <h3 class="section-title">
-                            <i class="fas fa-calendar-day me-2"></i>Записи на сегодня
-                        </h3>
-                        <div class="appointments-grid">
-                            {% for appointment in current_app %}
-                            <div class="appointment-card current">
-                                <div class="appointment-date">
-                                    <span class="date-day">{{ appointment.date.date|date:"d" }}</span>
-                                    <span class="date-month">{{ appointment.date.date|date:"E" }}</span>
+                    <div class="section-header">
+                        <h2 class="section-title">
+                            <i class="fas fa-calendar-day"></i>
+                            <span>Сегодня</span>
+                            <span class="badge">{{ current_app|length }}</span>
+                        </h2>
+                    </div>
+                    <div class="appointments-list">
+                        {% for appointment in current_app %}
+                        <div class="appointment-item current">
+                            <div class="appointment-badge">
+                                <div class="date-badge">
+                                    <span class="day">{{ appointment.date.date|date:"d" }}</span>
+                                    <span class="month">{{ appointment.date.date|date:"M" }}</span>
                                 </div>
-                                <div class="appointment-info">
-                                    <span class="appointment-time">
-                                        <i class="fas fa-clock me-1"></i>{{ appointment.time.time|time:"H:i" }}
-                                    </span>
-                                    <span class="appointment-service">{{ appointment.product }}</span>
-                                </div>
-                                <div class="appointment-status current">Текущая</div>
                             </div>
-                            {% endfor %}
+                            <div class="appointment-content">
+                                <h3 class="service-name">{{ appointment.product }}</h3>
+                                <div class="appointment-meta">
+                                    <span class="time">
+                                        <i class="fas fa-clock"></i>
+                                        {{ appointment.time.time|time:"H:i" }}
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="appointment-status current">Сейчас</div>
                         </div>
+                        {% endfor %}
                     </div>
                     {% endif %}
 
                     {% if future_app %}
-                    <div class="appointments-section">
-                        <h3 class="section-title">
-                            <i class="fas fa-calendar-alt me-2"></i>Ближайшие записи
-                        </h3>
-                        <div class="appointments-grid">
-                            {% for appointment in future_app %}
-                            <div class="appointment-card future">
-                                <div class="appointment-date">
-                                    <span class="date-day">{{ appointment.date.date|date:"d" }}</span>
-                                    <span class="date-month">{{ appointment.date.date|date:"E" }}</span>
+                    <div class="section-header">
+                        <h2 class="section-title">
+                            <i class="fas fa-calendar-check"></i>
+                            <span>Ближайшие</span>
+                            <span class="badge">{{ future_app|length }}</span>
+                        </h2>
+                    </div>
+                    <div class="appointments-list">
+                        {% for appointment in future_app %}
+                        <div class="appointment-item upcoming">
+                            <div class="appointment-badge">
+                                <div class="date-badge">
+                                    <span class="day">{{ appointment.date.date|date:"d" }}</span>
+                                    <span class="month">{{ appointment.date.date|date:"M" }}</span>
                                 </div>
-                                <div class="appointment-info">
-                                    <span class="appointment-time">
-                                        <i class="fas fa-clock me-1"></i>{{ appointment.time.time|time:"H:i" }}
-                                    </span>
-                                    <span class="appointment-service">{{ appointment.product }}</span>
-                                </div>
-                                <div class="appointment-status upcoming">Предстоящая</div>
                             </div>
-                            {% endfor %}
+                            <div class="appointment-content">
+                                <h3 class="service-name">{{ appointment.product }}</h3>
+                                <div class="appointment-meta">
+                                    <span class="time">
+                                        <i class="fas fa-clock"></i>
+                                        {{ appointment.time.time|time:"H:i" }}
+                                    </span>
+                                    <span class="days-left">
+                                        {% with days=appointment.date.date|timeuntil:today %}
+                                        через {{ days }}
+                                        {% endwith %}
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="appointment-status upcoming">Скоро</div>
                         </div>
+                        {% endfor %}
                     </div>
                     {% endif %}
 
                     {% if past_app %}
-                    <div class="appointments-section">
-                        <h3 class="section-title">
-                            <i class="fas fa-history me-2"></i>Прошедшие записи
-                        </h3>
-                        <div class="appointments-grid">
-                            {% for appointment in past_app %}
-                            <div class="appointment-card past">
-                                <div class="appointment-date">
-                                    <span class="date-day">{{ appointment.date.date|date:"d" }}</span>
-                                    <span class="date-month">{{ appointment.date.date|date:"E" }}</span>
+                    <div class="section-header">
+                        <h2 class="section-title">
+                            <i class="fas fa-history"></i>
+                            <span>История</span>
+                            <span class="badge">{{ past_app|length }}</span>
+                        </h2>
+                    </div>
+                    <div class="appointments-list">
+                        {% for appointment in past_app %}
+                        <div class="appointment-item completed">
+                            <div class="appointment-badge">
+                                <div class="date-badge">
+                                    <span class="day">{{ appointment.date.date|date:"d" }}</span>
+                                    <span class="month">{{ appointment.date.date|date:"M" }}</span>
                                 </div>
-                                <div class="appointment-info">
-                                    <span class="appointment-time">
-                                        <i class="fas fa-clock me-1"></i>{{ appointment.time.time|time:"H:i" }}
-                                    </span>
-                                    <span class="appointment-service">{{ appointment.product }}</span>
-                                </div>
-                                <div class="appointment-status completed">Завершена</div>
                             </div>
-                            {% endfor %}
+                            <div class="appointment-content">
+                                <h3 class="service-name">{{ appointment.product }}</h3>
+                                <div class="appointment-meta">
+                                    <span class="time">
+                                        <i class="fas fa-clock"></i>
+                                        {{ appointment.time.time|time:"H:i" }}
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="appointment-status completed">Готово</div>
                         </div>
+                        {% endfor %}
                     </div>
                     {% endif %}
                 </div>
                 {% else %}
-                <div class="profile-card empty-appointments">
-                    <div class="empty-state text-center">
-                        <i class="fas fa-calendar-plus empty-icon"></i>
-                        <h4>Тут будут ваши записи!</h4>
-                        <p class="text-muted">У вас пока нет активных записей</p>
-                        <a href="{% url 'order:appointment' %}" class="btn btn-primary">
-                            <i class="fas fa-plus me-2"></i>Записаться
-                        </a>
+                <div class="empty-state">
+                    <div class="empty-icon">
+                        <i class="fas fa-calendar-plus"></i>
                     </div>
+                    <h3>Записей пока нет</h3>
+                    <p>Запишитесь на услугу, и она появится здесь</p>
+                    <a href="{% url 'order:appointment' %}" class="btn-primary">
+                        <i class="fas fa-plus"></i>
+                        Записаться
+                    </a>
                 </div>
                 {% endif %}
             </div>
 
             <!-- Блок профиля пользователя -->
-            <div class="col-lg-6">
-                <div class="profile-card user-profile-card">
-                    <h3 class="section-title">
-                        <i class="fas fa-user-circle me-2"></i>Профиль пользователя
-                    </h3>
-
-                    <form action="{% url 'users:profile' %}" method="post" enctype="multipart/form-data" id="profile_form">
-                        {% csrf_token %}
-                        
-                        <!-- Аватар -->
-                        <div class="avatar-section text-center mb-4">
+            <div class="content-section" id="profile-section">
+                <div class="modern-card">
+                    <div class="profile-header">
+                        <div class="avatar-editor">
                             <div class="avatar-container">
                                 {% if user.image %}
-                                    <img src="{{ user.image.url }}" alt="Аватар пользователя" class="avatar-image">
+                                    <img src="{{ user.image.url }}" alt="Аватар" class="avatar">
                                 {% else %}
-                                    <div class="avatar-placeholder">
+                                    <div class="avatar-default">
                                         <i class="fas fa-user"></i>
                                     </div>
                                 {% endif %}
-                                <label for="id_image" class="avatar-upload-btn">
+                                <label class="avatar-upload">
+                                    <input type="file" id="id_image" name="image" accept="image/*">
                                     <i class="fas fa-camera"></i>
-                                    <input type="file" id="id_image" name="image" accept="image/*" class="d-none">
                                 </label>
                             </div>
-                            {% if form.image.errors %}
-                                <div class="alert alert-danger mt-2">{{ form.image.errors }}</div>
-                            {% endif %}
                         </div>
+                        <h2 class="user-name">{{ user.first_name|default:user.username }}</h2>
+                    </div>
 
-                        <!-- Поля формы -->
-                        <div class="form-grid">
-                            <!-- Имя -->
-                            <div class="form-group">
-                                <label for="id_first_name" class="form-label">
-                                    <i class="fas fa-user me-2"></i>Имя
+                    <form action="{% url 'users:profile' %}" method="post" enctype="multipart/form-data" class="profile-form">
+                        {% csrf_token %}
+                        
+                        <div class="form-fields">
+                            <div class="input-field">
+                                <label for="id_first_name">
+                                    <i class="fas fa-user"></i>
+                                    Имя
                                 </label>
-                                <div class="input-group">
-                                    {{ form.first_name }}
-                                    <span class="input-group-text">
-                                        <i class="fas fa-user"></i>
-                                    </span>
-                                </div>
+                                {{ form.first_name }}
                                 {% if not user.edit_name %}
-                                <small class="form-text text-muted">
-                                    <i class="fas fa-info-circle me-1"></i>Имя нельзя изменить
-                                </small>
-                                {% endif %}
-                                {% if form.first_name.errors %}
-                                    <div class="invalid-feedback d-block">{{ form.first_name.errors }}</div>
+                                <div class="field-note">
+                                    <i class="fas fa-lock"></i>
+                                    Имя нельзя изменить
+                                </div>
                                 {% endif %}
                             </div>
 
-                            <!-- Имя пользователя -->
-                            <div class="form-group">
-                                <label for="id_username" class="form-label">
-                                    <i class="fas fa-at me-2"></i>Имя пользователя
+                            <div class="input-field">
+                                <label for="id_username">
+                                    <i class="fas fa-at"></i>
+                                    Логин
                                 </label>
-                                <div class="input-group">
-                                    {{ form.username }}
-                                    <span class="input-group-text">
-                                        <i class="fas fa-at"></i>
-                                    </span>
-                                </div>
+                                {{ form.username }}
                                 {% if not user.edit_username %}
-                                <small class="form-text text-muted">
-                                    <i class="fas fa-info-circle me-1"></i>Имя пользователя нельзя изменить
-                                </small>
-                                {% endif %}
-                                {% if form.username.errors %}
-                                    <div class="invalid-feedback d-block">{{ form.username.errors }}</div>
+                                <div class="field-note">
+                                    <i class="fas fa-lock"></i>
+                                    Логин нельзя изменить
+                                </div>
                                 {% endif %}
                             </div>
 
-                            <!-- Телефон -->
-                            <div class="form-group">
-                                <label for="id_phone_number" class="form-label">
-                                    <i class="fas fa-phone me-2"></i>Телефон
+                            <div class="input-field">
+                                <label for="id_phone_number">
+                                    <i class="fas fa-phone"></i>
+                                    Телефон
                                 </label>
-                                <div class="input-group">
-                                    {{ form.phone_number }}
-                                    <span class="input-group-text">
-                                        <i class="fas fa-phone"></i>
-                                    </span>
-                                </div>
+                                <input type="text" 
+                                    id="id_phone_number" 
+                                    name="phone_number" 
+                                    value="{{ form.phone_number.value }}" 
+                                    readonly 
+                                    class="form-control"
+                                >                            
                                 {% if form.phone_number.value|slice:":3" == 'tg_' %}
-                                <small class="form-text text-muted">
-                                    <i class="fas fa-info-circle me-1"></i>Нажмите на кнопку чтобы добавить номер телефона
-                                </small>
+                                <div class="field-note">
+                                    <i class="fas fa-plus-circle"></i>
+                                    Нажмите, чтобы добавить номер
+                                </div>
                                 {% else %}
-                                <small class="form-text text-muted">
-                                    <i class="fas fa-info-circle me-1"></i>Номер телефона нельзя изменить
-                                </small>
-                                {% endif %}
-                                <div id="phone_number_error" class="alert alert-danger mt-2 d-none"></div>
-                                {% if form.phone_number.errors %}
-                                    <div class="invalid-feedback d-block">{{ form.phone_number.errors }}</div>
+                                <div class="field-note">
+                                    <i class="fas fa-lock"></i>
+                                    Телефон нельзя изменить
+                                </div>
                                 {% endif %}
                             </div>
 
-                            <!-- Email -->
-                            <div class="form-group">
-                                <label for="id_email" class="form-label">
-                                    <i class="fas fa-envelope me-2"></i>Email
+                            <div class="input-field">
+                                <label for="id_email">
+                                    <i class="fas fa-envelope"></i>
+                                    Email
                                 </label>
-                                <div class="input-group">
-                                    {{ form.email }}
-                                    <span class="input-group-text">
-                                        <i class="fas fa-envelope"></i>
-                                    </span>
+                                {{ form.email }}
+                                <div class="field-note">
+                                    <i class="fas fa-info-circle"></i>
+                                    Для уведомлений и акций
                                 </div>
-                                <small class="form-text text-muted">
-                                    <i class="fas fa-info-circle me-1"></i>Для рассылки акций и предложений
-                                </small>
-                                {% if form.email.errors %}
-                                    <div class="invalid-feedback d-block">{{ form.email.errors }}</div>
-                                {% endif %}
                             </div>
                         </div>
 
-                        <!-- Кнопки действий -->
-                        <div class="action-buttons">
-                            <button type="submit" class="btn btn-primary btn-save">
-                                <i class="fas fa-save me-2"></i>Сохранить изменения
+                        <div class="form-actions">
+                            <button type="submit" class="btn-save">
+                                <i class="fas fa-save"></i>
+                                Сохранить изменения
                             </button>
-                            
+
                             {% if user.is_admin or user.is_staff %}
-                            <div class="admin-buttons mt-3">
-                                <a class="btn btn-outline-primary" href="{% url 'admin:index' %}">
-                                    <i class="fas fa-cog me-2"></i>Админ панель
+                            <div class="admin-actions">
+                                <a href="{% url 'admin:index' %}" class="btn-admin">
+                                    <i class="fas fa-cog"></i>
+                                    Админка
                                 </a>
-                                <a class="btn btn-outline-primary" href="{% url 'order:list_orders_today' %}">
-                                    <i class="fas fa-list me-2"></i>Записи на сегодня
+                                <a href="{% url 'order:list_orders_today' %}" class="btn-admin">
+                                    <i class="fas fa-list"></i>
+                                    Сегодня
                                 </a>
-                                <a class="btn btn-outline-primary" href="{% url 'order:list_orders' %}">
-                                    <i class="fas fa-calendar me-2"></i>Ближайшие записи
+                                <a href="{% url 'order:list_orders' %}" class="btn-admin">
+                                    <i class="fas fa-calendar"></i>
+                                    Записи
                                 </a>
                             </div>
                             {% endif %}
-                            
-                            <a href="{% url 'user:logout' %}" class="btn btn-outline-danger mt-3">
-                                <i class="fas fa-sign-out-alt me-2"></i>Выйти
+
+                            <a href="{% url 'user:logout' %}" class="btn-logout">
+                                <i class="fas fa-sign-out-alt"></i>
+                                Выйти
                             </a>
                         </div>
                     </form>
@@ -261,404 +269,510 @@
 </div>
 
 <style>
-    .profile-page {
-        padding: 2rem 0;
-        background: linear-gradient(135deg, #FFF5EE 0%, #F8F6FF 100%);
+    :root {
+        --primary: #6366F1;
+        --primary-dark: #4F46E5;
+        --secondary: #EC4899;
+        --success: #10B981;
+        --warning: #F59E0B;
+        --muted: #6B7280;
+        --light: #F3F4F6;
+        --dark: #1F2937;
+        --radius: 16px;
+        --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        --transition: all 0.3s ease;
+    }
+
+    .modern-profile {
+        padding: 0;
+        background: #fafafa;
         min-height: 100vh;
+        padding-bottom: 80px;
     }
 
-    .breadcrumb-nav {
-        font-size: 0.9rem;
-        color: #6B7280;
+    /* Мобильная навигация */
+    .mobile-nav-tabs {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: white;
+        display: flex;
+        padding: 12px 16px;
+        border-top: 1px solid #eee;
+        z-index: 1000;
+        backdrop-filter: blur(10px);
     }
 
-    .breadcrumb-nav a {
-        color: var(--primary-color);
-        text-decoration: none;
+    .nav-tab {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+        padding: 12px;
+        border: none;
+        background: none;
+        color: var(--muted);
+        font-size: 12px;
+        transition: var(--transition);
     }
 
-    .breadcrumb-nav a:hover {
-        text-decoration: underline;
+    .nav-tab.active {
+        color: var(--primary);
     }
 
-    .breadcrumb-separator {
-        margin: 0 0.5rem;
+    .nav-tab i {
+        font-size: 20px;
+        margin-bottom: 2px;
+    }
+
+    /* Контент */
+    .profile-content {
+        padding: 16px;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .content-section {
+        display: none;
+    }
+
+    .content-section.active {
+        display: block;
+        animation: fadeIn 0.3s ease;
     }
 
     /* Карточки */
-    .profile-card {
+    .modern-card {
         background: white;
-        border-radius: 20px;
-        padding: 2rem;
-        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
-        border: 1px solid rgba(138, 43, 226, 0.1);
-        height: 100%;
+        border-radius: var(--radius);
+        padding: 24px;
+        box-shadow: var(--shadow);
+        margin-bottom: 20px;
+    }
+
+    /* Заголовки секций */
+    .section-header {
+        margin-bottom: 20px;
     }
 
     .section-title {
-        font-size: 1.5rem;
-        font-weight: 600;
-        color: var(--dark-color);
-        margin-bottom: 1.5rem;
         display: flex;
         align-items: center;
+        gap: 12px;
+        font-size: 18px;
+        font-weight: 600;
+        color: var(--dark);
+        margin: 0;
     }
 
     .section-title i {
-        color: var(--primary-color);
+        color: var(--primary);
     }
 
-    /* Записи */
-    .appointments-grid {
+    .badge {
+        background: var(--primary);
+        color: white;
+        padding: 4px 10px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 600;
+    }
+
+    /* Список записей */
+    .appointments-list {
         display: flex;
         flex-direction: column;
-        gap: 1rem;
+        gap: 12px;
     }
 
-    .appointment-card {
+    .appointment-item {
         display: flex;
         align-items: center;
-        padding: 1rem;
-        border-radius: 15px;
-        background: #f8f9fa;
-        transition: all 0.3s ease;
-        border-left: 4px solid transparent;
+        padding: 16px;
+        background: var(--light);
+        border-radius: 12px;
+        gap: 16px;
+        transition: var(--transition);
     }
 
-    .appointment-card:hover {
+    .appointment-item:hover {
         transform: translateY(-2px);
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        box-shadow: var(--shadow);
     }
 
-    .appointment-card.current {
-        border-left-color: #28a745;
-        background: linear-gradient(135deg, #f8fff9 0%, #e8f5e9 100%);
+    .appointment-item.current {
+        border-left: 4px solid var(--success);
     }
 
-    .appointment-card.future {
-        border-left-color: #ffc107;
-        background: linear-gradient(135deg, #fffbf0 0%, #fff3cd 100%);
+    .appointment-item.upcoming {
+        border-left: 4px solid var(--warning);
     }
 
-    .appointment-card.past {
-        border-left-color: #6c757d;
-        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    .appointment-item.completed {
+        border-left: 4px solid var(--muted);
     }
 
-    .appointment-date {
-        text-align: center;
-        min-width: 60px;
-        margin-right: 1rem;
+    .date-badge {
+        width: 50px;
+        height: 50px;
+        background: white;
+        border-radius: 12px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        box-shadow: var(--shadow);
     }
 
-    .date-day {
-        display: block;
-        font-size: 1.5rem;
+    .date-badge .day {
+        font-size: 18px;
         font-weight: 700;
-        color: var(--primary-color);
+        color: var(--primary);
     }
 
-    .date-month {
-        display: block;
-        font-size: 0.8rem;
-        color: #6B7280;
-        text-transform: lowercase;
+    .date-badge .month {
+        font-size: 11px;
+        color: var(--muted);
+        text-transform: uppercase;
     }
 
-    .appointment-info {
+    .appointment-content {
         flex: 1;
     }
 
-    .appointment-time {
-        display: block;
+    .service-name {
+        font-size: 16px;
         font-weight: 600;
-        color: var(--dark-color);
-        margin-bottom: 0.25rem;
+        margin: 0 0 4px 0;
+        color: var(--dark);
     }
 
-    .appointment-service {
-        display: block;
-        color: #6B7280;
-        font-size: 0.9rem;
+    .appointment-meta {
+        display: flex;
+        gap: 12px;
+        font-size: 13px;
+        color: var(--muted);
+    }
+
+    .appointment-meta i {
+        margin-right: 4px;
     }
 
     .appointment-status {
-        padding: 0.25rem 0.75rem;
-        border-radius: 15px;
-        font-size: 0.8rem;
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 12px;
         font-weight: 600;
     }
 
     .appointment-status.current {
-        background: #28a745;
+        background: var(--success);
         color: white;
     }
 
     .appointment-status.upcoming {
-        background: #ffc107;
-        color: var(--dark-color);
-    }
-
-    .appointment-status.completed {
-        background: #6c757d;
+        background: var(--warning);
         color: white;
     }
 
-    /* Аватар */
-    .avatar-section {
+    .appointment-status.completed {
+        background: var(--muted);
+        color: white;
+    }
+
+    /* Пустое состояние */
+    .empty-state {
+        text-align: center;
+        padding: 60px 20px;
+    }
+
+    .empty-icon {
+        font-size: 64px;
+        color: #E5E7EB;
+        margin-bottom: 20px;
+    }
+
+    .empty-state h3 {
+        font-size: 18px;
+        color: var(--dark);
+        margin-bottom: 8px;
+    }
+
+    .empty-state p {
+        color: var(--muted);
+        margin-bottom: 24px;
+    }
+
+    /* Профиль */
+    .profile-header {
+        text-align: center;
+        margin-bottom: 32px;
+    }
+
+    .avatar-editor {
         position: relative;
+        display: inline-block;
+        margin-bottom: 16px;
     }
 
     .avatar-container {
         position: relative;
-        display: inline-block;
     }
 
-    .avatar-image {
-        width: 120px;
-        height: 120px;
+    .avatar {
+        width: 100px;
+        height: 100px;
         border-radius: 50%;
         object-fit: cover;
-        border: 4px solid var(--primary-color);
-        box-shadow: 0 4px 15px rgba(138, 43, 226, 0.3);
+        border: 4px solid white;
+        box-shadow: var(--shadow);
     }
 
-    .avatar-placeholder {
-        width: 120px;
-        height: 120px;
+    .avatar-default {
+        width: 100px;
+        height: 100px;
         border-radius: 50%;
-        background: var(--gradient-primary);
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
         display: flex;
         align-items: center;
         justify-content: center;
         color: white;
-        font-size: 3rem;
-        border: 4px solid var(--primary-color);
+        font-size: 40px;
+        border: 4px solid white;
+        box-shadow: var(--shadow);
     }
 
-    .avatar-upload-btn {
+    .avatar-upload {
         position: absolute;
         bottom: 0;
         right: 0;
-        width: 40px;
-        height: 40px;
-        background: var(--gradient-primary);
-        color: white;
+        width: 36px;
+        height: 36px;
+        background: var(--primary);
         border-radius: 50%;
         display: flex;
         align-items: center;
         justify-content: center;
+        color: white;
+        border: 3px solid white;
         cursor: pointer;
-        transition: all 0.3s ease;
-        border: 2px solid white;
+        transition: var(--transition);
     }
 
-    .avatar-upload-btn:hover {
+    .avatar-upload:hover {
+        background: var(--primary-dark);
         transform: scale(1.1);
-        background: var(--gradient-secondary);
+    }
+
+    .avatar-upload input {
+        display: none;
+    }
+
+    .user-name {
+        font-size: 24px;
+        font-weight: 700;
+        color: var(--dark);
+        margin: 0;
     }
 
     /* Форма */
-    .form-grid {
+    .profile-form {
+        margin-top: 32px;
+    }
+
+    .form-fields {
         display: flex;
         flex-direction: column;
-        gap: 1.5rem;
+        gap: 20px;
     }
 
-    .form-group {
+    .input-field {
         position: relative;
     }
 
-    .form-label {
+    .input-field label {
+        display: flex;
+        align-items: center;
+        gap: 8px;
         font-weight: 600;
-        color: var(--dark-color);
-        margin-bottom: 0.5rem;
-        display: block;
+        color: var(--dark);
+        margin-bottom: 8px;
+        font-size: 14px;
     }
 
-    .form-label i {
-        color: var(--primary-color);
-        width: 20px;
+    .input-field label i {
+        color: var(--primary);
+        width: 16px;
     }
 
-    .input-group {
-        position: relative;
+    .input-field input {
+        width: 100%;
+        padding: 16px;
+        border: 2px solid #eee;
+        border-radius: 12px;
+        font-size: 16px;
+        transition: var(--transition);
     }
 
-    .input-group .form-control {
-        border: 2px solid #e9ecef;
-        border-radius: 15px;
-        padding: 0.875rem 1rem;
-        font-size: 1rem;
-        transition: all 0.3s ease;
+    .input-field input:focus {
+        border-color: var(--primary);
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
     }
 
-    .input-group .form-control:focus {
-        border-color: var(--primary-color);
-        box-shadow: 0 0 0 0.3rem rgba(138, 43, 226, 0.15);
-        transform: translateY(-2px);
-    }
-
-    .input-group .form-control:read-only {
-        background-color: #f8f9fa;
+    .input-field input:read-only {
+        background-color: #f9fafb;
         cursor: not-allowed;
     }
 
-    .input-group-text {
-        background: var(--gradient-primary);
-        color: white;
-        border: none;
-        border-radius: 0 15px 15px 0;
-        min-width: 50px;
+    .field-note {
         display: flex;
         align-items: center;
-        justify-content: center;
-    }
-
-    .form-text {
-        font-size: 0.8rem;
-        margin-top: 0.25rem;
+        gap: 6px;
+        font-size: 12px;
+        color: var(--muted);
+        margin-top: 6px;
     }
 
     /* Кнопки */
-    .action-buttons {
-        margin-top: 2rem;
+    .form-actions {
+        margin-top: 32px;
     }
 
     .btn-save {
-        background: var(--gradient-primary);
-        border: none;
-        border-radius: 25px;
-        padding: 1rem 2rem;
-        font-weight: 600;
-        font-size: 1.1rem;
-        transition: all 0.3s ease;
         width: 100%;
+        padding: 16px;
+        background: linear-gradient(135deg, var(--primary), var(--primary-dark));
         color: white;
-        box-shadow: 0 4px 15px rgba(138, 43, 226, 0.3);
-    }
-
-    .btn-save:hover {
-        background: var(--gradient-secondary);
-        transform: translateY(-2px);
-        box-shadow: 0 8px 25px rgba(255, 105, 180, 0.4);
-    }
-
-    .admin-buttons {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 0.5rem;
-    }
-
-    .admin-buttons .btn {
-        flex: 1;
-        min-width: 120px;
-    }
-
-    /* Состояние пустого списка */
-    .empty-appointments {
+        border: none;
+        border-radius: 12px;
+        font-size: 16px;
+        font-weight: 600;
         display: flex;
         align-items: center;
         justify-content: center;
-        min-height: 300px;
+        gap: 8px;
+        transition: var(--transition);
+        cursor: pointer;
     }
 
-    .empty-state {
-        text-align: center;
+    .btn-save:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(99, 102, 241, 0.3);
     }
 
-    .empty-icon {
-        font-size: 4rem;
-        color: #E5E7EB;
-        margin-bottom: 1rem;
+    .admin-actions {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+        gap: 12px;
+        margin: 20px 0;
     }
 
-    .empty-state h4 {
-        color: var(--dark-color);
-        margin-bottom: 0.5rem;
+    .btn-admin {
+        padding: 12px;
+        background: white;
+        border: 2px solid #eee;
+        border-radius: 12px;
+        color: var(--dark);
+        text-decoration: none;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+        font-size: 12px;
+        font-weight: 600;
+        transition: var(--transition);
     }
 
-    /* Адаптация для мобильных */
-    @media (max-width: 991.98px) {
-        .profile-card {
-            padding: 1.5rem;
+    .btn-admin:hover {
+        border-color: var(--primary);
+        color: var(--primary);
+        transform: translateY(-2px);
+    }
+
+    .btn-admin i {
+        font-size: 18px;
+    }
+
+    .btn-logout {
+        width: 100%;
+        padding: 16px;
+        background: white;
+        border: 2px solid #ef4444;
+        color: #ef4444;
+        border-radius: 12px;
+        font-size: 16px;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        transition: var(--transition);
+        text-decoration: none;
+        margin-top: 12px;
+    }
+
+    .btn-logout:hover {
+        background: #ef4444;
+        color: white;
+        transform: translateY(-2px);
+    }
+
+    /* Адаптивность */
+    @media (min-width: 992px) {
+        .modern-profile {
+            padding: 40px 0;
         }
         
-        .appointment-card {
-            flex-direction: column;
-            text-align: center;
-            gap: 1rem;
+        .profile-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            padding: 0 24px;
         }
         
-        .appointment-date {
-            margin-right: 0;
+        .content-section {
+            display: block !important;
+        }
+        
+        .mobile-nav-tabs {
+            display: none;
+        }
+        
+        .appointment-item {
+            padding: 20px;
         }
     }
 
-    @media (max-width: 767.98px) {
-        .profile-page {
-            padding: 1rem 0;
+    @media (max-width: 991px) {
+        .modern-card {
+            padding: 20px;
         }
         
-        .section-title {
-            font-size: 1.3rem;
-        }
-        
-        .avatar-image,
-        .avatar-placeholder {
-            width: 100px;
-            height: 100px;
-        }
-        
-        .avatar-upload-btn {
-            width: 35px;
-            height: 35px;
-        }
-        
-        .input-group .form-control {
-            padding: 0.75rem;
-        }
-        
-        .btn-save {
-            padding: 0.875rem 1.5rem;
-            font-size: 1rem;
-        }
-    }
-
-    @media (max-width: 575.98px) {
-        .profile-card {
-            padding: 1.25rem;
-            border-radius: 15px;
-        }
-        
-        .appointment-card {
-            padding: 0.875rem;
-        }
-        
-        .date-day {
-            font-size: 1.25rem;
-        }
-        
-        .avatar-image,
-        .avatar-placeholder {
+        .avatar {
             width: 80px;
             height: 80px;
         }
         
-        .admin-buttons {
-            flex-direction: column;
+        .avatar-default {
+            width: 80px;
+            height: 80px;
+            font-size: 32px;
         }
         
-        .admin-buttons .btn {
-            width: 100%;
+        .appointment-meta {
+            flex-direction: column;
+            gap: 4px;
         }
     }
 
     /* Анимации */
-    @keyframes fadeInUp {
+    @keyframes fadeIn {
         from {
             opacity: 0;
-            transform: translateY(30px);
+            transform: translateY(20px);
         }
         to {
             opacity: 1;
@@ -666,119 +780,125 @@
         }
     }
 
-    .profile-card {
-        animation: fadeInUp 0.6s ease;
+    .appointment-item {
+        animation: fadeIn 0.4s ease;
     }
 
-    .appointment-card {
-        animation: fadeInUp 0.6s ease;
+    /* Улучшения для очень маленьких экранов */
+    @media (max-width: 360px) {
+        .profile-content {
+            padding: 12px;
+        }
+        
+        .modern-card {
+            padding: 16px;
+        }
+        
+        .appointment-item {
+            flex-direction: column;
+            text-align: center;
+            gap: 12px;
+        }
+        
+        .appointment-content {
+            text-align: center;
+        }
     }
-
-    .appointment-card:nth-child(1) { animation-delay: 0.1s; }
-    .appointment-card:nth-child(2) { animation-delay: 0.2s; }
-    .appointment-card:nth-child(3) { animation-delay: 0.3s; }
 </style>
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-    $(document).ready(function() {
-        // Превью аватара
-        $('#id_image').change(function() {
-            const file = this.files[0];
-            if (file) {
+document.addEventListener('DOMContentLoaded', function() {
+    // Переключение между вкладками на мобильных
+    const tabs = document.querySelectorAll('.nav-tab');
+    const sections = document.querySelectorAll('.content-section');
+    
+    tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            const target = tab.dataset.target;
+            
+            // Активируем вкладку
+            tabs.forEach(t => t.classList.remove('active'));
+            tab.classList.add('active');
+            
+            // Показываем соответствующую секцию
+            sections.forEach(section => {
+                section.classList.remove('active');
+                if (section.id === `${target}-section`) {
+                    section.classList.add('active');
+                }
+            });
+            
+            // Плавная прокрутка к верху
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+    });
+    
+    // Превью аватара
+    const avatarInput = document.getElementById('id_image');
+    if (avatarInput) {
+        avatarInput.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file && file.type.match('image.*')) {
                 const reader = new FileReader();
                 reader.onload = function(e) {
-                    if ($('.avatar-image').length) {
-                        $('.avatar-image').attr('src', e.target.result);
+                    const avatar = document.querySelector('.avatar');
+                    if (avatar) {
+                        avatar.src = e.target.result;
                     } else {
-                        $('.avatar-placeholder').replaceWith(
-                            `<img src="${e.target.result}" alt="Аватар пользователя" class="avatar-image">`
-                        );
+                        const avatarDefault = document.querySelector('.avatar-default');
+                        if (avatarDefault) {
+                            avatarDefault.innerHTML = `<img src="${e.target.result}" alt="Аватар" class="avatar">`;
+                        }
                     }
-                }
+                };
                 reader.readAsDataURL(file);
             }
         });
-
-        // Маска для телефона
-        $('#id_phone_number').on('input', function(e) {
-            // Удаляем все нецифровые символы, кроме возможного плюса в начале
-            var value = e.target.value.replace(/[^\d+]/g, '');
+    }
+    
+    // Маска для телефона
+    const phoneInput = document.getElementById('id_phone_number');
+    if (phoneInput) {
+        phoneInput.addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
             
-            // Если номер начинается не с +7 или 7 или 8, добавляем +7
-            if (!value.startsWith('+7') && !value.startsWith('7') && !value.startsWith('8')) {
-                value = '+7';
+            if (!value.startsWith('7') && !value.startsWith('8')) {
+                value = '7' + value;
             }
             
-            // Форматируем номер: +7 999 198-72-64
-            var formatted = value
-                .replace(/^(\+?7|8)(\d{0,3})(\d{0,3})(\d{0,2})(\d{0,2})/, function(match, p1, p2, p3, p4, p5) {
-                    let result = '+7';
-                    if (p2) result += p2;
-                    if (p3) result += p3;
-                    if (p4) result += p4;
-                    if (p5) result += p5;
-                    return result;
-                });
+            if (value.length > 11) {
+                value = value.slice(0, 11);
+            }
+            
+            // Форматирование: +7 (999) 999-99-99
+            let formatted = '+7';
+            formatted += value.slice(1, 11);
             
             e.target.value = formatted;
         });
-
-        // Валидация формы
-        $('#profile_form').on('submit', function(e) {
-            const phoneNumber = $('#id_phone_number').val().replace(/\D/g, '');
-            
-            if (phoneNumber.length !== 11 || !phoneNumber.startsWith('7')) {
-                $('#phone_number_error').text('Введите корректный номер телефона (например: +7 999 999-99-99)').removeClass('d-none');
-                e.preventDefault();
-                
-                // Анимация ошибки
-                $('#id_phone_number').addClass('shake');
-                setTimeout(() => {
-                    $('#id_phone_number').removeClass('shake');
-                }, 500);
-                
-                // Прокрутка к ошибке
-                $('html, body').animate({
-                    scrollTop: $('#id_phone_number').offset().top - 100
-                }, 500);
+    }
+    
+    // Плавное появление элементов
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    };
+    
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.style.opacity = '1';
+                entry.target.style.transform = 'translateY(0)';
             }
         });
-
-        // Анимация при фокусе
-        $('.form-control').on('focus', function() {
-            $(this).closest('.input-group').addClass('focused');
-        }).on('blur', function() {
-            $(this).closest('.input-group').removeClass('focused');
-        });
+    }, observerOptions);
+    
+    document.querySelectorAll('.appointment-item, .modern-card').forEach(item => {
+        item.style.opacity = '0';
+        item.style.transform = 'translateY(20px)';
+        item.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+        observer.observe(item);
     });
-
-    // CSS для анимаций
-    const style = document.createElement('style');
-    style.textContent = `
-        .input-group.focused .input-group-text {
-            background: var(--gradient-secondary);
-        }
-        
-        .shake {
-            animation: shake 0.5s ease;
-        }
-        
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-5px); }
-            75% { transform: translateX(5px); }
-        }
-        
-        .fade-in {
-            animation: fadeIn 0.3s ease;
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-    `;
-    document.head.appendChild(style);
+});
 </script>
 {% endblock content %}

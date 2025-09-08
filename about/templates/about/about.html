@@ -19,15 +19,15 @@
                 <p class="hero-subtitle">Искусство создания прекрасных причесок</p>
                 <div class="hero-stats">
                     <div class="stat-item">
-                        <span class="stat-number" data-count="500">0</span>
+                        <span class="stat-number" data-count="100">0</span>
                         <span class="stat-label">Довольных клиентов</span>
                     </div>
                     <div class="stat-item">
-                        <span class="stat-number" data-count="3">0</span>
+                        <span class="stat-number" data-count="2">0</span>
                         <span class="stat-label">Года опыта</span>
                     </div>
                     <div class="stat-item">
-                        <span class="stat-number" data-count="1000">0</span>
+                        <span class="stat-number" data-count="300">0</span>
                         <span class="stat-label">Причесок создано</span>
                     </div>
                 </div>
@@ -278,7 +278,7 @@
 
     .feature-item {
         display: flex;
-        align-items: flex-start;
+        align-items: center;
         gap: 1rem;
         margin-bottom: 1.5rem;
     }
@@ -471,7 +471,7 @@
     document.addEventListener('DOMContentLoaded', function() {
         // Анимация счетчиков
         const counters = document.querySelectorAll('.stat-number');
-        const speed = 200;
+        const speed = 2000;
         
         counters.forEach(counter => {
             const target = parseInt(counter.getAttribute('data-count'));

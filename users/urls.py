@@ -1,14 +1,19 @@
+# users/urls.py
 from django.urls import path
-from users import views 
-from users.utils import check_recaptcha
-
+from .views import (
+    UserLoginView, 
+    UserRegistrationView, 
+    UserProfileView, 
+    logout,
+    TelegramLoginView
+)
 
 app_name = 'users'
 
 urlpatterns = [
-    path('login/', check_recaptcha(views.UserLoginView.as_view()), name='login'),
-    path('registration/', check_recaptcha(views.UserRegistrationView.as_view()), name='registration'),
-    path('profile/', views.UserProfileView.as_view(), name='profile'),
-    path('logout/', views.logout, name='logout'),
-
+    path('login/', UserLoginView.as_view(), name='login'),
+    path('registration/', UserRegistrationView.as_view(), name='registration'),
+    path('profile/', UserProfileView.as_view(), name='profile'),
+    path('logout/', logout, name='logout'),
+    path('telegram-login/', TelegramLoginView.as_view(), name='telegram_login'),
 ]

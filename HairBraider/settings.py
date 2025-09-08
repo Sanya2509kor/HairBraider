@@ -182,17 +182,22 @@ TIME_INPUT_FORMATS = ['%H:%M', '%I:%M %p']
 TELEGRAM_BOT_NAME = 'HairBraiderbot'  # Имя вашего бота без @
 TELEGRAM_BOT_TOKEN = "7993455435:AAGO0f39bPs9v_Wpgqb4kzBAXAfC0lo1gic"
         
-TELEGRAM_LOGIN_REDIRECT_URL = 'https://cr96562-django-o71e1.tw1.ru/user/registration/'  # Куда перенаправлять после успешного входа
+TELEGRAM_LOGIN_REDIRECT_URL = 'https://hair-braider.ru/user/telegram-login/'
 
+
+# Добавьте эти настройки
+TELEGRAM_LOGIN_CALLBACK_URL = 'users:telegram_login'
+SESSION_COOKIE_SECURE = False  # Для разработки
+CSRF_COOKIE_SECURE = False     # Для разработки
 
 CSRF_TRUSTED_ORIGINS = [
-    'https://cr96562-django-o71e1.tw1.ru',
+    'https://adequately-opportune-surfbird.cloudpub.ru',
+    'https://hair-braider.ru'
     # Другие доверенные источники
 ]
 
 CORS_ALLOWED_ORIGINS = [
-    "https://cr96562-django-o71e1.tw1.ru",
-    "https://your-other-domain.com",
+    "https://hair-braider.ru",
 ]
 
 

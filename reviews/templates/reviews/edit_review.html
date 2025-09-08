@@ -12,15 +12,6 @@
 {% block content %}
 <div class="review-page">
     <div class="container">
-        {% comment %} <!-- Хлебные крошки -->
-        <nav class="breadcrumb-nav">
-            <a href="{% url 'main:index' %}">Главная</a>
-            <span class="breadcrumb-separator">/</span>
-            <a href="{% url 'reviews:reviews' %}">Отзывы</a>
-            <span class="breadcrumb-separator">/</span>
-            <span class="current">{% if review %}Редактирование{% else %}Новый отзыв{% endif %}</span>
-        </nav> {% endcomment %}
-
         <div class="review-form-container">
             <div class="review-form-card">
                 <div class="form-header">
@@ -38,14 +29,14 @@
                     <div class="rating-section">
                         <label class="rating-label">Ваша оценка</label>
                         <div class="stars-rating">
-                            {% for i in "12345" %}
+                            {% for i in "54321" reversed %}
                             <input type="radio" 
-                                   name="stars" 
-                                   value="{{ i }}" 
-                                   id="star{{ i }}" 
-                                   class="star-input"
-                                   {% if form.stars.value == i %}checked{% endif %}>
-                            <label for="star{{ i }}" class="star-label">
+                                name="stars" 
+                                value="{{ forloop.revcounter }}" 
+                                id="star{{ forloop.revcounter }}" 
+                                class="star-input"
+                                {% if form.stars.value == forloop.revcounter|stringformat:"i" %}checked{% endif %}>
+                            <label for="star{{ forloop.revcounter }}" class="star-label">
                                 <i class="fas fa-star"></i>
                             </label>
                             {% endfor %}
@@ -108,34 +99,6 @@
         padding: 2rem 0;
         background: linear-gradient(135deg, #FFF5EE 0%, #F8F6FF 100%);
         min-height: 100vh;
-    }
-
-    /* Хлебные крошки */
-    .breadcrumb-nav {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        margin-bottom: 2rem;
-        font-size: 0.9rem;
-    }
-
-    .breadcrumb-nav a {
-        color: var(--primary-color);
-        text-decoration: none;
-        transition: color 0.3s ease;
-    }
-
-    .breadcrumb-nav a:hover {
-        color: var(--secondary-color);
-    }
-
-    .breadcrumb-separator {
-        color: #6B7280;
-    }
-
-    .breadcrumb-nav .current {
-        color: var(--dark-color);
-        font-weight: 600;
     }
 
     /* Форма */
@@ -206,16 +169,28 @@
         transition: all 0.3s ease;
         font-size: 2.5rem;
         color: #E5E7EB;
+        order: {{ forloop.revcounter }}; /* Важно для обратного порядка */
+    }
+
+    /* Закрашиваем выбранную звезду и все предыдущие */
+    .stars-rating input:checked ~ label,
+    .stars-rating:not(:hover) input:checked ~ label {
+        color: #FFD700;
+    }
+
+    /* При наведении закрашиваем все звезды до той, на которую навели */
+    .stars-rating:hover label {
+        color: #FFD700;
+    }
+
+    /* Убираем закрашивание для звезд после той, на которую навели */
+    .stars-rating label:hover ~ label {
+        color: #E5E7EB;
     }
 
     .star-label:hover,
     .star-input:checked ~ .star-label {
-        color: #FFD700;
         transform: scale(1.2);
-    }
-
-    .star-label:hover ~ .star-label {
-        color: #E5E7EB;
     }
 
     /* Комментарий */

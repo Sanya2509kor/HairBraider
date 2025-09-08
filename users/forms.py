@@ -80,3 +80,16 @@ class ProfileForm(UserChangeForm):
     username = forms.CharField()
     email = forms.CharField(required=False)
 
+    def __init__(self, *args, **kwargs):
+        self.edit_name = kwargs.pop('edit_name', True)
+        self.edit_username =kwargs.pop('edit_username', True)
+        super().__init__(*args, **kwargs)
+        
+        if not self.edit_name:
+            self.fields['first_name'].widget.attrs['readonly'] = True
+            self.fields['first_name'].widget.attrs['class'] = 'form-control readonly-field'
+
+        if not self.edit_username:
+            self.fields['username'].widget.attrs['readonly'] = True
+            self.fields['username'].widget.attrs['class'] = 'form-control readonly-field'
+

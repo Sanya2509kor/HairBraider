@@ -204,3 +204,36 @@
         }
     }
 </style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Находим все уведомления
+    const notifications = document.querySelectorAll('.alert');
+    
+    notifications.forEach(notification => {
+        // Создаем прогресс-бар
+        const progressBar = document.createElement('div');
+        progressBar.className = 'alert-progress';
+        notification.appendChild(progressBar);
+        
+        // Автоматическое закрытие через 5 секунд
+        setTimeout(() => {
+            notification.classList.add('hide');
+            
+            // Полное удаление из DOM после анимации
+            setTimeout(() => {
+                notification.remove();
+            }, 500); // Время должно совпадать с анимацией slideOutRight
+        }, 5000);
+        
+        // Закрытие по клику на крестик
+        const closeButton = notification.querySelector('.btn-close');
+        if (closeButton) {
+            closeButton.addEventListener('click', function() {
+                notification.classList.add('hide');
+                setTimeout(() => notification.remove(), 500);
+            });
+        }
+    });
+});
+</script>
