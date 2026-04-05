@@ -30,7 +30,7 @@ class ProductAdmin(admin.ModelAdmin):
     inlines = [ProductImageInline]
     prepopulated_fields = {'slug': ('name',)}
     
-    list_display = ('name', 'price', 'discount', 'display_colors', 'show_status')
+    list_display = ('name', 'price', 'price_srt', 'discount', 'display_colors', 'show_status')
     list_editable = ('discount', 'price')
     filter_horizontal = ('available_colors',)
     search_fields = ('name', 'description')
@@ -41,7 +41,7 @@ class ProductAdmin(admin.ModelAdmin):
             'fields': ('name', 'slug', 'description', 'make_time')
         }),
         ('Изображения и цены', {
-            'fields': ('image', ('price', 'discount'))
+            'fields': ('image', ('price', 'price_str', 'discount'))
         }),
         ('Настройки', {
             'fields': ('show', 'available_colors')

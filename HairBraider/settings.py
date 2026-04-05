@@ -92,27 +92,27 @@ WSGI_APPLICATION = 'HairBraider.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
-
-
 # DATABASES = {
 #     'default': {
-#         'ENGINE': 'django.db.backends.mysql',
-#         'NAME': 'cr96562_vika',
-#         'USER': 'cr96562_vika',
-#         'PASSWORD': '89526136205Sa',
-#         'HOST': '127.0.0.1',
-#         'PORT': 3306,
-#         'OPTIONS': {
-#             'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
-#         },
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
 #     }
 # }
+
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'cn95494_braider',
+        'USER': 'cn95494_braider',
+        'PASSWORD': '89526136205Sa',
+        'HOST': '127.0.0.1',
+        'PORT': 3306,
+        'OPTIONS': {
+            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
+        },
+    }
+}
 
 
 # Password validation
@@ -151,9 +151,9 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
-STATICFILES_DIRS = [BASE_DIR / 'staticfiles/']  # Папка, где лежат CSS/JS/изображения
+# STATICFILES_DIRS = [BASE_DIR / 'staticfiles/']  # Папка, где лежат CSS/JS/изображения
 
-STATIC_ROOT = BASE_DIR / 'static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles/'
 
 
 MEDIA_URL = 'media/'

@@ -38,7 +38,7 @@
                             <p class="service-description">{{ product.description|truncatewords:15 }}</p>
                             
                             <div class="service-footer">
-                                <span class="service-price">от {{ product.price }} ₽</span>
+                                <span class="service-price">от {{ product.price }} ₽ {% if product.price_srt %} {{ product.price_str }}</span>
                                 {% if product.make_time %}
                                 <span class="service-duration">
                                     <i class="fas fa-clock"></i>
@@ -141,14 +141,14 @@
 
     .service-image-container {
         position: relative;
-        height: 250px;
+        height: 350px;
         overflow: hidden;
     }
 
     .service-image {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
+        width: 100% !important;
+        height: 100% !important;
+        object-fit: cover !important;
         transition: transform 0.4s ease;
     }
 
@@ -297,7 +297,7 @@
         }
         
         .service-image-container {
-            height: 200px;
+            height: 350px;
         }
         
         .service-content {
@@ -333,7 +333,7 @@
         }
         
         .service-image-container {
-            height: 180px;
+            height: 350px;
         }
         
         .service-footer {

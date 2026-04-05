@@ -25,7 +25,7 @@ class UserLoginForm(AuthenticationForm):
 
 class UserRegistrationForm(UserCreationForm):
 
-    USERNAME_LIST = ['лисица', 'зачик', 'ктото', 'новый ник']
+    USERNAME_LIST = ['ТихаяКосичка', 'РыжаяЛента', 'ШелковыйХвост', 'ПушистыйЛучик', 'СоннаяПрядь', 'СмелаяЗизи', 'ЛасковаяВолна', 'БыстраяИгла', 'БелаяКоса', 'МедныйЛокон', 'ДредныйЕнот', 'ХаерНиндзя', 'BraidQuest', 'ХочуКосы', 'ЖдуМастера', 'ЛюблюПлетение', 'НовыйОбраз', 'БоберПлетельщик', 'SilentBraid', 'HappyKnot',]
     
     first_name = forms.CharField(
         label='Имя',

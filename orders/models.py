@@ -6,8 +6,8 @@ from main.models import Color, Product
 class AvailableDate(models.Model):
     date = models.DateField(unique=True, verbose_name='Дата')
     class Meta:
-        verbose_name = 'Дата'
-        verbose_name_plural = 'Дата'
+        verbose_name = 'Даты для записи'
+        verbose_name_plural = 'Даты для записи'
         unique_together = ('date',)
     
     def __str__(self):

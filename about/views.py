@@ -13,7 +13,7 @@ class AboutView(TemplateView):
                                 'Использую только качественные материалы и современные техники плетения. Я постоянно совершенствую свои навыки и слежу за последними тенденциями в мире причесок.'
         
         gal = []
-        gal.append('Более 2 лет опыта')
+        gal.append('Более 4 лет опыта')
         gal.append('Гипоаллергенные материалы')
         gal.append('Индивидуальный подход к каждому клиенту')
         context['gal'] = gal
@@ -45,8 +45,8 @@ class ContactsView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Контакты'
-        context['adress'] = 'Сосновоборск, Мира 3'
-        context['phone'] = '+7 (999) 123-45-67'
-        context['mail'] = 'vikkkk@yandex.ru'
+        context['adress'] = 'Сосновоборск, Солнечная 41'
+        context['phone'] = '+7 (983) 692-77-53'
+        context['mail'] = 'vikrotiaR@yandex.ru'
         return context
     

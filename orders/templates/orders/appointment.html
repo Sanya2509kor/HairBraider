@@ -8,19 +8,10 @@
 {% block content %}
 <div class="appointment-page">
     <div class="container">
-        {% comment %} <!-- Хлебные крошки -->
-        <nav class="breadcrumb-nav mb-4">
-            <a href="{% url 'main:index' %}">Главная</a>
-            <span class="breadcrumb-separator">/</span>
-            <a href="{% url 'main:index' %}#services">Услуги</a>
-            <span class="breadcrumb-separator">/</span>
-            <span class="current">Запись</span>
-        </nav> {% endcomment %}
-
         <div class="row justify-content-center">
-            <div class="col-lg-8">
+            <div class="col-lg-8 col-md-10">
                 <div class="appointment-card">
-                    <div class="appointment-header text-center mb-4">
+                    <div class="appointment-header text-center">
                         <h1 class="appointment-title">
                             <i class="fas fa-calendar-check me-3"></i>Запись на услугу
                         </h1>
@@ -30,154 +21,129 @@
                     <form method="post" id="appointmentForm" class="appointment-form">
                         {% csrf_token %}
                         
-                        <div class="row">
-                            <!-- Левая колонка - основная информация -->
-                            <div class="col-md-6">
-                                <!-- Поле для выбора даты -->
-                                <div class="form-group mb-4">
-                                    <label for="id_date" class="form-label">
-                                        <i class="fas fa-calendar-alt me-2"></i>Дата
-                                    </label>
-                                    <div class="input-group">
-                                        <span class="input-group-text">
-                                            <i class="fas fa-calendar"></i>
-                                        </span>
-                                        {{ form.date }}
-                                    </div>
-                                    {% if form.date.errors %}
-                                        <div class="invalid-feedback d-block">
-                                            {{ form.date.errors }}
-                                        </div>
-                                    {% endif %}
-                                </div>
-                                
-                                <!-- Поле для выбора времени -->
-                                <div class="form-group mb-4">
-                                    <label for="id_time" class="form-label">
-                                        <i class="fas fa-clock me-2"></i>Время
-                                    </label>
-                                    <div class="input-group">
-                                        <span class="input-group-text">
-                                            <i class="fas fa-clock"></i>
-                                        </span>
-                                        {{ form.time }}
-                                    </div>
-                                    {% if form.time.errors %}
-                                        <div class="invalid-feedback d-block">
-                                            {{ form.time.errors }}
-                                        </div>
-                                    {% endif %}
-                                </div>
-                                
-                                <!-- Поле для имени -->
-                                <div class="form-group mb-4">
-                                    <label for="id_name" class="form-label">
-                                        <i class="fas fa-user me-2"></i>Ваше имя
-                                    </label>
-                                    <div class="input-group">
-                                        <span class="input-group-text">
-                                            <i class="fas fa-user"></i>
-                                        </span>
-                                        {{ form.name }}
-                                    </div>
-                                    {% if form.name.errors %}
-                                        <div class="invalid-feedback d-block">
-                                            {{ form.name.errors }}
-                                        </div>
-                                    {% endif %}
-                                </div>
-                                
-                                <!-- Поле для телефона -->
-                                <div class="form-group mb-4">
-                                    <label for="id_phone" class="form-label">
-                                        <i class="fas fa-phone me-2"></i>Телефон
-                                    </label>
-                                    <div class="input-group">
-                                        <span class="input-group-text">
-                                            <i class="fas fa-phone"></i>
-                                        </span>
-                                        {{ form.phone }}
-                                    </div>
-                                    {% if form.phone.errors %}
-                                        <div class="invalid-feedback d-block">
-                                            {{ form.phone.errors }}
-                                        </div>
-                                    {% endif %}
-                                </div>
+                        <!-- Основная информация -->
+                        <div class="form-group mb-4">
+                            <label for="id_date" class="form-label">
+                                <i class="fas fa-calendar-alt me-2"></i>Дата
+                            </label>
+                            <div class="input-wrapper">
+                                {{ form.date }}
+                                <i class="fas fa-calendar input-icon"></i>
                             </div>
-
-                            <!-- Правая колонка - услуги и цвета -->
-                            <div class="col-md-6">
-                                <!-- Поле для продукта -->
-                                <div class="form-group mb-4">
-                                    <label for="id_product" class="form-label">
-                                        <i class="fas fa-concierge-bell me-2"></i>Услуга
-                                    </label>
-                                    <div class="input-group">
-                                        <span class="input-group-text">
-                                            <i class="fas fa-spa"></i>
-                                        </span>
-                                        {{ form.product }}
-                                    </div>
-                                    {% if form.product.errors %}
-                                        <div class="invalid-feedback d-block">
-                                            {{ form.product.errors }}
-                                        </div>
+                            {% if form.date.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ form.date.errors }}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="form-group mb-4">
+                            <label for="id_time" class="form-label">
+                                <i class="fas fa-clock me-2"></i>Время
+                            </label>
+                            <div class="input-wrapper">
+                                {{ form.time }}
+                                <i class="fas fa-clock input-icon"></i>
+                            </div>
+                            {% if form.time.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ form.time.errors }}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="form-group mb-4">
+                            <label for="id_product" class="form-label">
+                                <i class="fas fa-concierge-bell me-2"></i>Услуга
+                            </label>
+                            <div class="input-wrapper">
+                                {{ form.product }}
+                                <i class="fas fa-spa input-icon"></i>
+                            </div>
+                            {% if form.product.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ form.product.errors }}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="form-group mb-4">
+                            <label for="id_name" class="form-label">
+                                <i class="fas fa-user me-2"></i>Ваше имя
+                            </label>
+                            <div class="input-wrapper">
+                                {{ form.name }}
+                                <i class="fas fa-user input-icon"></i>
+                            </div>
+                            {% if form.name.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ form.name.errors }}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="form-group mb-4">
+                            <label for="id_phone" class="form-label">
+                                <i class="fas fa-phone me-2"></i>Телефон
+                            </label>
+                            <div class="input-wrapper">
+                                {{ form.phone }}
+                                <i class="fas fa-phone input-icon"></i>
+                            </div>
+                            {% if form.phone.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ form.phone.errors }}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Цвета -->
+                        {% if form.colors.field.queryset %}
+                        <div class="form-group mb-4">
+                            <label class="form-label">
+                                <i class="fas fa-palette me-2"></i>Выберите цвета
+                            </label>
+                            <div class="color-options">
+                                {% for color in form.colors.field.queryset %}
+                                <label class="color-option">
+                                    <input type="checkbox" name="colors" value="{{ color.id }}" 
+                                           class="color-checkbox"{% if color.id in form.colors.value %}checked{% endif %}>
+                                    {% if color.image %}
+                                        <img src="{{ color.image.url }}" alt="{{ color.name }}" 
+                                             class="color-image">
+                                        <span class="color-name-badge">{{ color.name }}</span>
+                                    {% else %}
+                                        <span class="color-name">{{ color.name }}</span>
                                     {% endif %}
+                                </label>
+                                {% endfor %}
+                            </div>
+                            {% if form.colors.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ form.colors.errors }}
                                 </div>
-                                
-                                <!-- Поле для цвета -->
-                                {% if form.colors.field.queryset %}
-                                <div class="form-group mb-4">
-                                    <label class="form-label">
-                                        <i class="fas fa-palette me-2"></i>Цвета
-                                    </label>
-                                    <div class="color-options">
-                                        {% for color in form.colors.field.queryset %}
-                                        <label class="color-option">
-                                            <input type="checkbox" name="colors" value="{{ color.id }}" 
-                                                   class="color-checkbox"{% if color.id in form.colors.value %}checked{% endif %}>
-                                            {% if color.image %}
-                                                <img src="{{ color.image.url }}" alt="{{ color.name }}" 
-                                                     class="color-image">
-                                                <span class="color-tooltip">{{ color.name }}</span>
-                                            {% else %}
-                                                <span class="color-name">{{ color.name }}</span>
-                                            {% endif %}
-                                        </label>
-                                        {% endfor %}
-                                    </div>
-                                    {% if form.colors.errors %}
-                                        <div class="invalid-feedback d-block">
-                                            {{ form.colors.errors }}
-                                        </div>
-                                    {% endif %}
-                                </div>
-                                {% endif %}
-                                
-                                <!-- Поле комментария -->
-                                <div class="form-group mb-4">
-                                    <label for="id_comment" class="form-label">
-                                        <i class="fas fa-comment me-2"></i>Комментарий
-                                    </label>
-                                    <div class="input-group">
-                                        <span class="input-group-text">
-                                            <i class="fas fa-edit"></i>
-                                        </span>
-                                        {{ form.comment }}
-                                    </div>
-                                </div>
+                            {% endif %}
+                        </div>
+                        {% endif %}
+                        
+                        <div class="form-group mb-4">
+                            <label for="id_comment" class="form-label">
+                                <i class="fas fa-comment me-2"></i>Комментарий
+                            </label>
+                            <div class="input-wrapper">
+                                {{ form.comment }}
+                                <i class="fas fa-edit input-icon"></i>
                             </div>
                         </div>
 
                         <!-- Кнопка отправки -->
                         <div class="text-center mt-4">
                             {% if make_appoint %}
-                                <button type="submit" class="btn btn-primary btn-lg appointment-btn">
+                                <button type="submit" class="btn-appointment">
                                     <i class="fas fa-paper-plane me-2"></i>Записаться
                                 </button>
                             {% else %}
-                                <button type="button" class="btn btn-secondary btn-lg appointment-btn" disabled>
+                                <button type="button" class="btn-appointment btn-disabled" disabled>
                                     <i class="fas fa-clock me-2"></i>Запись временно недоступна
                                 </button>
                             {% endif %}
@@ -185,21 +151,21 @@
                     </form>
 
                     <!-- Дополнительная информация -->
-                    <div class="appointment-info mt-5">
-                        <div class="row">
-                            <div class="col-md-4">
-                                <div class="info-item text-center">
+                    <div class="appointment-info">
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <div class="info-icon-wrapper">
                                     <i class="fas fa-clock info-icon"></i>
-                                    <h5>Подтверждение</h5>
-                                    <p class="text-muted">В течение 15 минут</p>
                                 </div>
+                                <h5>Подтверждение</h5>
+                                <p>В течение 15 минут</p>
                             </div>
-                            <div class="col-md-4">
-                                <div class="info-item text-center">
+                            <div class="info-item">
+                                <div class="info-icon-wrapper">
                                     <i class="fas fa-undo info-icon"></i>
-                                    <h5>Отмена записи</h5>
-                                    <p class="text-muted">За 24 часа бесплатно</p>
                                 </div>
+                                <h5>Отмена записи</h5>
+                                <p>За 24 часа бесплатно</p>
                             </div>
                         </div>
                     </div>
@@ -210,449 +176,528 @@
 </div>
 
 <style>
-    .appointment-page {
-        padding: 2rem 0;
-        background: linear-gradient(135deg, #FFF5EE 0%, #F8F6FF 100%);
-        min-height: 100vh;
-    }
+:root {
+    --primary: #6366f1;
+    --primary-dark: #4f46e5;
+    --secondary: #ec4899;
+    --gradient: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+    --gradient-hover: linear-gradient(135deg, var(--primary-dark) 0%, var(--secondary) 100%);
+    --gray-50: #f9fafb;
+    --gray-100: #f3f4f6;
+    --gray-200: #e5e7eb;
+    --gray-600: #4b5563;
+    --gray-700: #374151;
+    --gray-900: #111827;
+}
 
-    .breadcrumb-nav {
-        font-size: 0.9rem;
-        color: #6B7280;
-    }
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
 
-    .breadcrumb-nav a {
-        color: var(--primary-color);
-        text-decoration: none;
-    }
+.appointment-page {
+    min-height: 100vh;
+    padding: 3rem 1rem;
+    background: linear-gradient(135deg, #f5f3ff 0%, #fce7f3 100%);
+}
 
-    .breadcrumb-nav a:hover {
-        text-decoration: underline;
-    }
+.container {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 1rem;
+}
 
-    .breadcrumb-separator {
-        margin: 0 0.5rem;
-    }
+.row {
+    display: flex;
+    justify-content: center;
+}
 
+.col-lg-8 {
+    width: 100%;
+}
+
+@media (min-width: 992px) {
+    .col-lg-8 {
+        width: 66.666%;
+    }
+}
+
+@media (min-width: 768px) {
+    .col-md-10 {
+        width: 83.333%;
+    }
+}
+
+.appointment-card {
+    background: white;
+    border-radius: 2rem;
+    padding: 2rem;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+@media (max-width: 768px) {
     .appointment-card {
-        background: white;
-        border-radius: 25px;
-        padding: 2.5rem;
-        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
-        border: 1px solid rgba(138, 43, 226, 0.1);
+        padding: 1.5rem;
+        border-radius: 1.5rem;
     }
+}
 
-    .appointment-header {
-        margin-bottom: 2.5rem;
+@media (max-width: 480px) {
+    .appointment-card {
+        padding: 1.25rem;
     }
+}
 
+.appointment-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.appointment-title {
+    font-size: 2rem;
+    font-weight: 800;
+    background: var(--gradient);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 0.5rem;
+}
+
+@media (max-width: 768px) {
     .appointment-title {
-        font-size: 2.5rem;
-        font-weight: 700;
-        color: var(--dark-color);
-        background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
-        -webkit-background-clip: text;
-        background-clip: text;
-        -webkit-text-fill-color: transparent;
+        font-size: 1.5rem;
     }
+}
 
-    .appointment-subtitle {
-        color: #6B7280;
-        font-size: 1.1rem;
-    }
+.appointment-subtitle {
+    color: var(--gray-600);
+    font-size: 1rem;
+}
 
-    .form-group {
-        position: relative;
-    }
+.form-group {
+    margin-bottom: 1.5rem;
+}
 
-    .form-label {
-        font-weight: 600;
-        color: var(--dark-color);
-        margin-bottom: 0.75rem;
-        display: block;
-    }
+.form-label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 600;
+    color: var(--gray-700);
+    margin-bottom: 0.5rem;
+    font-size: 0.875rem;
+}
 
-    .form-label i {
-        color: var(--primary-color);
-        width: 20px;
-    }
+.form-label i {
+    color: var(--primary);
+}
 
-    .input-group {
-        position: relative;
-    }
+.input-wrapper {
+    position: relative;
+}
 
-    .input-group-text {
-        background: var(--gradient-primary);
-        color: white;
-        border: none;
-        border-radius: 15px 0 0 15px;
-        min-width: 50px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
+.input-wrapper input,
+.input-wrapper select,
+.input-wrapper textarea {
+    width: 100%;
+    padding: 0.75rem 1rem 0.75rem 2.75rem;
+    border: 2px solid var(--gray-200);
+    border-radius: 1rem;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    background: white;
+    font-family: inherit;
+}
 
-    .form-control, .form-select {
-        border: 2px solid #e9ecef;
-        border-radius: 0 15px 15px 0;
-        padding: 0.875rem 1rem;
-        font-size: 1rem;
-        transition: all 0.3s ease;
-        height: auto;
-    }
+.input-wrapper textarea {
+    min-height: 100px;
+    resize: vertical;
+}
 
-    .form-control:focus, .form-select:focus {
-        border-color: var(--primary-color);
-        box-shadow: 0 0 0 0.3rem rgba(138, 43, 226, 0.15);
-        transform: translateY(-2px);
-    }
+.input-wrapper input:focus,
+.input-wrapper select:focus,
+.input-wrapper textarea:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+}
 
-    /* Стили для выбора цветов */
-    .color-options {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 12px;
-        margin-top: 0.5rem;
-    }
+.input-wrapper .input-icon {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--gray-600);
+    font-size: 1rem;
+    pointer-events: none;
+}
 
-    .color-option {
-        cursor: pointer;
-        text-align: center;
-        transition: all 0.3s ease;
-        position: relative;
-    }
+.input-wrapper textarea ~ .input-icon {
+    top: 1rem;
+    transform: none;
+}
 
-    .color-checkbox {
-        display: none;
-    }
+/* Стили для выбора цветов */
+.color-options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 0.5rem;
+}
 
-    .color-checkbox:checked + .color-image,
-    .color-checkbox:checked ~ .color-name {
-        border: 3px solid var(--primary-color);
-        transform: scale(1.1);
-        box-shadow: 0 4px 15px rgba(138, 43, 226, 0.3);
-    }
+.color-option {
+    cursor: pointer;
+    position: relative;
+    transition: transform 0.2s ease;
+}
 
+.color-option:hover {
+    transform: translateY(-2px);
+}
+
+.color-checkbox {
+    display: none;
+}
+
+.color-checkbox:checked + .color-image {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.3);
+    transform: scale(1.05);
+}
+
+.color-checkbox:checked ~ .color-name-badge {
+    background: var(--gradient);
+    color: white;
+    border-color: transparent;
+}
+
+.color-image {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid var(--gray-200);
+    transition: all 0.3s ease;
+}
+
+@media (max-width: 480px) {
     .color-image {
-        width: 60px;
-        height: 60px;
-        border-radius: 50%;
-        object-fit: cover;
-        border: 2px solid #e5e7eb;
-        transition: all 0.3s ease;
+        width: 50px;
+        height: 50px;
     }
+}
 
-    .color-name {
-        display: inline-block;
-        padding: 0.5rem 1rem;
-        background: #f8f9fa;
-        border: 2px solid #e5e7eb;
-        border-radius: 20px;
-        transition: all 0.3s ease;
-        font-size: 0.9rem;
-        color: var(--dark-color);
+.color-name-badge {
+    position: absolute;
+    bottom: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.7rem;
+    background: var(--gray-100);
+    padding: 0.25rem 0.5rem;
+    border-radius: 1rem;
+    white-space: nowrap;
+    border: 1px solid var(--gray-200);
+    transition: all 0.3s ease;
+}
+
+.color-name {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    background: var(--gray-100);
+    border-radius: 2rem;
+    font-size: 0.875rem;
+    transition: all 0.3s ease;
+}
+
+/* Кнопка записи */
+.btn-appointment {
+    width: 100%;
+    padding: 1rem;
+    background: var(--gradient);
+    border: none;
+    border-radius: 1rem;
+    color: white;
+    font-weight: 700;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.btn-appointment:hover:not(:disabled) {
+    background: var(--gradient-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px -5px rgba(99, 102, 241, 0.4);
+}
+
+.btn-appointment:active:not(:disabled) {
+    transform: translateY(0);
+}
+
+.btn-disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    background: var(--gray-600);
+}
+
+.btn-disabled:hover {
+    transform: none;
+    box-shadow: none;
+}
+
+/* Дополнительная информация */
+.appointment-info {
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 2px solid var(--gray-100);
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+}
+
+@media (max-width: 480px) {
+    .info-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
     }
+}
 
-    .color-tooltip {
-        position: absolute;
-        bottom: -30px;
-        left: 50%;
-        transform: translateX(-50%);
-        background: var(--dark-color);
-        color: white;
-        padding: 0.25rem 0.5rem;
-        border-radius: 8px;
-        font-size: 0.75rem;
+.info-item {
+    text-align: center;
+    padding: 1rem;
+    background: var(--gray-50);
+    border-radius: 1rem;
+    transition: all 0.3s ease;
+}
+
+.info-item:hover {
+    background: white;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
+}
+
+.info-icon-wrapper {
+    width: 50px;
+    height: 50px;
+    margin: 0 auto 0.75rem;
+    background: var(--gradient);
+    border-radius: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.info-icon {
+    font-size: 1.5rem;
+    color: white;
+}
+
+.info-item h5 {
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: var(--gray-900);
+    margin-bottom: 0.25rem;
+}
+
+.info-item p {
+    font-size: 0.75rem;
+    color: var(--gray-600);
+}
+
+/* Анимации */
+@keyframes fadeInUp {
+    from {
         opacity: 0;
-        transition: opacity 0.3s ease;
-        pointer-events: none;
+        transform: translateY(30px);
     }
-
-    .color-option:hover .color-tooltip {
+    to {
         opacity: 1;
+        transform: translateY(0);
     }
+}
 
-    /* Кнопка записи */
-    .appointment-btn {
-        background: var(--gradient-primary);
-        border: none;
-        border-radius: 25px;
-        padding: 1rem 2.5rem;
-        font-weight: 600;
-        font-size: 1.1rem;
-        transition: all 0.3s ease;
-        color: white;
-        box-shadow: 0 4px 15px rgba(138, 43, 226, 0.3);
-    }
+.appointment-card {
+    animation: fadeInUp 0.6s ease;
+}
 
-    .appointment-btn:hover:not(:disabled) {
-        background: var(--gradient-secondary);
-        transform: translateY(-3px);
-        box-shadow: 0 8px 25px rgba(255, 105, 180, 0.4);
-    }
-
-    .appointment-btn:disabled {
-        background: #6c757d;
-        cursor: not-allowed;
-    }
-
-    /* Дополнительная информация */
-    .appointment-info {
-        border-top: 1px solid #e9ecef;
-        padding-top: 2rem;
-    }
-
-    .info-item {
+/* Улучшенная мобильная адаптация */
+@media (max-width: 768px) {
+    .appointment-page {
         padding: 1rem;
     }
-
-    .info-icon {
-        font-size: 2rem;
-        color: var(--primary-color);
-        margin-bottom: 1rem;
+    
+    .form-label {
+        font-size: 0.813rem;
     }
-
-    .info-item h5 {
-        font-weight: 600;
-        color: var(--dark-color);
-        margin-bottom: 0.5rem;
+    
+    .input-wrapper input,
+    .input-wrapper select,
+    .input-wrapper textarea {
+        padding: 0.625rem 0.875rem 0.625rem 2.5rem;
+        font-size: 16px; /* Предотвращает масштабирование на iOS */
     }
-
-    /* Адаптация для мобильных */
-    @media (max-width: 991.98px) {
-        .appointment-card {
-            padding: 2rem;
-        }
-        
-        .appointment-title {
-            font-size: 2rem;
-        }
+    
+    .btn-appointment {
+        padding: 0.875rem;
+        font-size: 0.938rem;
     }
+}
 
-    @media (max-width: 767.98px) {
-        .appointment-page {
-            padding: 1rem 0;
-        }
-        
-        .appointment-card {
-            padding: 1.5rem;
-            border-radius: 20px;
-        }
-        
-        .appointment-title {
-            font-size: 1.75rem;
-        }
-        
-        .color-options {
-            justify-content: center;
-        }
-        
-        .color-image {
-            width: 50px;
-            height: 50px;
-        }
-        
-        .appointment-btn {
-            padding: 0.875rem 2rem;
-            font-size: 1rem;
-        }
+/* Сенсорные улучшения для мобильных */
+@media (max-width: 768px) {
+    .color-option {
+        padding: 0.25rem;
     }
-
-    @media (max-width: 575.98px) {
-        .appointment-card {
-            padding: 1.25rem;
-        }
-        
-        .appointment-title {
-            font-size: 1.5rem;
-        }
-        
-        .form-control, .form-select {
-            padding: 0.75rem;
-            font-size: 0.9rem;
-        }
-        
-        .input-group-text {
-            min-width: 45px;
-            font-size: 0.9rem;
-        }
-        
-        .color-image {
-            width: 45px;
-            height: 45px;
-        }
-        
-        .color-name {
-            padding: 0.375rem 0.75rem;
-            font-size: 0.8rem;
-        }
-        
-        .info-item {
-            padding: 0.75rem;
-        }
-        
-        .info-icon {
-            font-size: 1.5rem;
-        }
+    
+    .btn-appointment {
+        -webkit-tap-highlight-color: transparent;
     }
+}
 
-    /* Анимации */
-    @keyframes fadeInUp {
-        from {
-            opacity: 0;
-            transform: translateY(30px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
+/* Улучшенная доступность */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
     }
+}
 
-    .appointment-card {
-        animation: fadeInUp 0.6s ease;
-    }
+/* Стили для ошибок */
+.invalid-feedback {
+    color: #ef4444;
+    font-size: 0.75rem;
+    margin-top: 0.25rem;
+}
 
-    .form-group {
-        animation: fadeInUp 0.6s ease;
-    }
+input.is-invalid,
+select.is-invalid,
+textarea.is-invalid {
+    border-color: #ef4444;
+}
 
-    .form-group:nth-child(1) { animation-delay: 0.1s; }
-    .form-group:nth-child(2) { animation-delay: 0.2s; }
-    .form-group:nth-child(3) { animation-delay: 0.3s; }
-    .form-group:nth-child(4) { animation-delay: 0.4s; }
-    .form-group:nth-child(5) { animation-delay: 0.5s; }
-    .form-group:nth-child(6) { animation-delay: 0.6s; }
+/* Плавная прокрутка */
+html {
+    scroll-behavior: smooth;
+}
 </style>
 
-<script src={% static "deps/js/jquery/jquery-3.7.0.min.js" %}></script>
+<script src="{% static 'deps/js/jquery/jquery-3.7.0.min.js' %}"></script>
 <script>
-    $(document).ready(function() {
-        // AJAX загрузка времени при изменении даты
-        $("#id_date").change(function() {
-            const selectedDate = $(this).val();
-            console.log("Выбрана дата:", selectedDate);
-            
-            if (selectedDate) {
-                $.ajax({
-                    url: "{% url 'order:ajax_load_times' %}",
-                    type: "GET",
-                    data: { 'date': selectedDate },
-                    beforeSend: function() {
-                        $("#id_time").html('<option value="">Загрузка...</option>');
-                    },
-                    success: function(data) {
-                        console.log("Доступное время:", data);
-                        $("#id_time").html(data);
-                        
-                        // Анимация появления
-                        $("#id_time").addClass('fade-in');
-                        setTimeout(() => {
-                            $("#id_time").removeClass('fade-in');
-                        }, 300);
-                    },
-                    error: function(xhr, status, error) {
-                        console.error("Ошибка AJAX:", error);
-                        $("#id_time").html('<option value="">Ошибка загрузки</option>');
-                    }
-                });
-            }
-        });
-
-
-        // Маска для телефона
-        $('#id_phone').on('input', function(e) {
-            // Удаляем все нецифровые символы, кроме возможного плюса в начале
-            var value = e.target.value.replace(/[^\d+]/g, '');
-            
-            // Если номер начинается не с +7 или 7 или 8, добавляем +7
-            if (!value.startsWith('+7') && !value.startsWith('7') && !value.startsWith('8')) {
-                value = '+7';
-            }
-            
-            // Форматируем номер: +7 999 198-72-64
-            var formatted = value
-                .replace(/^(\+?7|8)(\d{0,3})(\d{0,3})(\d{0,2})(\d{0,2})/, function(match, p1, p2, p3, p4, p5) {
-                    let result = '+7';
-                    if (p2) result += p2;
-                    if (p3) result += p3;
-                    if (p4) result += p4;
-                    if (p5) result += p5;
-                    return result;
-                });
-            
-            e.target.value = formatted;
-        });
-
-        // Валидация формы
-        $("#appointmentForm").on('submit', function(e) {
-            let isValid = true;
-            
-            // Проверка обязательных полей
-            $('.form-control:required').each(function() {
-                if (!$(this).val().trim()) {
-                    $(this).addClass('is-invalid');
-                    isValid = false;
-                } else {
-                    $(this).removeClass('is-invalid');
+$(document).ready(function() {
+    // AJAX загрузка времени при изменении даты
+    $("#id_date").change(function() {
+        const selectedDate = $(this).val();
+        
+        if (selectedDate) {
+            $.ajax({
+                url: "{% url 'order:ajax_load_times' %}",
+                type: "GET",
+                data: { 'date': selectedDate },
+                beforeSend: function() {
+                    $("#id_time").html('<option value="">Загрузка...</option>');
+                },
+                success: function(data) {
+                    $("#id_time").html(data);
+                    $("#id_time").addClass('fade-in');
+                    setTimeout(() => {
+                        $("#id_time").removeClass('fade-in');
+                    }, 300);
+                },
+                error: function() {
+                    $("#id_time").html('<option value="">Ошибка загрузки</option>');
                 }
             });
-            
-            if (!isValid) {
-                e.preventDefault();
-                // Плавная прокрутка к первой ошибке
-                $('html, body').animate({
-                    scrollTop: $('.is-invalid').first().offset().top - 100
-                }, 500);
-                
-                // Анимация ошибки
-                $('.is-invalid').first().addClass('shake');
-                setTimeout(() => {
-                    $('.is-invalid').removeClass('shake');
-                }, 500);
-            }
-        });
-
-        // Анимация при фокусе
-        $('.form-control, .form-select').on('focus', function() {
-            $(this).closest('.form-group').addClass('focused');
-        }).on('blur', function() {
-            $(this).closest('.form-group').removeClass('focused');
-        });
-
-        // Инициализация tooltips для цветов
-        $('.color-option').hover(function() {
-            $(this).find('.color-tooltip').css('opacity', '1');
-        }, function() {
-            $(this).find('.color-tooltip').css('opacity', '0');
-        });
+        }
     });
 
-    // CSS классы для анимаций
-    const style = document.createElement('style');
-    style.textContent = `
-        .fade-in {
-            animation: fadeIn 0.3s ease;
+    // Маска для телефона
+    $('#id_phone').on('input', function(e) {
+        let value = e.target.value.replace(/[^\d+]/g, '');
+        
+        if (!value.startsWith('+7') && !value.startsWith('7') && !value.startsWith('8')) {
+            value = '+7';
         }
         
-        .shake {
-            animation: shake 0.5s ease;
-        }
+        let formatted = value
+            .replace(/^(\+?7|8)(\d{0,3})(\d{0,3})(\d{0,2})(\d{0,2})/, function(match, p1, p2, p3, p4, p5) {
+                let result = '+7';
+                if (p2) result += '' + p2;
+                if (p3) result += '' + p3;
+                if (p4) result += '' + p4;
+                if (p5) result += '' + p5;
+                return result;
+            });
         
-        .focused .input-group-text {
-            background: var(--gradient-secondary);
-        }
+        e.target.value = formatted;
+    });
+
+    // Валидация формы
+    $("#appointmentForm").on('submit', function(e) {
+        let isValid = true;
         
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+        $('.input-wrapper input[required], .input-wrapper select[required], .input-wrapper textarea[required]').each(function() {
+            if (!$(this).val().trim()) {
+                $(this).addClass('is-invalid');
+                isValid = false;
+            } else {
+                $(this).removeClass('is-invalid');
+            }
+        });
         
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-5px); }
-            75% { transform: translateX(5px); }
+        if (!isValid) {
+            e.preventDefault();
+            $('html, body').animate({
+                scrollTop: $('.is-invalid').first().offset().top - 100
+            }, 500);
+            
+            $('.is-invalid').first().addClass('shake');
+            setTimeout(() => {
+                $('.is-invalid').removeClass('shake');
+            }, 500);
         }
-    `;
-    document.head.appendChild(style);
+    });
+
+    // Анимация при фокусе
+    $('.input-wrapper input, .input-wrapper select, .input-wrapper textarea').on('focus', function() {
+        $(this).closest('.form-group').addClass('focused');
+    }).on('blur', function() {
+        $(this).closest('.form-group').removeClass('focused');
+    });
+});
+
+// Добавляем стили анимации
+const style = document.createElement('style');
+style.textContent = `
+    .fade-in {
+        animation: fadeIn 0.3s ease;
+    }
+    
+    .shake {
+        animation: shake 0.5s ease;
+    }
+    
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(-10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    
+    @keyframes shake {
+        0%, 100% { transform: translateX(0); }
+        25% { transform: translateX(-5px); }
+        75% { transform: translateX(5px); }
+    }
+`;
+document.head.appendChild(style);
 </script>
 {% endblock content %}

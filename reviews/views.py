@@ -65,6 +65,12 @@ class MyReviewsView(ListView):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Мои отзывы'
         context['current_date'] = timezone.now()
+        average_rating = Reviews.objects.filter(user=self.request.user)
+        count_stars = 0
+        for a in average_rating:
+            count_stars += a.stars
+        stars = count_stars / average_rating.count()
+        context['average_rating'] = stars
 
         return context
     

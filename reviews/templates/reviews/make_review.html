@@ -29,14 +29,14 @@
                     <div class="rating-section">
                         <label class="rating-label">Ваша оценка</label>
                         <div class="stars-rating">
-                            {% for i in "54321" reversed %}
+                            {% for i in "12345" %}
                             <input type="radio" 
                                 name="stars" 
-                                value="{{ forloop.revcounter }}" 
-                                id="star{{ forloop.revcounter }}" 
+                                value="{{ i }}" 
+                                id="star{{ i }}" 
                                 class="star-input"
-                                {% if form.stars.value == forloop.revcounter|stringformat:"i" %}checked{% endif %}>
-                            <label for="star{{ forloop.revcounter }}" class="star-label">
+                                {% if form.stars.value == i %}checked{% endif %}>
+                            <label for="star{{ i }}" class="star-label" data-value="{{ i }}">
                                 <i class="fas fa-star"></i>
                             </label>
                             {% endfor %}
@@ -139,7 +139,7 @@
         font-size: 1.1rem;
     }
 
-    /* Рейтинг */
+    /* Рейтинг - ИСПРАВЛЕННАЯ ВЕРСИЯ */
     .rating-section {
         text-align: center;
         margin-bottom: 2.5rem;
@@ -169,22 +169,28 @@
         transition: all 0.3s ease;
         font-size: 2.5rem;
         color: #E5E7EB;
-        order: {{ forloop.revcounter }}; /* Важно для обратного порядка */
+        order: 6; /* Все метки имеют одинаковый порядок */
     }
 
     /* Закрашиваем выбранную звезду и все предыдущие */
-    .stars-rating input:checked ~ label,
-    .stars-rating:not(:hover) input:checked ~ label {
-        color: #FFD700;
+    .star-input:checked ~ .star-label,
+    .stars-rating:not(:hover) .star-input:checked ~ .star-label {
+        color: #E5E7EB; /* Сначала сбрасываем все */
+    }
+
+    .star-input:checked,
+    .star-input:checked ~ .star-label {
+        color: #FFD700; /* Закрашиваем выбранную и все последующие */
     }
 
     /* При наведении закрашиваем все звезды до той, на которую навели */
-    .stars-rating:hover label {
+    .stars-rating:hover .star-label:hover,
+    .stars-rating:hover .star-label:hover ~ .star-label {
         color: #FFD700;
     }
 
     /* Убираем закрашивание для звезд после той, на которую навели */
-    .stars-rating label:hover ~ label {
+    .stars-rating .star-label:hover ~ .star-label {
         color: #E5E7EB;
     }
 
@@ -471,6 +477,59 @@
         stars.forEach((star, index) => {
             star.style.animationDelay = `${index * 0.1}s`;
         });
+
+        // JavaScript для корректной работы звезд
+        const starInputs = document.querySelectorAll('.star-input');
+        const starLabels = document.querySelectorAll('.star-label');
+        const starsContainer = document.querySelector('.stars-rating');
+
+        // Функция для обновления отображения звезд
+        function updateStarsDisplay(selectedValue) {
+            starLabels.forEach(label => {
+                const starValue = parseInt(label.getAttribute('data-value'));
+                if (starValue <= selectedValue) {
+                    label.style.color = '#FFD700';
+                } else {
+                    label.style.color = '#E5E7EB';
+                }
+            });
+        }
+
+        // Обработчик клика по звезде
+        starLabels.forEach(label => {
+            label.addEventListener('click', function() {
+                const starValue = parseInt(this.getAttribute('data-value'));
+                document.querySelector(`#star${starValue}`).checked = true;
+                updateStarsDisplay(starValue);
+            });
+        });
+
+        // Обработчик наведения на звезды
+        starLabels.forEach(label => {
+            label.addEventListener('mouseenter', function() {
+                const hoverValue = parseInt(this.getAttribute('data-value'));
+                updateStarsDisplay(hoverValue);
+            });
+        });
+
+        // Обработчик ухода мыши
+        starsContainer.addEventListener('mouseleave', function() {
+            const checkedStar = document.querySelector('.star-input:checked');
+            if (checkedStar) {
+                const checkedValue = parseInt(checkedStar.value);
+                updateStarsDisplay(checkedValue);
+            } else {
+                starLabels.forEach(label => {
+                    label.style.color = '#E5E7EB';
+                });
+            }
+        });
+
+        // Инициализация при загрузке
+        const initialCheckedStar = document.querySelector('.star-input:checked');
+        if (initialCheckedStar) {
+            updateStarsDisplay(parseInt(initialCheckedStar.value));
+        }
     });
 </script>
 {% endblock content %}

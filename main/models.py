@@ -24,6 +24,7 @@ class Product(models.Model):
     image = models.ImageField(upload_to='product_images', blank=False, null=False, verbose_name='Изображение')
     description = models.TextField(verbose_name='Текст', blank=True, null=True)
     price = models.DecimalField(max_digits=7, decimal_places=0, verbose_name='Цена')
+    price_str = models.TextField(verbose_name='Текст для цены, если надо (за штуку)', blank=True, null=True)
     discount = models.DecimalField(default=0.00, max_digits=4, decimal_places=2, verbose_name='Скидка в %')
     available_colors = models.ManyToManyField(Color, verbose_name='Доступные цвета', related_name='products', blank=True)
     show = models.BooleanField(verbose_name='Показать на сайте?', default=True)
