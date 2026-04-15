@@ -18,6 +18,17 @@
                         </h1>
                         <p class="registration-subtitle">Заполните данные для регистрации</p>
                     </div>
+                    <!-- Ссылка на вход -->
+                    <div class="login-link-container text-center mt-4">
+                        <div class="login-link-wrapper">
+                            <span class="login-link-text">Уже есть аккаунт?</span>
+                            <a href="{% url 'user:login' %}" class="login-link">
+                                <i class="fas fa-sign-in-alt me-2"></i>
+                                <span>Войти в аккаунт</span>
+                                <i class="fas fa-arrow-right ms-2"></i>
+                            </a>
+                        </div>
+                    </div>
 
                     <!-- Форма регистрации -->
                     <form action="{% url 'user:registration' %}" method="post" id="registration_form" class="registration-form">
@@ -36,7 +47,7 @@
 
                         <div class="row">
                             <!-- Имя -->
-                            <div class="col-md-6 mb-4">
+                            <div class="mb-4">
                                 <label for="id_first_name" class="form-label">
                                     <i class="fas fa-user me-2"></i>Имя*
                                 </label>
@@ -58,7 +69,7 @@
                             </div>
 
                             <!-- Номер телефона -->
-                            <div class="col-md-6 mb-4">
+                            <div class="mb-4">
                                 <label for="id_phone_number" class="form-label">
                                     <i class="fas fa-phone me-2"></i>Номер телефона*
                                 </label>
@@ -84,7 +95,7 @@
                             </div>
 
                             <!-- Пароль -->
-                            <div class="col-md-6 mb-4">
+                            <div class="mb-4">
                                 <label for="id_password1" class="form-label">
                                     <i class="fas fa-lock me-2"></i>Пароль*
                                 </label>
@@ -114,7 +125,7 @@
                             </div>
 
                             <!-- Подтверждение пароля -->
-                            <div class="col-md-6 mb-4">
+                            <div class="mb-4">
                                 <label for="id_password2" class="form-label">
                                     <i class="fas fa-lock me-2"></i>Подтверждение пароля*
                                 </label>
@@ -173,14 +184,6 @@
                         <div class="telegram-btn-container">
                             {% autoescape off %}{{ telegram_redirect }}{% endautoescape %}
                         </div>
-                    </div>
-
-                    <!-- Ссылка на вход -->
-                    <div class="text-center mt-4">
-                        <span class="text-muted">Уже есть аккаунт? </span>
-                        <a href="{% url 'user:login' %}" class="text-primary">
-                            <i class="fas fa-sign-in-alt me-1"></i>Войти
-                        </a>
                     </div>
                 </div>
             </div>
@@ -499,6 +502,124 @@
     .password-weak { background: #dc3545; }
     .password-medium { background: #ffc107; }
     .password-strong { background: #28a745; }
+/* Красивая кнопка входа */
+.login-link-container {
+    margin-top: 1.5rem !important;
+}
+
+.login-link-wrapper {
+    display: inline-block;
+    width: 100%;
+}
+
+.login-link-text {
+    display: block;
+    color: #6B7280;
+    font-size: 0.95rem;
+    margin-bottom: 0.75rem;
+    font-weight: 500;
+}
+
+.login-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    text-decoration: none;
+    padding: 0.875rem 2rem;
+    border-radius: 50px;
+    font-weight: 600;
+    font-size: 1rem;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+    width: auto;
+    min-width: 200px;
+}
+
+.login-link::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    transform: translate(-50%, -50%);
+    transition: width 0.6s, height 0.6s;
+}
+
+.login-link:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+    color: white;
+    background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+}
+
+.login-link:hover::before {
+    width: 300px;
+    height: 300px;
+}
+
+.login-link:active {
+    transform: translateY(0);
+}
+
+.login-link i {
+    transition: transform 0.3s ease;
+}
+
+.login-link:hover i:first-child {
+    transform: translateX(-3px);
+}
+
+.login-link:hover i:last-child {
+    transform: translateX(3px);
+}
+
+/* Адаптация для мобильных */
+@media (max-width: 575.98px) {
+    .login-link {
+        padding: 0.75rem 1.5rem;
+        font-size: 0.9rem;
+        min-width: 180px;
+    }
+    
+    .login-link-text {
+        font-size: 0.85rem;
+    }
+}
+
+/* Альтернативный вариант с обводкой (если хотите) */
+.login-link-outline {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    background: transparent;
+    color: #667eea;
+    text-decoration: none;
+    padding: 0.875rem 2rem;
+    border-radius: 50px;
+    font-weight: 600;
+    font-size: 1rem;
+    border: 2px solid #667eea;
+    transition: all 0.3s ease;
+    width: auto;
+    min-width: 200px;
+}
+
+.login-link-outline:hover {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-color: transparent;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+}
 </style>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

@@ -91,6 +91,13 @@
                             <div class="appointment-status upcoming">Скоро</div>
                         </div>
                         {% endfor %}
+                        <!-- Кнопка отмены записи -->
+                        <button class="btn-cancel-appointment" 
+                                onclick="contactMaster()"
+                                title="Отменить запись - напишите мастеру">
+                            <i class="fas fa-times-circle"></i>
+                            <span>Для отмены напишите мастеру</span>
+                        </button>
                     </div>
                     {% endif %}
 
@@ -173,12 +180,12 @@
                                     Имя
                                 </label>
                                 {{ form.first_name }}
-                                {% if not user.edit_name %}
+                                <!-- {% if not user.edit_name %}
                                 <div class="field-note">
                                     <i class="fas fa-lock"></i>
                                     Имя нельзя изменить
                                 </div>
-                                {% endif %}
+                                {% endif %} -->
                             </div>
 
                             <div class="input-field">
@@ -187,12 +194,12 @@
                                     Логин
                                 </label>
                                 {{ form.username }}
-                                {% if not user.edit_username %}
+                                <!-- {% if not user.edit_username %}
                                 <div class="field-note">
                                     <i class="fas fa-lock"></i>
                                     Логин нельзя изменить
                                 </div>
-                                {% endif %}
+                                {% endif %} -->
                             </div>
 
                             <div class="input-field">
@@ -804,6 +811,127 @@
             text-align: center;
         }
     }
+
+/* Стили для кнопки отмены */
+.btn-cancel-appointment {
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+    border: none;
+    padding: 8px 16px;
+    border-radius: 10px;
+    color: white;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    white-space: nowrap;
+}
+
+.btn-cancel-appointment:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
+    background: linear-gradient(135deg, #dc2626, #b91c1c);
+}
+
+.btn-cancel-appointment i {
+    font-size: 14px;
+}
+
+/* Информация об отмене записи */
+.cancel-info {
+    margin-top: 24px;
+    padding: 16px;
+    background: linear-gradient(135deg, #fef3c7, #fde68a);
+    border-radius: 12px;
+    border-left: 4px solid #f59e0b;
+}
+
+.cancel-info-content {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.cancel-info-content > i {
+    font-size: 24px;
+    color: #f59e0b;
+}
+
+.cancel-info-text {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.cancel-info-text strong {
+    color: #92400e;
+    font-size: 14px;
+}
+
+.cancel-info-text span {
+    color: #78350f;
+    font-size: 12px;
+}
+
+.cancel-contact-btn {
+    background: #f59e0b;
+    color: white;
+    padding: 8px 16px;
+    border-radius: 10px;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+}
+
+.cancel-contact-btn:hover {
+    background: #d97706;
+    transform: translateY(-2px);
+    color: white;
+}
+
+/* Адаптация для мобильных */
+@media (max-width: 768px) {
+    .appointment-item {
+        flex-wrap: wrap;
+    }
+    
+    .btn-cancel-appointment {
+        width: 100%;
+        justify-content: center;
+        margin-top: 8px;
+    }
+    
+    .cancel-info-content {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .cancel-info-text {
+        text-align: center;
+    }
+    
+    .cancel-contact-btn {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .btn-cancel-appointment span {
+        font-size: 12px;
+    }
+    
+    .cancel-info {
+        padding: 12px;
+    }
+}
 </style>
 
 <script>
@@ -900,5 +1028,15 @@ document.addEventListener('DOMContentLoaded', function() {
         observer.observe(item);
     });
 });
+// Добавьте в конец существующего скрипта
+
+// Функция для связи с мастером
+function contactMaster() {
+    // Переходим на страницу контактов с параметром сообщения
+    window.location.href = `/about/contacts/`;
+}
+
+// Если на странице контактов есть форма, можно автоматически заполнить сообщение
+// Это нужно добавить на страницу контактов
 </script>
 {% endblock content %}

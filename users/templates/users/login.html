@@ -102,11 +102,15 @@
                                 <i class="fas fa-question-circle me-1"></i>Забыли пароль?
                             </a>
                         </div>
-                        <div class="register-link">
-                            <span class="text-muted">Нет аккаунта? </span>
-                            <a href="{% url 'user:registration' %}" class="text-primary">
-                                <i class="fas fa-user-plus me-1"></i>Создать аккаунт
-                            </a>
+                        <div class="register-link-container text-center mt-4">
+                            <div class="register-link-wrapper">
+                                <span class="register-link-text">Нет аккаунта?</span>
+                                <a href="{% url 'user:registration' %}" class="register-link">
+                                    <i class="fas fa-user-plus me-2"></i>
+                                    <span>Создать аккаунт</span>
+                                    <i class="fas fa-arrow-right ms-2"></i>
+                                </a>
+                            </div>
                         </div>
                     </div>
 
@@ -434,6 +438,98 @@
     .g-recaptcha > div {
         margin: 0 auto;
     }
+
+/* Красивая кнопка регистрации */
+.register-link-container {
+    margin-top: 1.5rem !important;
+}
+
+.register-link-wrapper {
+    display: inline-block;
+    width: 100%;
+}
+
+.register-link-text {
+    display: block;
+    color: #6B7280;
+    font-size: 0.95rem;
+    margin-bottom: 0.75rem;
+    font-weight: 500;
+}
+
+.register-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    color: white;
+    text-decoration: none;
+    padding: 0.875rem 2rem;
+    border-radius: 50px;
+    font-weight: 600;
+    font-size: 1rem;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(240, 147, 251, 0.3);
+    width: auto;
+    min-width: 200px;
+}
+
+.register-link::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    transform: translate(-50%, -50%);
+    transition: width 0.6s, height 0.6s;
+}
+
+.register-link:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(240, 147, 251, 0.4);
+    color: white;
+    background: linear-gradient(135deg, #f5576c 0%, #f093fb 100%);
+}
+
+.register-link:hover::before {
+    width: 300px;
+    height: 300px;
+}
+
+.register-link:active {
+    transform: translateY(0);
+}
+
+.register-link i {
+    transition: transform 0.3s ease;
+}
+
+.register-link:hover i:first-child {
+    transform: translateX(-3px);
+}
+
+.register-link:hover i:last-child {
+    transform: translateX(3px);
+}
+
+/* Адаптация для мобильных */
+@media (max-width: 575.98px) {
+    .register-link {
+        padding: 0.75rem 1.5rem;
+        font-size: 0.9rem;
+        min-width: 180px;
+    }
+    
+    .register-link-text {
+        font-size: 0.85rem;
+    }
+}
 </style>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

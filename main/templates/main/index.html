@@ -38,7 +38,7 @@
                             <p class="service-description">{{ product.description|truncatewords:15 }}</p>
                             
                             <div class="service-footer">
-                                <span class="service-price">от {{ product.price }} ₽ {% if product.price_srt %} {{ product.price_str }}</span>
+                                <span class="service-price">от {{ product.price }} ₽ {% if product.price_str %} {{ product.price_str }}{% endif %}</span>
                                 {% if product.make_time %}
                                 <span class="service-duration">
                                     <i class="fas fa-clock"></i>
@@ -68,7 +68,7 @@
         <div class="cta-section text-center">
             <div class="cta-content">
                 <h2>Не нашли нужный вариант?</h2>
-                <p>Свяжитесь с нами для индивидуальной консультации</p>
+                <p>Свяжитесь со мной для индивидуальной консультации</p>
                 <a href="{% url 'about:contacts' %}" class="cta-button">
                     <i class="fas fa-phone-alt"></i>
                     Заказать консультацию

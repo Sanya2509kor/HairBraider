@@ -161,6 +161,155 @@
     <main>
         {% block content %}{% endblock content %}
     </main>
+    <footer class="footer mt-auto py-4">
+        <div class="container text-center">
+            <hr class="mb-4 opacity-25">
+            <p class="mb-3 text-muted">Вопросы по сайту или хотите такой же? Свяжитесь со мной:</p>
+            
+            <!-- Контейнер: в ряд на ПК, в колонку на мобильных -->
+            <div class="d-flex flex-column flex-md-row justify-content-center align-items-center gap-3">
+                
+                <!-- Почта с кнопкой копирования -->
+                <div class="d-flex align-items-center gap-2">
+                    <a href="mailto:Korchemkins0@yandex.ru" class="footer-email email-link">
+                        <i class="fas fa-envelope me-2"></i>Korchemkins0@yandex.ru
+                    </a>
+                    <button class="btn-copy" onclick="copyEmail(this)" title="Копировать почту">
+                        <i class="fas fa-copy"></i>
+                    </button>
+                </div>
+
+                <!-- Telegram -->
+                <a href="https://t.me/I_L0ve_y0u_baby" target="_blank" class="footer-email tg-link">
+                    <i class="fab fa-telegram me-2"></i>Telegram
+                </a>
+
+                <!-- ВКонтакте -->
+                <a href="https://vk.com/korchemkin2002" target="_blank" class="footer-email vk-link">
+                    <i class="fab fa-vk me-2"></i>ВКонтакте
+                </a>
+                
+            </div>
+
+            <div class="mt-4 small text-muted opacity-75">
+                &copy; {% now "Y" %} HairBraider. Все права защищены.
+            </div>
+        </div>
+    </footer>
+
+    <style>
+        .footer-email {
+            text-decoration: none;
+            font-weight: 500;
+            padding: 8px 18px;
+            border: 1px solid;
+            border-radius: 30px;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .footer-email:hover {
+            background: linear-gradient(135deg, #8A2BE2 0%, #FF69B4 100%);
+            color: white !important;
+            border-color: transparent;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(138, 43, 226, 0.3);
+        }
+        /* Почта (Фиолетовый) */
+        .email-link {
+            border-color: rgba(138, 43, 226, 0.3);
+            color: #8A2BE2;
+        }
+        .email-link:hover {
+            background: linear-gradient(135deg, #8A2BE2 0%, #FF69B4 100%);
+            color: white !important;
+            border-color: transparent;
+        }
+        .copy-container {
+            position: relative;
+        }
+
+        .btn-copy {
+            background: rgba(138, 43, 226, 0.1);
+            border: 1px solid rgba(138, 43, 226, 0.2);
+            color: #8A2BE2;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .btn-copy:hover {
+            background: #8A2BE2;
+            color: white;
+            transform: scale(1.1);
+        }
+
+        .btn-copy.copied {
+            background: #28a745;
+            border-color: #28a745;
+            color: white;
+        }
+        /* Telegram (Синий) */
+        .tg-link {
+            border-color: rgba(0, 136, 204, 0.3);
+            color: #0088cc;
+        }
+        .tg-link:hover {
+            background: #0088cc;
+            color: white !important;
+            border-color: transparent;
+        }
+        /* VK (Темно-синий) */
+        .vk-link {
+            border-color: rgba(0, 119, 255, 0.3);
+            color: #0077FF;
+        }
+        .vk-link:hover {
+            background: #0077FF;
+            color: white !important;
+            border-color: transparent;
+        }
+
+        /* Эффект при наведении на все кнопки */
+        .footer-email:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Убедимся, что кнопки не слишком широкие на мобильных */
+        @media (max-width: 576px) {
+            .footer-email {
+                font-size: 0.9rem;
+                padding: 8px 15px;
+            }
+        }
+    </style>
+    <script>
+        function copyEmail(button) {
+            const email = "Korchemkins0@yandex.ru";
+            
+            // Копирование в буфер обмена
+            navigator.clipboard.writeText(email).then(() => {
+                // Визуальный эффект успеха
+                const icon = button.querySelector('i');
+                const originalIcon = icon.className;
+                
+                button.classList.add('copied');
+                icon.className = 'fas fa-check'; // Меняем иконку на галочку
+                
+                setTimeout(() => {
+                    button.classList.remove('copied');
+                    icon.className = originalIcon; // Возвращаем иконку копирования
+                }, 2000);
+            });
+        }
+    </script>
     <!-- Bootstrap JS и зависимости -->
     {% comment %} <script src={% static "deps/js/jquery/jquery-3.7.0.min.js" %}></script> {% endcomment %}
     {% comment %} <script src={% static "deps/js/jquery-events.js" %}></script> {% endcomment %}

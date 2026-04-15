@@ -204,10 +204,10 @@ class UserProfileView(LoginRequiredMixin, UpdateView):
         new_name = form.cleaned_data.get('first_name')
         new_username = form.cleaned_data.get('username')
         if self.current_name != new_name:
-            self.request.user.edit_name = False
+            # self.request.user.edit_name = False
             self.request.user.save()
         if self.current_username != new_username:
-            self.request.user.edit_username = False
+            # self.request.user.edit_username = False
             self.request.user.save()
         messages.success(self.request, "Данные успешно обновлены")
         return super().form_valid(form)

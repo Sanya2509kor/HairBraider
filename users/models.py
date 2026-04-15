@@ -34,8 +34,8 @@ class User(AbstractUser):
     telegram_id = models.BigIntegerField(unique=True, null=True, blank=True)
     telegram_username = models.CharField(max_length=32, blank=True, null=True)
     telegram_photo_url = models.URLField(blank=True, null=True)
-    edit_name = models.BooleanField(verbose_name='Изменять имя?', default=False)
-    edit_username = models.BooleanField(verbose_name='Изменять имя пользователя?', default=False)
+    edit_name = models.BooleanField(verbose_name='Изменять имя?', default=True)
+    edit_username = models.BooleanField(verbose_name='Изменять имя пользователя?', default=True)
 
     USERNAME_FIELD = 'phone_number'  # Указываем, что phone_number теперь используется как идентификатор
     REQUIRED_FIELDS = ['first_name', 'username']  # Поля, запрашиваемые при создании суперпользователя
