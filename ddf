@@ -1,0 +1,41 @@
+[33mcommit af741cb8cf1f264b28911b3575de05705e1b1f35[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m
+Author: Aleksandr <Korchemkins0@yandex.ru>
+Date:   Wed Apr 15 08:37:43 2026 +0300
+
+    перед загрузкой на gitHub
+
+[33mcommit 66e2f3256aefdbb9aff00fc772f001a365e490d7[m
+Author: Aleksandr <Korchemkins0@yandex.ru>
+Date:   Sun Apr 5 05:49:43 2026 +0300
+
+    add price_str
+
+[33mcommit f04c03420699e4c2fb7b07c18973facc4f5bc59e[m
+Author: Sanya2509kor <korchemkinaleksandr@yandex.ru>
+Date:   Mon Sep 8 17:54:33 2025 +0700
+
+    изменил профайл, уведомления и вход через тг
+
+[33mcommit 1651a121f9119a0fcd21099812e8a3b24f315704[m
+Author: Sanya2509kor <korchemkinaleksandr@yandex.ru>
+Date:   Wed Aug 27 21:33:18 2025 +0700
+
+    изменил все html, и начал менять main
+
+[33mcommit d7f1ad9de6740a59c4c9cd7307413f37796715b0[m
+Author: Sanya2509kor <korchemkinaleksandr@yandex.ru>
+Date:   Tue Aug 26 18:28:45 2025 +0700
+
+    сделал капчу
+
+[33mcommit 157ebf76f6339d8613a39f0b9553312f3f79d13c[m
+Author: Sanya2509kor <Korchemkins0@yandex.ru>
+Date:   Thu Aug 14 08:04:56 2025 +0300
+
+    Удалён секретный ключ из настроек
+
+[33mcommit d08e04f18ebea2401f0e5e522e8fa437008bea0f[m
+Author: Sanya2509kor <korchemkinaleksandr@yandex.ru>
+Date:   Thu Aug 14 12:43:28 2025 +0700
+
+    Create a

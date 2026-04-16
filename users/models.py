@@ -82,3 +82,45 @@ class User(AbstractUser):
         super().save(*args, **kwargs)
 
 
+# для восстановления пароля по звонку
+# users/models.py - исправьте модель PasswordResetCallSession
+class PasswordResetCallSession(models.Model):
+    """Модель для хранения сессий восстановления пароля по звонку"""
+    STATUS_CHOICES = [
+        ('pending', 'Ожидает звонка'),
+        ('confirmed', 'Подтвержден'),
+        ('expired', 'Просрочен'),
+    ]
+    
+    user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='Пользователь')
+    phone = models.CharField(max_length=20, verbose_name='Номер телефона')
+    check_id = models.CharField(max_length=50, unique=False, verbose_name='ID проверки', db_index=True)  # Убрали unique=True
+    call_phone = models.CharField(max_length=20, verbose_name='Номер для звонка')
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending', verbose_name='Статус')
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name='Создана')
+    expires_at = models.DateTimeField(verbose_name='Истекает')
+    reset_token = models.CharField(max_length=100, unique=True, null=True, blank=True, verbose_name='Токен сброса')
+    
+    class Meta:
+        db_table = 'password_reset_call_session'
+        verbose_name = 'Сессия восстановления пароля по звонку'
+        verbose_name_plural = 'Сессии восстановления пароля по звонку'
+        # Добавим уникальность только для активных сессий
+        unique_together = [['check_id', 'status']]  # Один check_id может быть только в одном статусе
+    
+    def is_expired(self):
+        from django.utils import timezone
+        return timezone.now() > self.expires_at
+    
+    def save(self, *args, **kwargs):
+        from django.utils import timezone
+        from datetime import timedelta
+        import secrets
+        if not self.expires_at:
+            self.expires_at = timezone.now() + timedelta(minutes=5)
+        if not self.reset_token:
+            self.reset_token = secrets.token_urlsafe(32)
+        super().save(*args, **kwargs)
+    
+    def __str__(self):
+        return f"{self.phone} - {self.status}"
