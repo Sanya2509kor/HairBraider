@@ -11,6 +11,14 @@ from django.db import transaction
 from django.contrib import messages
 from django.utils import timezone
 from django.contrib.auth.mixins import LoginRequiredMixin
+# для тг
+from .telegram_service import TelegramNotifier, send_telegram_async
+from threading import Thread
+
+
+def send_telegram_async(notifier, order):
+    """Асинхронная отправка уведомления"""
+    Thread(target=notifier.send_appointment_notification, args=(order,)).start()
 
 
 class AppointmentView(LoginRequiredMixin, CreateView):
@@ -98,6 +106,16 @@ class AppointmentView(LoginRequiredMixin, CreateView):
                 # Обновляем статус времени
                 locked_time_slot.freely = False
                 locked_time_slot.save()
+                
+                 # Отправка уведомления в Telegram
+                try:
+                    notifier = TelegramNotifier()
+                    send_telegram_async(notifier, self.object)
+                except Exception as e:
+                    # Логируем ошибку, но не прерываем выполнение
+                    print(f"Ошибка при отправке Telegram уведомления: {e}")
+                # ======================================
+                
                 
                 messages.success(self.request, 'Запись успешно создана!')
                 return super().form_valid(form)
