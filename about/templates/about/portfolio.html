@@ -9,8 +9,8 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <!-- Модальное окно для полноразмерного изображения -->
 <div class="modal fade" id="imageModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-xl">
-        <div class="modal-content">
+    <div class="modal-dialog modal-dialog-centered modal-xl modal-fullscreen-mobile">
+        <div class="modal-content modal-content-mobile">
             <div class="modal-header">
                 <h5 class="modal-title" id="modalImageTitle">Работа из портфолио</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -338,13 +338,87 @@
         color: #FF69B4;
     }
 
-    /* Модальное окно */
+    /* Модальное окно - стили для десктопа */
     .modal-content {
-        width: 50%;
-        height: 50%;
         border-radius: 20px;
         border: none;
         overflow: hidden;
+    }
+    
+    /* Стили для модального окна на мобильных устройствах */
+    @media (max-width: 768px) {
+        /* Делаем модальное окно почти на весь экран */
+        .modal-fullscreen-mobile {
+            margin: 0.5rem;
+            max-width: calc(100% - 1rem);
+        }
+        
+        .modal-content-mobile {
+            height: calc(100vh - 1rem);
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .modal-content-mobile .modal-body {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .modal-content-mobile .modal-body img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+        
+        .modal-content-mobile .modal-header {
+            padding: 0.8rem;
+            flex-shrink: 0;
+        }
+        
+        .modal-content-mobile .modal-header .modal-title {
+            font-size: 1rem;
+        }
+        
+        /* Увеличиваем кнопки навигации для мобильных */
+        .image-nav {
+            padding: 0 0.5rem;
+        }
+        
+        .nav-btn {
+            width: 44px;
+            height: 44px;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+        }
+        
+        .nav-btn:hover {
+            background: rgba(138, 43, 226, 0.9);
+        }
+    }
+
+    @media (max-width: 480px) {
+        .modal-fullscreen-mobile {
+            margin: 0;
+            max-width: 100%;
+        }
+        
+        .modal-content-mobile {
+            height: 100vh;
+            border-radius: 0;
+        }
+        
+        .image-nav {
+            padding: 0 0.25rem;
+        }
+        
+        .nav-btn {
+            width: 40px;
+            height: 40px;
+        }
     }
 
     .modal-header {
@@ -438,11 +512,6 @@
         .cta-content p {
             font-size: 1rem;
         }
-        
-        .nav-btn {
-            width: 40px;
-            height: 40px;
-        }
     }
 
     @media (max-width: 480px) {
@@ -481,11 +550,6 @@
         .cta-btn {
             padding: 0.8rem 1.5rem;
             font-size: 0.9rem;
-        }
-        
-        .nav-btn {
-            width: 35px;
-            height: 35px;
         }
     }
 

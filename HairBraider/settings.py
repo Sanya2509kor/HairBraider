@@ -23,7 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-(bh+zdg%^9tw^8h&0)w=2sp-r4i=uikgvj^q25668p=a32#at+'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['*']
 
@@ -92,27 +92,27 @@ WSGI_APPLICATION = 'HairBraider.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
-
-
 # DATABASES = {
 #     'default': {
-#         'ENGINE': 'django.db.backends.mysql',
-#         'NAME': 'cn95494_braider',
-#         'USER': 'cn95494_braider',
-#         'PASSWORD': '89526136205Sa',
-#         'HOST': '127.0.0.1',
-#         'PORT': 3306,
-#         'OPTIONS': {
-#             'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
-#         },
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
 #     }
 # }
+
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'cn95494_braider',
+        'USER': 'cn95494_braider',
+        'PASSWORD': '89526136205Sa',
+        'HOST': '127.0.0.1',
+        'PORT': 3306,
+        'OPTIONS': {
+            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
+        },
+    }
+}
 
 
 # Password validation
@@ -207,3 +207,6 @@ CORS_ALLOWED_ORIGINS = [
 GOOGLE_RECAPTCHA_SECRET_KEY = '6LcjhJ0rAAAAAGOx4MDh-jPV136ryfGJDFfeCmqC'
 
 SMSRU_API_ID = '6AF5F1BB-C1BB-A810-7608-7BA37B004759'
+
+TELEGRAM_BOT_TOKEN_1 = '8733591028:AAH39U-7euTj2qUWv34P8wCQNWJoE1COsl0'
+TELEGRAM_CHAT_ID = '-5051204480'

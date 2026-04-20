@@ -11,6 +11,8 @@ from django.db import transaction
 from django.contrib import messages
 from django.utils import timezone
 from django.contrib.auth.mixins import LoginRequiredMixin
+# для тг
+from .telegram_service import TelegramNotifier
 
 
 class AppointmentView(LoginRequiredMixin, CreateView):
@@ -98,6 +100,15 @@ class AppointmentView(LoginRequiredMixin, CreateView):
                 # Обновляем статус времени
                 locked_time_slot.freely = False
                 locked_time_slot.save()
+                
+                # Отправка уведомления в Telegram
+                try:
+                    notifier = TelegramNotifier()
+                    # Отправляем синхронно (без потоков)
+                    notifier.send_appointment_notification(self.object)
+                except Exception as e:
+                    print(f"Ошибка при отправке Telegram уведомления: {e}")
+                
                 
                 messages.success(self.request, 'Запись успешно создана!')
                 return super().form_valid(form)
@@ -200,3 +211,64 @@ class ListOrdersTodayView(UserPassesTestMixin, ListView):
             .order_by('time__time')
         
         return queryset
+
+
+
+from django.views.decorators.csrf import csrf_exempt
+@csrf_exempt
+def send_reminders(request):
+    """
+    Простая функция для отправки напоминаний
+    Вызывается из cron-job.org
+    """
+    try:
+        now = timezone.localtime(timezone.now())
+        notifier = TelegramNotifier()
+        reminders_sent = 0
+        messages = []
+        
+        # 1. Отправка утренних напоминаний в день записи (в 9:00)
+        if now.hour == 9 and now.minute == 0:
+            today_appointments = Appointment.objects.filter(
+                date__date=now.date()
+            ).select_related('date', 'time', 'product')
+            
+            for appointment in today_appointments:
+                try:
+                    # Отправляем утреннее напоминание
+                    notifier.send_day_reminder(appointment)
+                    reminders_sent += 1
+                    messages.append(f"Day reminder sent for {appointment.name} at {appointment.time.time}")
+                except Exception as e:
+                    messages.append(f"Error for {appointment.name}: {str(e)}")
+        
+        # 2. Отправка напоминаний за 2 часа до записи
+        reminder_time = now + timedelta(hours=2)
+        appointments_2h = Appointment.objects.filter(
+            date__date=reminder_time.date(),
+            time__time__hour=reminder_time.hour,
+            time__time__minute=reminder_time.minute
+        ).select_related('date', 'time', 'product')
+        
+        for appointment in appointments_2h:
+            try:
+                # Отправляем напоминание за 2 часа
+                notifier.send_reminder_2h(appointment)
+                reminders_sent += 1
+                messages.append(f"2h reminder sent for {appointment.name} at {appointment.time.time}")
+            except Exception as e:
+                messages.append(f"Error for {appointment.name}: {str(e)}")
+        
+        # Возвращаем результат
+        return JsonResponse({
+            'status': 'success',
+            'reminders_sent': reminders_sent,
+            'time_checked': str(now),
+            'messages': messages
+        })
+        
+    except Exception as e:
+        return JsonResponse({
+            'status': 'error',
+            'message': str(e)
+        }, status=500)
