@@ -191,8 +191,16 @@ TELEGRAM_LOGIN_REDIRECT_URL = 'https://hair-braider.ru/user/telegram-login/'
 
 # Добавьте эти настройки
 TELEGRAM_LOGIN_CALLBACK_URL = 'users:telegram_login'
-SESSION_COOKIE_SECURE = False  # Для разработки
-CSRF_COOKIE_SECURE = False     # Для разработки
+SESSION_COOKIE_SECURE = True  # Для разработки
+CSRF_COOKIE_SECURE = True     # Для разработки
+
+# ✅ Добавить эти настройки для безопасности
+SECURE_SSL_REDIRECT = True      # Перенаправлять HTTP на HTTPS
+SECURE_HSTS_SECONDS = 31536000  # Включить HSTS (1 год)
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+SECURE_HSTS_PRELOAD = True
+
+
 
 CSRF_TRUSTED_ORIGINS = [
     'https://adequately-opportune-surfbird.cloudpub.ru',

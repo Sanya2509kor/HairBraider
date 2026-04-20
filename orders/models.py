@@ -41,13 +41,13 @@ class Appointment(models.Model):
     comment = models.TextField(verbose_name='Комментарий', blank=True)
     created_at = models.DateTimeField(verbose_name='Дата создания', auto_now_add=True)
     
-    reminder_2h_sent = models.BooleanField(default=False)
-    day_reminder_sent = models.BooleanField(default=False)
+    reminder_2h_sent = models.BooleanField(verbose_name='отправка за 2 часа', default=False)
+    day_reminder_sent = models.BooleanField(verbose_name='отправка утром', default=False)
     
     class Meta:
-        verbose_name = 'Заказ'
-        verbose_name_plural = 'Заказы'
+        verbose_name = 'Запись'
+        verbose_name_plural = 'Записи'
         unique_together = ('date', 'time')
     
     def __str__(self):
-        return f'Заказ #{self.id} от {self.name}'
+        return f'Запись #{self.id} от {self.name}'

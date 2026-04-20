@@ -35,6 +35,8 @@ class AppointmentAdmin(admin.ModelAdmin):
         'colors',
         'comment',
         'created_at',
+        'reminder_2h_sent',
+        'day_reminder_sent',
     ]
     
 

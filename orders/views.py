@@ -213,8 +213,11 @@ class ListOrdersTodayView(UserPassesTestMixin, ListView):
         return queryset
 
 
-
+from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
+from datetime import timedelta
+
+
 @csrf_exempt
 def send_reminders(request):
     """
@@ -230,32 +233,44 @@ def send_reminders(request):
         # 1. Отправка утренних напоминаний в день записи (в 9:00)
         if now.hour == 9 and now.minute == 0:
             today_appointments = Appointment.objects.filter(
-                date__date=now.date()
+                date__date=now.date(), 
+                day_reminder_sent=False
             ).select_related('date', 'time', 'product')
             
-            for appointment in today_appointments:
-                try:
-                    # Отправляем утреннее напоминание
-                    notifier.send_day_reminder(appointment)
-                    reminders_sent += 1
-                    messages.append(f"Day reminder sent for {appointment.name} at {appointment.time.time}")
-                except Exception as e:
-                    messages.append(f"Error for {appointment.name}: {str(e)}")
+            if notifier.send_day_reminder_bulk_detailed(today_appointments):
+                count = today_appointments.count()
+                reminders_sent += count
+                messages.append(f"Day reminder sent for {count} appointments")
+                
+                # Отмечаем записи как отправленные (только если они есть)
+                if today_appointments.exists():
+                    today_appointments.update(day_reminder_sent=True)
+            else:
+                messages.append("Failed to send day reminder")
         
         # 2. Отправка напоминаний за 2 часа до записи
-        reminder_time = now + timedelta(hours=2)
+        # ✅ Исправленная логика: ищем записи через 2 часа
+        two_hours_later = now + timedelta(hours=2)
+        
         appointments_2h = Appointment.objects.filter(
-            date__date=reminder_time.date(),
-            time__time__hour=reminder_time.hour,
-            time__time__minute=reminder_time.minute
+            date__date=now.date(),
+            time__time__gte=now.time(),
+            time__time__lte=two_hours_later.time(),
+            reminder_2h_sent=False
         ).select_related('date', 'time', 'product')
         
         for appointment in appointments_2h:
             try:
                 # Отправляем напоминание за 2 часа
-                notifier.send_reminder_2h(appointment)
-                reminders_sent += 1
-                messages.append(f"2h reminder sent for {appointment.name} at {appointment.time.time}")
+                if notifier.send_reminder_2h(appointment):  # ✅ Проверяем успешность
+                    reminders_sent += 1
+                    messages.append(f"2h reminder sent for {appointment.name} at {appointment.time.time}")
+                    
+                    # ✅ Отмечаем как отправленное
+                    appointment.reminder_2h_sent = True
+                    appointment.save(update_fields=['reminder_2h_sent'])
+                else:
+                    messages.append(f"Failed to send 2h reminder for {appointment.name}")
             except Exception as e:
                 messages.append(f"Error for {appointment.name}: {str(e)}")
         

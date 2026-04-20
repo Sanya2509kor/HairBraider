@@ -2,6 +2,7 @@ import requests
 from django.conf import settings
 from django.urls import reverse
 from threading import Thread
+from django.utils import timezone
 
 
 class TelegramNotifier:
@@ -69,13 +70,13 @@ class TelegramNotifier:
         message = f"""
 🔔 <b>НОВАЯ ЗАПИСЬ!</b> 🔔
 
-━━━━━━━━━━━━━━━━━━━━
+━━━━━━━━
 👤 <b>Клиент:</b> {appointment.name}
 📞 <b>Телефон:</b> {appointment.phone}
 📅 <b>Дата:</b> {appointment.date.date.strftime('%d.%m.%Y')}
 ⏰ <b>Время:</b> {appointment.time.time.strftime('%H:%M')}
 💇 <b>Услуга:</b> {appointment.product.name}{colors_text}{comment_text}{user_info}
-━━━━━━━━━━━━━━━━━━━━
+━━━━━━━━
 
 🆔 <b>ID записи:</b> {appointment.id}
 📅 <b>Создана:</b> {appointment.created_at.strftime('%d.%m.%Y %H:%M')}
@@ -89,40 +90,77 @@ class TelegramNotifier:
         return message
 
 
-    # Добавьте эти методы в класс TelegramNotifier, если их ещё нет
+
+
+
+
     def send_reminder_2h(self, appointment):
         """Отправляет напоминание за 2 часа до записи"""
         message = f"""
-    ⏰ <b>НАПОМИНАНИЕ! ЧЕРЕЗ 2 ЧАСА ЗАПИСЬ</b> ⏰
+⏰ <b>НАПОМИНАНИЕ! ЧЕРЕЗ 2 ЧАСА ЗАПИСЬ</b> ⏰
 
-    ━━━━━━━━━━━━━━━━━━━━
-    👤 <b>Клиент:</b> {appointment.name}
-    📞 <b>Телефон:</b> {appointment.phone}
-    📅 <b>Дата:</b> {appointment.date.date.strftime('%d.%m.%Y')}
-    ⏰ <b>Время:</b> {appointment.time.time.strftime('%H:%M')}
-    💇 <b>Услуга:</b> {appointment.product.name}
-    ━━━━━━━━━━━━━━━━━━━━
-
-    <b>Не забудьте подготовиться к приему клиента!</b>
+━━━━━━
+👤 <b>Клиент:</b> {appointment.name}
+📞 <b>Телефон:</b> {appointment.phone}
+📅 <b>Дата:</b> {appointment.date.date.strftime('%d.%m.%Y')}
+⏰ <b>Время:</b> {appointment.time.time.strftime('%H:%M')}
+💇 <b>Услуга:</b> {appointment.product.name}
+━━━━━━
         """
-        return self.send_message(message)
+        return self.send_message(message)  # ✅ ВАЖНО: вызываем send_message!
+    
 
-    def send_day_reminder(self, appointment):
-        """Отправляет утреннее напоминание в день записи"""
+
+
+    def send_day_reminder_bulk_detailed(self, appointments):
+        """Отправляет детальное сообщение со всеми записями (ОДНО сообщение)"""
+        if not appointments:
+            message = f"""
+    📅 <b>РАСПИСАНИЕ НА {timezone.now().strftime('%d.%m.%Y')}</b>
+
+    ━━━━━━━
+    ✅ <b>На сегодня записей нет</b>
+    😊 <b>Хорошего дня!</b>
+            """.strip()
+            return self.send_message(message)
+        
+        # Сортируем по времени
+        appointments = sorted(appointments, key=lambda x: x.time.time)
+        
+        # Формируем таблицу записей
+        rows = []
+        for apt in appointments:
+            time_str = apt.time.time.strftime('%H:%M')
+            rows.append(
+                f"┌─ <b>{time_str}</b>\n"
+                f"├ 👤 {apt.name}\n"
+                f"├ 📞 {apt.phone or 'Не указан'}\n"
+                f"├ 💇 {apt.product.name}\n"
+                f"└─ ═══════"
+            )
+        
         message = f"""
-    📅 <b>НАПОМИНАНИЕ! СЕГОДНЯ ЗАПИСЬ</b> 📅
+    📅 <b>ПЛАН РАБОТ НА СЕГОДНЯ</b>
+    <b>{timezone.now().strftime('%d.%m.%Y')}</b>
 
-    ━━━━━━━━━━━━━━━━━━━━
-    👤 <b>Клиент:</b> {appointment.name}
-    📞 <b>Телефон:</b> {appointment.phone}
-    ⏰ <b>Время:</b> {appointment.time.time.strftime('%H:%M')}
-    💇 <b>Услуга:</b> {appointment.product.name}
-    ━━━━━━━━━━━━━━━━━━━━
+    ━━━━━━━
+    <b>👥 Всего клиентов: {len(appointments)}</b>
+    ━━━━━━━
 
-    <b>Сегодня запись! Проверьте готовность рабочего места.</b>
-        """
+    {chr(10).join(rows)}
+
+    <b>🎯 Хорошего рабочего дня!</b>
+        """.strip()
+        
         return self.send_message(message)
     
+
+
+
+
+
+
+
 #     def _format_cancellation_message(self, appointment):
 #         """Форматирует сообщение об отмене записи"""
 #         message = f"""
@@ -140,6 +178,14 @@ class TelegramNotifier:
 #         """.strip()
         
 #         return message
+
+
+
+
+
+
+
+
 
 
 def send_telegram_async(notifier, appointment, notification_type='appointment'):
