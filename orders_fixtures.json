@@ -1,0 +1,179 @@
+[
+{
+    "model": "orders.availabledate",
+    "pk": 5,
+    "fields": {
+        "date": "2026-04-22"
+    }
+},
+{
+    "model": "orders.availabledate",
+    "pk": 6,
+    "fields": {
+        "date": "2026-04-20"
+    }
+},
+{
+    "model": "orders.availabledate",
+    "pk": 7,
+    "fields": {
+        "date": "2026-04-21"
+    }
+},
+{
+    "model": "orders.availabledate",
+    "pk": 8,
+    "fields": {
+        "date": "2026-04-27"
+    }
+},
+{
+    "model": "orders.availabledate",
+    "pk": 9,
+    "fields": {
+        "date": "2026-04-29"
+    }
+},
+{
+    "model": "orders.availabletime",
+    "pk": 7,
+    "fields": {
+        "date": 5,
+        "time": "12:00:00",
+        "freely": true
+    }
+},
+{
+    "model": "orders.availabletime",
+    "pk": 8,
+    "fields": {
+        "date": 5,
+        "time": "18:00:00",
+        "freely": true
+    }
+},
+{
+    "model": "orders.availabletime",
+    "pk": 9,
+    "fields": {
+        "date": 5,
+        "time": "00:00:00",
+        "freely": true
+    }
+},
+{
+    "model": "orders.availabletime",
+    "pk": 10,
+    "fields": {
+        "date": 5,
+        "time": "23:20:00",
+        "freely": false
+    }
+},
+{
+    "model": "orders.availabletime",
+    "pk": 11,
+    "fields": {
+        "date": 5,
+        "time": "18:23:00",
+        "freely": true
+    }
+},
+{
+    "model": "orders.availabletime",
+    "pk": 12,
+    "fields": {
+        "date": 5,
+        "time": "13:44:00",
+        "freely": false
+    }
+},
+{
+    "model": "orders.availabletime",
+    "pk": 13,
+    "fields": {
+        "date": 6,
+        "time": "22:00:00",
+        "freely": false
+    }
+},
+{
+    "model": "orders.availabletime",
+    "pk": 14,
+    "fields": {
+        "date": 6,
+        "time": "23:00:00",
+        "freely": true
+    }
+},
+{
+    "model": "orders.availabletime",
+    "pk": 15,
+    "fields": {
+        "date": 7,
+        "time": "12:00:00",
+        "freely": true
+    }
+},
+{
+    "model": "orders.availabletime",
+    "pk": 16,
+    "fields": {
+        "date": 7,
+        "time": "18:00:00",
+        "freely": true
+    }
+},
+{
+    "model": "orders.availabletime",
+    "pk": 17,
+    "fields": {
+        "date": 8,
+        "time": "08:00:00",
+        "freely": true
+    }
+},
+{
+    "model": "orders.availabletime",
+    "pk": 18,
+    "fields": {
+        "date": 9,
+        "time": "10:00:00",
+        "freely": true
+    }
+},
+{
+    "model": "orders.appointment",
+    "pk": 21,
+    "fields": {
+        "user": null,
+        "name": "Анастасия",
+        "phone": "Неизвестно",
+        "product": 6,
+        "date": 8,
+        "time": 17,
+        "comment": "",
+        "created_at": "2026-04-21T02:58:35.119Z",
+        "reminder_2h_sent": true,
+        "day_reminder_sent": true,
+        "colors": []
+    }
+},
+{
+    "model": "orders.appointment",
+    "pk": 22,
+    "fields": {
+        "user": null,
+        "name": "Оксана",
+        "phone": "Неизвестно",
+        "product": 7,
+        "date": 9,
+        "time": 18,
+        "comment": "По бартеру",
+        "created_at": "2026-04-27T10:29:20.103Z",
+        "reminder_2h_sent": true,
+        "day_reminder_sent": true,
+        "colors": []
+    }
+}
+]

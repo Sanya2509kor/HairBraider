@@ -10,6 +10,15 @@
     <link rel="stylesheet" href={% static "deps/css/bootstrap/bootstrap.min.css" %}>
     <link rel="stylesheet" href={% static "deps/css/my_css.css" %}>
     <link rel="manifest" href={% static "deps/favicon/site.webmanifest" %}> 
+    <link rel="icon" type="image/x-icon" href="{% static 'deps/favicon/favicon.ico' %}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{% static 'deps/favicon/favicon-16x16.png' %}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{% static 'deps/favicon/favicon-32x32.png' %}">
+
+    <!-- Для Apple устройств -->
+    <link rel="apple-touch-icon" sizes="180x180" href="{% static 'deps/favicon/apple-touch-icon.png' %}">
+
+    <!-- Web app manifest (оставьте эту строку) -->
+    <link rel="manifest" href="{% static 'deps/favicon/site.webmanifest' %}">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -99,7 +108,7 @@
     <nav class="navbar navbar-expand-lg navbar-light sticky-top">
         <div class="container">
             <a class="navbar-brand" href="{% url 'main:index' %}">
-                <i class="fas fa-spa me-2"></i>HairBraider
+                <i class="fas fa-spa me-2"></i>ХейрБрайдер
             </a>
             
             <!-- Мобильное меню -->

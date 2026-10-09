@@ -1,0 +1,101 @@
+[
+{
+    "model": "about.portfolio",
+    "pk": 1,
+    "fields": {
+        "name": "Афрокосы",
+        "description": "",
+        "created_at": "2025-09-09T04:51:32.534Z"
+    }
+},
+{
+    "model": "about.portfolio",
+    "pk": 2,
+    "fields": {
+        "name": "ДЕ косы",
+        "description": "Описание…",
+        "created_at": "2025-09-09T04:55:01.429Z"
+    }
+},
+{
+    "model": "about.portfolio",
+    "pk": 3,
+    "fields": {
+        "name": "детская",
+        "description": "",
+        "created_at": "2025-09-09T04:56:50.979Z"
+    }
+},
+{
+    "model": "about.portfolioimage",
+    "pk": 1,
+    "fields": {
+        "product": 1,
+        "image": "portfolio_images/n6W4AU7XgH4VfCyKXUqNZ5c3E6Lb1TpXO8oXFzE1p5K_dyK9_y5uUj08fCHFlOAC_q8Z_6_Y9G2odW.webp",
+        "order": 4
+    }
+},
+{
+    "model": "about.portfolioimage",
+    "pk": 2,
+    "fields": {
+        "product": 1,
+        "image": "portfolio_images/vScB1lLa88QJ71Iy0HLaEIayLGllDraxCfmRj07Sut-n2ynH36TC4irbb8vKNwh4yP_6y6_B6Rj6s9.webp",
+        "order": 2
+    }
+},
+{
+    "model": "about.portfolioimage",
+    "pk": 3,
+    "fields": {
+        "product": 1,
+        "image": "portfolio_images/3vgaLlypNL6T2_UnXByAyHjxGPOA6sQUKuwPbGGq8SErYdOni3jzBEcrTB_v3S_nnl9I8j_qUiAjyI.webp",
+        "order": 3
+    }
+},
+{
+    "model": "about.portfolioimage",
+    "pk": 4,
+    "fields": {
+        "product": 1,
+        "image": "portfolio_images/vTVr5tEl8EBYdm2BuQKxlwZp-NLdxR241vNLDmoy13ttcw2LigCQysI4-so5H2F2kR2u7j_qPOdAfk.webp",
+        "order": 1
+    }
+},
+{
+    "model": "about.portfolioimage",
+    "pk": 5,
+    "fields": {
+        "product": 2,
+        "image": "portfolio_images/-XOFx8CB7qSHwDZ88N9KYq8vffMfVf4XB2GHgJkspHT-L8yrYzecVn8HP5YcdKRsHm5X9g_kWHrc4p.webp",
+        "order": 1
+    }
+},
+{
+    "model": "about.portfolioimage",
+    "pk": 6,
+    "fields": {
+        "product": 2,
+        "image": "portfolio_images/n4bqe9RloGOB4zzaRuGRIDvFAKR1ipPaU7MBlOrEJLJ68E8wqXRu5UaSMUFlMRVxTzBiz-_F0aL4Qv.webp",
+        "order": 2
+    }
+},
+{
+    "model": "about.portfolioimage",
+    "pk": 7,
+    "fields": {
+        "product": 3,
+        "image": "portfolio_images/9x4GEVZmLu6HePisb6oDLQt-oqrNG_5VtYALlvGQ7W2on6DOoLobIi7J67DMEWQXDxA17D_cVJ9qJt.webp",
+        "order": 1
+    }
+},
+{
+    "model": "about.portfolioimage",
+    "pk": 8,
+    "fields": {
+        "product": 3,
+        "image": "portfolio_images/bdfAboPHnr-LAekJtwZQ4iyaAOzRsN6SHdWkV9-IoZWFe-V3OFdHg0WBJtjS67xiihKugN_kgz5eBV.webp",
+        "order": 2
+    }
+}
+]

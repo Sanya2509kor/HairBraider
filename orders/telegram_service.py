@@ -158,9 +158,6 @@ class TelegramNotifier:
 
 
 
-
-
-
 #     def _format_cancellation_message(self, appointment):
 #         """Форматирует сообщение об отмене записи"""
 #         message = f"""

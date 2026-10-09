@@ -1,0 +1,520 @@
+[
+{
+    "model": "main.color",
+    "pk": 6,
+    "fields": {
+        "name": "Красный",
+        "image": "color_images/7287311389.webp"
+    }
+},
+{
+    "model": "main.color",
+    "pk": 7,
+    "fields": {
+        "name": "Русый",
+        "image": "color_images/8.webp"
+    }
+},
+{
+    "model": "main.product",
+    "pk": 6,
+    "fields": {
+        "name": "Брейды без материала",
+        "slug": "brejdy-iz-svoih-volos1",
+        "image": "product_images/photo_5235478414599328840_y.webp",
+        "description": "",
+        "price": "300",
+        "price_str": "за косичку",
+        "discount": "0.00",
+        "show": true,
+        "make_time": "30-90 мин",
+        "available_colors": []
+    }
+},
+{
+    "model": "main.product",
+    "pk": 7,
+    "fields": {
+        "name": "ДЕ косы",
+        "slug": "de-kosy",
+        "image": "product_images/photo_5456628750276562668_y_Qn17h5j.webp",
+        "description": "",
+        "price": "9000",
+        "price_str": "",
+        "discount": "0.00",
+        "show": true,
+        "make_time": "2-4 часа",
+        "available_colors": []
+    }
+},
+{
+    "model": "main.product",
+    "pk": 8,
+    "fields": {
+        "name": "Боксерские косы",
+        "slug": "bokserskie-kosy",
+        "image": "product_images/photo_5235478414599328798_y.webp",
+        "description": "",
+        "price": "3000",
+        "price_str": "",
+        "discount": "0.00",
+        "show": true,
+        "make_time": "1-2 часа",
+        "available_colors": []
+    }
+},
+{
+    "model": "main.product",
+    "pk": 9,
+    "fields": {
+        "name": "Кудрявый водопад",
+        "slug": "kudryavyj-vodopad",
+        "image": "product_images/photo_5235478414599328827_y_bobh7vw.webp",
+        "description": "",
+        "price": "3000",
+        "price_str": "",
+        "discount": "0.00",
+        "show": true,
+        "make_time": "40-60 мин",
+        "available_colors": []
+    }
+},
+{
+    "model": "main.product",
+    "pk": 10,
+    "fields": {
+        "name": "Брейды по голове с материалом",
+        "slug": "brejdy-po-golove-s-materialom",
+        "image": "product_images/photo_5235478414599328833_y.webp",
+        "description": "",
+        "price": "3000",
+        "price_str": "",
+        "discount": "0.00",
+        "show": true,
+        "make_time": "1.5-3 часа",
+        "available_colors": []
+    }
+},
+{
+    "model": "main.product",
+    "pk": 11,
+    "fields": {
+        "name": "Кудрявый хвост",
+        "slug": "kudryavyj-hvost",
+        "image": "product_images/photo_5235478414599328817_y.webp",
+        "description": "",
+        "price": "4100",
+        "price_str": "",
+        "discount": "0.00",
+        "show": true,
+        "make_time": "1.5-3 часа",
+        "available_colors": []
+    }
+},
+{
+    "model": "main.product",
+    "pk": 12,
+    "fields": {
+        "name": "Два хвоста с прямым материалом",
+        "slug": "dva-hvosta-s-pryamym-materialom",
+        "image": "product_images/photo_5235478414599328869_y.webp",
+        "description": "",
+        "price": "3800",
+        "price_str": "",
+        "discount": "0.00",
+        "show": true,
+        "make_time": "1-2 часа",
+        "available_colors": []
+    }
+},
+{
+    "model": "main.product",
+    "pk": 13,
+    "fields": {
+        "name": "ДЕ косы со свободным кончиком",
+        "slug": "de-kosy-so-svobodnym-konchikom",
+        "image": "product_images/photo_5235478414599328848_y.webp",
+        "description": "",
+        "price": "9500",
+        "price_str": "",
+        "discount": "0.00",
+        "show": true,
+        "make_time": "2-4 часа",
+        "available_colors": []
+    }
+},
+{
+    "model": "main.product",
+    "pk": 14,
+    "fields": {
+        "name": "Воздушные зизи",
+        "slug": "vozdushnye-zizi",
+        "image": "product_images/photo_5235478414599328812_y.webp",
+        "description": "",
+        "price": "6500",
+        "price_str": "",
+        "discount": "0.00",
+        "show": true,
+        "make_time": "2-3 часа",
+        "available_colors": []
+    }
+},
+{
+    "model": "main.product",
+    "pk": 15,
+    "fields": {
+        "name": "Прямой водопад",
+        "slug": "pryamoj-vodopad",
+        "image": "product_images/photo_5456628750276563033_y_1hj2JT7.webp",
+        "description": "",
+        "price": "2700",
+        "price_str": "",
+        "discount": "0.00",
+        "show": true,
+        "make_time": "30-60 мин",
+        "available_colors": []
+    }
+},
+{
+    "model": "main.productimage",
+    "pk": 10,
+    "fields": {
+        "product": 6,
+        "image": "product_images/photo_5235478414599328729_y_Yh8VTed.webp",
+        "is_main": false
+    }
+},
+{
+    "model": "main.productimage",
+    "pk": 11,
+    "fields": {
+        "product": 6,
+        "image": "product_images/photo_5235478414599328730_y_uFtUDR4.webp",
+        "is_main": false
+    }
+},
+{
+    "model": "main.productimage",
+    "pk": 12,
+    "fields": {
+        "product": 7,
+        "image": "product_images/photo_5235478414599328786_y.webp",
+        "is_main": false
+    }
+},
+{
+    "model": "main.productimage",
+    "pk": 13,
+    "fields": {
+        "product": 8,
+        "image": "product_images/photo_5235478414599328809_y.webp",
+        "is_main": false
+    }
+},
+{
+    "model": "main.productimage",
+    "pk": 14,
+    "fields": {
+        "product": 8,
+        "image": "product_images/photo_5235478414599328810_y.webp",
+        "is_main": false
+    }
+},
+{
+    "model": "main.productimage",
+    "pk": 15,
+    "fields": {
+        "product": 8,
+        "image": "product_images/photo_5235478414599328822_y.webp",
+        "is_main": false
+    }
+},
+{
+    "model": "main.productimage",
+    "pk": 16,
+    "fields": {
+        "product": 8,
+        "image": "product_images/photo_5235478414599328823_y.webp",
+        "is_main": false
+    }
+},
+{
+    "model": "main.productimage",
+    "pk": 17,
+    "fields": {
+        "product": 9,
+        "image": "product_images/photo_5235478414599328816_y.webp",
+        "is_main": false
+    }
+},
+{
+    "model": "main.productimage",
+    "pk": 18,
+    "fields": {
+        "product": 9,
+        "image": "product_images/photo_5235478414599328923_y_t9CWQ9w.webp",
+        "is_main": false
+    }
+},
+{
+    "model": "main.productimage",
+    "pk": 19,
+    "fields": {
+        "product": 10,
+        "image": "product_images/photo_5235478414599328832_y.webp",
+        "is_main": false
+    }
+},
+{
+    "model": "main.productimage",
+    "pk": 20,
+    "fields": {
+        "product": 10,
+        "image": "product_images/photo_5235478414599328884_y.webp",
+        "is_main": false
+    }
+},
+{
+    "model": "main.productimage",
+    "pk": 21,
+    "fields": {
+        "product": 10,
+        "image": "product_images/photo_5235478414599328857_y.webp",
+        "is_main": false
+    }
+},
+{
+    "model": "main.productimage",
+    "pk": 22,
+    "fields": {
+        "product": 10,
+        "image": "product_images/photo_5235478414599328860_y.webp",
+        "is_main": false
+    }
+},
+{
+    "model": "main.productimage",
+    "pk": 23,
+    "fields": {
+        "product": 10,
+        "image": "product_images/photo_5235478414599328834_y.webp",
+        "is_main": false
+    }
+},
+{
+    "model": "main.productimage",
+    "pk": 24,
+    "fields": {
+        "product": 10,
+        "image": "product_images/photo_5235478414599328867_y.webp",
+        "is_main": false
+    }
+},
+{
+    "model": "main.productimage",
+    "pk": 25,
+    "fields": {
+        "product": 10,
+        "image": "product_images/photo_5235478414599328884_y_T9I1Ym5.webp",
+        "is_main": false
+    }
+},
+{
+    "model": "main.productimage",
+    "pk": 26,
+    "fields": {
+        "product": 12,
+        "image": "product_images/photo_5235478414599328787_y.webp",
+        "is_main": false
+    }
+},
+{
+    "model": "main.productimage",
+    "pk": 27,
+    "fields": {
+        "product": 12,
+        "image": "product_images/photo_5235478414599328788_y.webp",
+        "is_main": false
+    }
+},
+{
+    "model": "main.productimage",
+    "pk": 28,
+    "fields": {
+        "product": 13,
+        "image": "product_images/photo_5197565733255189514_y_g15JTBA.webp",
+        "is_main": false
+    }
+},
+{
+    "model": "main.productimage",
+    "pk": 29,
+    "fields": {
+        "product": 13,
+        "image": "product_images/photo_5235478414599328791_y.webp",
+        "is_main": false
+    }
+},
+{
+    "model": "main.productimage",
+    "pk": 30,
+    "fields": {
+        "product": 13,
+        "image": "product_images/photo_5235478414599328844_y.webp",
+        "is_main": false
+    }
+},
+{
+    "model": "main.productimage",
+    "pk": 31,
+    "fields": {
+        "product": 6,
+        "image": "product_images/photo_5235478414599328731_y_M52uuwU.webp",
+        "is_main": false
+    }
+},
+{
+    "model": "main.productimage",
+    "pk": 32,
+    "fields": {
+        "product": 6,
+        "image": "product_images/photo_5235478414599328797_y.webp",
+        "is_main": false
+    }
+},
+{
+    "model": "main.productimage",
+    "pk": 33,
+    "fields": {
+        "product": 6,
+        "image": "product_images/photo_5235478414599328811_y.webp",
+        "is_main": false
+    }
+},
+{
+    "model": "main.productimage",
+    "pk": 34,
+    "fields": {
+        "product": 6,
+        "image": "product_images/photo_5235478414599328839_y.webp",
+        "is_main": false
+    }
+},
+{
+    "model": "main.productimage",
+    "pk": 35,
+    "fields": {
+        "product": 6,
+        "image": "product_images/photo_5235478414599328853_y.webp",
+        "is_main": false
+    }
+},
+{
+    "model": "main.productimage",
+    "pk": 36,
+    "fields": {
+        "product": 14,
+        "image": "product_images/photo_5235478414599328815_y.webp",
+        "is_main": false
+    }
+},
+{
+    "model": "main.productimage",
+    "pk": 37,
+    "fields": {
+        "product": 14,
+        "image": "product_images/photo_5235478414599328842_y.webp",
+        "is_main": false
+    }
+},
+{
+    "model": "main.productimage",
+    "pk": 38,
+    "fields": {
+        "product": 14,
+        "image": "product_images/photo_5235478414599328841_y.webp",
+        "is_main": false
+    }
+},
+{
+    "model": "main.productimage",
+    "pk": 39,
+    "fields": {
+        "product": 7,
+        "image": "product_images/photo_5235478414599328793_y.webp",
+        "is_main": false
+    }
+},
+{
+    "model": "main.productimage",
+    "pk": 40,
+    "fields": {
+        "product": 7,
+        "image": "product_images/photo_5235478414599328819_y.webp",
+        "is_main": false
+    }
+},
+{
+    "model": "main.productimage",
+    "pk": 41,
+    "fields": {
+        "product": 7,
+        "image": "product_images/photo_5235478414599328820_y.webp",
+        "is_main": false
+    }
+},
+{
+    "model": "main.productimage",
+    "pk": 42,
+    "fields": {
+        "product": 7,
+        "image": "product_images/photo_5235478414599328862_y.webp",
+        "is_main": false
+    }
+},
+{
+    "model": "main.productimage",
+    "pk": 43,
+    "fields": {
+        "product": 7,
+        "image": "product_images/photo_5235478414599328870_y.webp",
+        "is_main": false
+    }
+},
+{
+    "model": "main.productimage",
+    "pk": 44,
+    "fields": {
+        "product": 7,
+        "image": "product_images/photo_5235478414599328865_y.webp",
+        "is_main": false
+    }
+},
+{
+    "model": "main.productimage",
+    "pk": 45,
+    "fields": {
+        "product": 7,
+        "image": "product_images/photo_5456628750276562672_y_ew5jL3w.webp",
+        "is_main": false
+    }
+},
+{
+    "model": "main.productimage",
+    "pk": 46,
+    "fields": {
+        "product": 7,
+        "image": "product_images/photo_5235478414599328881_y.webp",
+        "is_main": false
+    }
+},
+{
+    "model": "main.productimage",
+    "pk": 47,
+    "fields": {
+        "product": 9,
+        "image": "product_images/photo_5235478414599328826_y.webp",
+        "is_main": false
+    }
+}
+]
